@@ -1,8 +1,8 @@
 #ifndef SGR_H
 #define SGR_H
 
-typedef struct SGR* SGR;
-typedef struct TABLE* TABLE;
+typedef struct sgr* SGR;
+typedef struct table* TABLE;
 
 SGR init_sgr();
 void free_sgr(SGR sgr);

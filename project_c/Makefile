@@ -19,5 +19,12 @@ clean:
 $(BUILDDIR):
 	mkdir -p $@
 
-build/%.o: src/%.c $(wildcard src/*.h) $(BUILDDIR)
-	$(CC) -o "$@" -c "$<" $(CFLAGS)
+# $(BUILDDIR) está depois de um pipe para que não crie o objeto sempre que a
+# diretoria é modificada (o que vai ser sempre que se cria algum ficheiro
+# dentro dela)
+# -MMD -MP -MF ... gera um Makefile com as dependências dos headers
+build/%.o: src/%.c | $(BUILDDIR)
+	$(CC) -o "$@" -c "$<" $(CFLAGS) -MMD -MP -MF $(@:%.o=%.d)
+
+# ...e agora incluímos estes Makefiles, mas ignoramos se não existirem
+-include $(OBJFILES:%.o=%.d)
