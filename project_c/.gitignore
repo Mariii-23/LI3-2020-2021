@@ -1,3 +1,6 @@
 *.o
+.cache
 build/
 program
+shell.nix
+compile_commands.json
