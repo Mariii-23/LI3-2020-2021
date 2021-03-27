@@ -9,12 +9,14 @@
 
 static User parse_user_line(char* str) {
     GPtrArray* friends = g_ptr_array_new();
-    char* user_id = strsep(&str, ";");
-    char* name = strsep(&str, ";");
-    char* friend = strsep(&str, ",");
+    char* user_id = strtok(str, ";");
+    char* name = strtok(NULL, ";");
+    char* friend = strtok(NULL, ";");
+    friend = strtok(friend, ",");
     while (friend) {
         g_ptr_array_add(friends, g_strdup(friend));
-        friend = strsep(&str, ",");
+        printf("friend : %s\n", friend);
+        friend = strtok(NULL, ",");
     }
     return create_user(user_id, name, friends);
 }
@@ -40,11 +42,4 @@ UserCollection collect_users(FILE* fp) {
         // populate hashtable
     }
     return create_user_collection(users, by_id);
-}
-
-int main(int argc, char** argv) {
-    FILE* fp = fopen(argv[1], "r");
-    char line[50];
-    fgets(line, 50, fp);
-    collect_users(fp);
 }
