@@ -32,5 +32,3 @@ SGR load_sgr(char* users, char* businesses, char* reviews) {
     fclose(fp_reviews);
     return sgr;
 }
-
-int main(int argc, char* argv[]) {}
