@@ -23,7 +23,7 @@ User create_user(char* user_id, char* name, GPtrArray* friends) {
     return new_user;
 }
 
-UserCollection create_collection(GArray* users, GHashTable* by_id) {
+UserCollection create_user_collection(GArray* users, GHashTable* by_id) {
     UserCollection new_collection = malloc(sizeof(struct user_collection));
     *new_collection = (struct user_collection){.users = users, .by_id = by_id};
     return new_collection;

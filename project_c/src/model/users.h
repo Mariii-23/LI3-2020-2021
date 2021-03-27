@@ -7,7 +7,7 @@ typedef struct user* User;
 typedef struct user_collection* UserCollection;
 
 User create_user(char* user_id, char* name, GPtrArray* friends);
-UserCollection create_collection(GArray* users, GHashTable* by_id);
+UserCollection create_user_collection(GArray* users, GHashTable* by_id);
 void free_user(User user);
 void free_user_collection(UserCollection user_collection);
 void add_user(UserCollection user_collection, User user);

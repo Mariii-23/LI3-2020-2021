@@ -7,19 +7,18 @@
 #include "model/users.h"
 #define LINESIZE 100
 
-User parse_user_line(char* str) {
+static User parse_user_line(char* str) {
     GPtrArray* friends = g_ptr_array_new();
     char* user_id = strsep(&str, ";");
     char* name = strsep(&str, ";");
     char* friend = strsep(&str, ",");
     while (friend) {
-        printf("%s\n", friend);
         g_ptr_array_add(friends, g_strdup(friend));
         friend = strsep(&str, ",");
     }
     return create_user(user_id, name, friends);
 }
-char* ler_linha(FILE* fp) {
+static char* read_line(FILE* fp) {
     char linha[LINESIZE];
     bool has_new_line = false;
     GString* dynamic_string = g_string_sized_new(LINESIZE);
@@ -28,15 +27,24 @@ char* ler_linha(FILE* fp) {
         g_string_append(dynamic_string, linha);
         has_new_line = strchr(linha, '\n') != NULL;
     }
-    g_string_append_unichar(dynamic_string, 0);
-    parse_user_line(dynamic_string->str);
+    g_string_append_unichar(dynamic_string, 0);  // to change
     return g_string_free(dynamic_string, FALSE);
+}
+
+UserCollection collect_users(FILE* fp) {
+    char* line;
+    GArray* users = g_array_new(FALSE, TRUE, sizeof(User));
+    GHashTable* by_id = g_hash_table_new(g_str_hash, g_str_equal);
+    while ((line = read_line(fp))) {
+        parse_user_line(line);
+        // populate hashtable
+    }
+    return create_user_collection(users, by_id);
 }
 
 int main(int argc, char** argv) {
     FILE* fp = fopen(argv[1], "r");
     char line[50];
     fgets(line, 50, fp);
-    while (ler_linha(fp))
-        ;
+    collect_users(fp);
 }

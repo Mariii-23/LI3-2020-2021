@@ -22,9 +22,9 @@ SGR load_sgr(char* users, char* businesses, char* reviews) {
 
     SGR sgr = malloc(sizeof(struct sgr));
     //*sgr = (struct sgr){
-    //    .catalogo_users = ler_users(fp_users),
-    //    .catalogo_businesses = ler_businesses(fp_businesses),
-    //    .catalogo_reviews = ler_reviews(catalogo_reviews)};
+    //    .catalogo_users = collect_users(fp_users),
+    //    .catalogo_businesses = collect_bussineses(fp_businesses),
+    //    .catalogo_reviews = collect_reviews(catalogo_reviews)};
     // sgr->estatisticas = calcula_estatisticas(sgr);
 
     fclose(fp_users);
