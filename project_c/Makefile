@@ -2,8 +2,10 @@ BUILDDIR := build/
 SRCFILES = $(wildcard src/*/*.c) $(wildcard src/*.c)
 OBJFILES = $(SRCFILES:src/%.c=$(BUILDDIR)%.o)
 
-LDFLAGS += $(shell pkg-config --libs glib-2.0)
-CFLAGS += -Wall -std=c99 -Isrc -O2 $(shell pkg-config --cflags glib-2.0)
+LIBS := glib-2.0 readline
+
+LDFLAGS += $(shell pkg-config --libs $(LIBS))
+CFLAGS += -Wall -std=c99 -Isrc -O2 $(shell pkg-config --cflags $(LIBS))
 
 .PHONY: run clean
 
