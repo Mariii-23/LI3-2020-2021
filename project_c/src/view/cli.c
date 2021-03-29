@@ -12,7 +12,8 @@ struct command {
 
   int n_args;
   char **args;
-  // algum apontador para uma função
+
+  cli_function_type function;
 };
 
 Commands init_commands() {
@@ -23,12 +24,13 @@ void insert_command(Commands commands, Command command) {
   g_tree_insert(commands, command->name, command);
 }
 
-Command make_command(const char *name, const char *desc, int n_args, char **args) {
+Command make_command(const char *name, const char *desc, cli_function_type function, int n_args, char **args) {
   Command c = malloc(sizeof(struct command));
 
   c->name = g_strdup(name);
   c->description = g_strdup(desc);
   c->n_args = n_args;
+  c->function = function;
   c->args = args;
 
   return c;
@@ -85,6 +87,15 @@ void repl(Commands commands) {
     if (*line) {
       // adicionar ao histórico
       add_history(line);
+
+      // Procurar o comando
+      char *cmd = strtok(line, " ");
+      Command c = g_tree_lookup(commands, cmd);
+      if (c != NULL) {
+        c->function(1, &cmd);
+      } else {
+        fprintf(stderr, FG_RED "Command not found: %s" RESET_ALL "\n", cmd);
+      }
     }
   }
 }
