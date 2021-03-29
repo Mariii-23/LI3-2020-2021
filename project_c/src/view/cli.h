@@ -3,7 +3,7 @@
 
 #include <glib.h>
 
-typedef void (*cli_function_type)(int argc, char **args);
+typedef void (*cli_function_type)(GArray *args);
 typedef struct command *Command;
 typedef GTree *Commands;
 

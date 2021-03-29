@@ -91,8 +91,14 @@ void repl(Commands commands) {
       // Procurar o comando
       char *cmd = strtok(line, " ");
       Command c = g_tree_lookup(commands, cmd);
+      GArray *arr = g_array_new(FALSE, FALSE, sizeof(char*));
       if (c != NULL) {
-        c->function(1, &cmd);
+        for (; cmd != NULL; cmd = strtok(NULL, " ")) {
+          g_array_append_val(arr, cmd);         
+        }
+
+        c->function(arr);
+        g_array_free(arr, TRUE);
       } else {
         fprintf(stderr, FG_RED "Command not found: %s" RESET_ALL "\n", cmd);
       }

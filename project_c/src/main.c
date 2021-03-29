@@ -1,13 +1,14 @@
 #include "view/cli.h"
 #include <stdio.h>
+#include <glib.h>
 
-void quit_cli(int argc, char **argv) {
+void quit_cli(GArray *args) {
   printf("Goodbye :(\n");
   exit(0);
 }
 
-void help_cli(int argc, char **argv) {
-  printf("Help for %s :)\n", *argv);
+void help_cli(GArray *args) {
+  printf("Help for %s :)\n", g_array_index(args, char*, 1));
 }
 
 int main() {
