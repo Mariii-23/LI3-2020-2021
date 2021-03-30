@@ -4,8 +4,9 @@ OBJFILES = $(SRCFILES:src/%.c=$(BUILDDIR)%.o)
 
 LIBS := glib-2.0 readline
 
-LDFLAGS += $(shell pkg-config --libs $(LIBS)) -I/usr/include/history -I/usr/include/readline
-CFLAGS += -Wall -std=c99 -Isrc -O2 $(shell pkg-config --cflags $(LIBS))
+READLINE = -I/usr/include/history -I/usr/include/readline
+LDFLAGS += $(shell pkg-config --libs $(LIBS))
+CFLAGS += -Wall -std=c99 -Isrc -O2 $(shell pkg-config --cflags $(LIBS)) $(READLINE)
 
 .PHONY: run clean
 
