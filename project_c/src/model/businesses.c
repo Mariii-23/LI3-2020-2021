@@ -17,7 +17,7 @@ struct business {
 };
 
 struct business_collection {
-    GArray* businesses;
+    GPtrArray* businesses;
     GHashTable* by_id;
     GHashTable* by_city;
     GHashTable* by_name;  // char*(nome do business) -> tree de negócios
@@ -119,7 +119,7 @@ void free_business(Business self) {
 
 /* BusinessCollection: builder */
 BusinessCollection create_business_collection(
-    GArray* businesses,
+    GPtrArray* businesses,
     GHashTable* by_id,
     GHashTable* by_city,
     GHashTable* by_name) {
@@ -135,24 +135,21 @@ BusinessCollection create_business_collection(
 
 /* business_collection: getters and setters */
 
-GArray* get_businesses(BusinessCollection self) {
+GPtrArray* get_businesses(BusinessCollection self) {
     if (self)
         return self->businesses;
     else
         return NULL;
 }
 
-void set_businesses(BusinessCollection self, GArray* businesses) {
+void set_businesses(BusinessCollection self, GPtrArray* businesses) {
     if (self) {
-        if (g_array_get_element_size(self->businesses) > 0) {
-            g_array_free(self->businesses, TRUE);
-        }
         self->businesses = businesses;
     }
 }
 
 void add_business(BusinessCollection self, Business elem) {
-    if (self) g_array_append_val(self->businesses, elem);
+    if (self) g_ptr_array_add(self->businesses, elem);
 }
 
 GHashTable* get_businessCollection_by_id(BusinessCollection self) {
@@ -236,7 +233,7 @@ void add_businessCollection_by_name(
 
 void free_businessCollection(BusinessCollection self) {
     if (self) {
-        g_array_free(self->businesses, TRUE);
+        g_ptr_array_free(self->businesses, TRUE);
         g_hash_table_foreach(self->by_id, map_free, NULL);
         g_hash_table_foreach(self->by_city, map_free, NULL);
         g_hash_table_foreach(self->by_name, map_free, NULL);
