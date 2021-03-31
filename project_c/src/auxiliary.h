@@ -2,9 +2,8 @@
 #define AUXILIARY_H
 
 #include <glib.h>
-void* assert_return(void* ptr);
+void *assert_return(void *ptr);
 void map_free(gpointer key, gpointer value, gpointer user_data);
 void free_key(gpointer key, gpointer value, gpointer user_data);
-;
+int free_key_tree(gpointer key, gpointer value, gpointer user_data);
 #endif
-

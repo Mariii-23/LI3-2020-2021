@@ -5,60 +5,50 @@
 
 #include "users.h"
 
-typedef struct business* Business;
-typedef struct business_collection* BusinessCollection;
+typedef struct business *Business;
+typedef struct business_collection *BusinessCollection;
 
-Business create_business(
-    char* business_id,
-    char* name,
-    char* city,
-    char* state,
-    GPtrArray* categories);
+Business create_business(char *business_id, char *name, char *city, char *state,
+                         GPtrArray *categories);
 
-char* get_business_id(Business self);
-void set_business_id(Business self, char* business_id);
+char *get_business_id(Business self);
+void set_business_id(Business self, char *business_id);
 
-char* get_business_name(Business self);
-void set_business_name(Business self, char* name);
+char *get_business_name(Business self);
+void set_business_name(Business self, char *name);
 
-char* get_business_city(Business self);
-void set_business_city(Business self, char* city);
+char *get_business_city(Business self);
+void set_business_city(Business self, char *city);
 
-char* get_business_state(Business self);
-void set_business_state(Business self, char* state);
+char *get_business_state(Business self);
+void set_business_state(Business self, char *state);
 
-GPtrArray* get_business_categories(Business self);
-void set_business_categories(Business self, GPtrArray* categories);
+GPtrArray *get_business_categories(Business self);
+void set_business_categories(Business self, GPtrArray *categories);
 
 void free_business(Business self);
 
-BusinessCollection create_business_collection(
-    GPtrArray* businesses,
-    GHashTable* by_id,
-    GHashTable* by_city,
-    GHashTable* by_name);
-GPtrArray* get_businesses(BusinessCollection self);
-void set_businesses(BusinessCollection self, GPtrArray* businesses);
+BusinessCollection create_business_collection(GPtrArray *businesses,
+                                              GHashTable *by_id,
+                                              GHashTable *by_city,
+                                              GTree *by_name);
+void set_businesses(BusinessCollection self, GPtrArray *businesses);
 void add_business(BusinessCollection self, Business elem);
 
-GHashTable* get_businessCollection_by_id(BusinessCollection self);
-User get_businessCollection_user_by_id(BusinessCollection self, int* user_id);
-void set_businessCollection_by_id(BusinessCollection self, GHashTable* by_id);
+Business get_businessCollection_business_by_id(BusinessCollection self,
+                                               int *user_id);
+void set_businessCollection_by_id(BusinessCollection self, GHashTable *by_id);
 void add_businessCollection_by_id(BusinessCollection self, gpointer elem);
 
-GHashTable* get_business_by_city(BusinessCollection self);
-GHashTable* get_businessCollection_business_by_city(
-    BusinessCollection self, char* id);
-void set_businessCollection_by_city(
-    BusinessCollection self, GHashTable* by_city);
+Business *get_businessCollection_business_by_city(BusinessCollection self,
+                                                  char *city);
+void set_businessCollection_by_city(BusinessCollection self,
+                                    GHashTable *by_city);
 void add_businessCollection_by_city(BusinessCollection self, gpointer elem);
 
-GHashTable* get_businessCollection_by_name(BusinessCollection self);
-User get_businessCollection_user_by_name(BusinessCollection self, char* name);
-void set_businessCollection_by_name(
-    BusinessCollection self, GHashTable* by_name);
-void add_businessCollection_by_name(
-    BusinessCollection self, gpointer key, gpointer value);
-
+Business get_businessCollection_business_by_name(BusinessCollection self,
+                                                 char *name);
+void set_businessCollection_by_name(BusinessCollection self, GTree *by_name);
+void add_businessCollection_by_name(BusinessCollection self, Business business);
 void free_businessCollection(BusinessCollection self);
 #endif

@@ -3,16 +3,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void* assert_return(void* ptr) {
-    assert(ptr);
-    return ptr;
+void *assert_return(void *ptr) {
+  assert(ptr);
+  return ptr;
 }
 
-void free_key(gpointer key, gpointer value, gpointer user_data) {
-    free(key);
-}
+void free_key(gpointer key, gpointer value, gpointer user_data) { free(key); }
 
 void map_free(gpointer key, gpointer value, gpointer user_data) {
-    free(key);
-    free(value);
+  free(key);
+  free(value);
+}
+
+int free_key_tree(gpointer key, gpointer value, gpointer user_data) {
+  free(key);
+  return 0;
 }
