@@ -4,5 +4,7 @@
 #include <glib.h>
 void* assert_return(void* ptr);
 void map_free(gpointer key, gpointer value, gpointer user_data);
+void free_key(gpointer key, gpointer value, gpointer user_data);
+;
 #endif
 

@@ -37,13 +37,17 @@ void free_user(User user) {
         g_ptr_array_set_free_func(user->friends, free);
         g_ptr_array_free(user->friends, TRUE);
     }
+    free(user);
+}
+void free_map_user(gpointer key, gpointer value, gpointer user_data) {
+    free(key);
+    free_user(value);
 }
 
 void free_user_collection(UserCollection user_collection) {
     if (user_collection) {
-        g_hash_table_foreach(user_collection->by_id, map_free, NULL);
-        g_hash_table_destroy(
-            user_collection->by_id);  //  calls GDestroyNotify function
+        g_hash_table_foreach(user_collection->by_id, free_map_user, NULL);
+        g_hash_table_destroy(user_collection->by_id);
     }
 }
 
@@ -58,15 +62,16 @@ void add_friend(User user, char* user_id) {
         g_ptr_array_add(user->friends, g_strdup(user_id));
     }
 }
-char* get_user_id(User user) {  // was gonna use const
+// using const and strdup with getters has its disadvantages
+char* get_user_id(User user) {
     if (user) {
-        return strdup(user->user_id);
+        return user->user_id;
     }
     return NULL;
 }
 char* get_user_name(User user) {
     if (user) {
-        return strdup(user->name);
+        return user->name;
     }
     return NULL;
 }

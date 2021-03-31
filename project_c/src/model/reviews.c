@@ -183,12 +183,9 @@ void free_review(Review self) {
     free(self->review_id);
     free(self->user_id);
     free(self->business_id);
-
-    // ???
-    /* g_date_free(self->date); */
     free(self->date);
-
     free(self->text);
+    free(self);
 }
 
 /* Review Collection */
@@ -281,10 +278,11 @@ void set_reviewCollection_by_business(
 
 void free_reviewCollection(ReviewCollection self) {
     if (self) {
+        g_ptr_array_set_free_func(self->reviews, (void*) free_review);
         g_ptr_array_free(self->reviews, TRUE);
-        g_hash_table_foreach(self->by_id, map_free, NULL);
-        g_hash_table_foreach(self->by_user_id, map_free, NULL);
-        g_hash_table_foreach(self->by_business_id, map_free, NULL);
+        g_hash_table_foreach(self->by_id, free_key, NULL);
+        g_hash_table_foreach(self->by_user_id, free_key, NULL);
+        g_hash_table_foreach(self->by_business_id, free_key, NULL);
         g_hash_table_destroy(self->by_id);
         g_hash_table_destroy(self->by_user_id);
         g_hash_table_destroy(self->by_business_id);

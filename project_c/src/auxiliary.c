@@ -8,6 +8,10 @@ void* assert_return(void* ptr) {
     return ptr;
 }
 
+void free_key(gpointer key, gpointer value, gpointer user_data) {
+    free(key);
+}
+
 void map_free(gpointer key, gpointer value, gpointer user_data) {
     free(key);
     free(value);

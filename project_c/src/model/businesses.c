@@ -233,10 +233,12 @@ void add_businessCollection_by_name(
 
 void free_businessCollection(BusinessCollection self) {
     if (self) {
+        g_ptr_array_set_free_func(self->businesses, (void*) free_business);
         g_ptr_array_free(self->businesses, TRUE);
-        g_hash_table_foreach(self->by_id, map_free, NULL);
-        g_hash_table_foreach(self->by_city, map_free, NULL);
-        g_hash_table_foreach(self->by_name, map_free, NULL);
+        g_hash_table_foreach(self->by_id, free_key, NULL);
+        g_hash_table_foreach(self->by_city, free_key, NULL);
+        g_hash_table_foreach(self->by_name, free_key, NULL);
+        // ainda tera que ser updated por causa da tree
         g_hash_table_destroy(self->by_id);
         g_hash_table_destroy(self->by_city);
         g_hash_table_destroy(self->by_name);
