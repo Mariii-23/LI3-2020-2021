@@ -5,6 +5,7 @@
 #include <gmodule.h>
 #include "colors.h"
 #include "cli.h"
+#include "parsing.h"
 
 struct command {
   char *name;
@@ -89,19 +90,26 @@ void repl(Commands commands) {
       add_history(line);
 
       // Procurar o comando
-      char *cmd = strtok(line, " ");
-      Command c = g_tree_lookup(commands, cmd);
-      GArray *arr = g_array_new(FALSE, FALSE, sizeof(char*));
-      if (c != NULL) {
-        for (; cmd != NULL; cmd = strtok(NULL, " ")) {
-          g_array_append_val(arr, cmd);         
-        }
+      /* char *cmd = strtok(line, " "); */
+      /* Command c = g_tree_lookup(commands, cmd); */
+      /* GArray *arr = g_array_new(FALSE, FALSE, sizeof(char*)); */
+      /* if (c != NULL) { */
+      /*   for (; cmd != NULL; cmd = strtok(NULL, " ")) { */
+      /*     g_array_append_val(arr, cmd); */         
+      /*   } */
 
-        c->function(arr);
-        g_array_free(arr, TRUE);
-      } else {
-        fprintf(stderr, FG_RED "Command not found: %s" RESET_ALL "\n", cmd);
+      /*   c->function(arr); */
+      /*   g_array_free(arr, TRUE); */
+      /* } else { */
+      /*   fprintf(stderr, FG_RED "Command not found: %s" RESET_ALL "\n", cmd); */
+      /* } */
+
+      Element *e = malloc(sizeof(Element));
+      while ((line = identify(line, e))) {
+        print_element(e);
+        printf(" ");
       }
+      printf("\n");
     }
   }
 }
