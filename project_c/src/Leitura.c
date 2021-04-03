@@ -94,18 +94,16 @@ BusinessCollection collect_businesses(FILE* fp) {
     GPtrArray* businesses = g_ptr_array_new();
     GHashTable* by_id = g_hash_table_new(g_str_hash, g_str_equal);
     GHashTable* by_city = g_hash_table_new(g_str_hash, g_str_equal);
-    /* GHashTable* by_name = g_hash_table_new(g_str_hash, g_str_equal); */
-    GTree* by_name = g_tree_new((GCompareFunc) g_ascii_strcasecmp);
+    GHashTable* by_letter =
+        g_hash_table_new(business_name_hash, compare_first_letter);
     while ((line = read_line(fp))) {
         Business business = parse_business_line(line);
         g_ptr_array_add(businesses, business);
-        append_to_value(by_id, get_business_id(business), business);
+        g_hash_table_insert(by_id, get_business_id(business), business);
         append_to_value(by_city, get_business_city(business), business);
-        /* g_hash_table_insert(by_name, get_business_name(business), business);
-         */
-        g_tree_insert(by_name, get_business_name(business), business);
+        append_to_value(by_letter, get_business_name(business), business);
     }
-    return create_business_collection(businesses, by_id, by_city, by_name);
+    return create_business_collection(businesses, by_id, by_city, by_letter);
 }
 
 UserCollection collect_users(FILE* fp) {

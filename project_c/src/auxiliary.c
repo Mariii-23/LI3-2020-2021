@@ -15,9 +15,13 @@ void free_key(gpointer key, gpointer value, gpointer user_data) {
 }
 
 void free_key_value(gpointer key, gpointer value, gpointer user_data) {
+    if (user_data) {
+        g_ptr_array_free(value, TRUE);
+    }
     free(key);
     free(value);
 }
+
 void append_to_value(
     GHashTable* hash_table, gpointer key, gpointer value_to_add) {
     GPtrArray* curr = g_hash_table_lookup(hash_table, key);
@@ -30,3 +34,12 @@ void append_to_value(
     g_ptr_array_add(curr, value_to_add);
 }
 
+gboolean compare_first_letter(gconstpointer key1, gconstpointer key2) {
+    return ((char*) key1)[0] == ((char*) key2)[0];
+}
+
+guint business_name_hash(gconstpointer word) {
+    char first = ((char*) word)[0];
+    size_t other_chars = ('Z' % 'A') + 1;
+    return first >= 'A' && first <= 'z' ? (first % 'a') % 'A' : other_chars;
+}

@@ -20,7 +20,7 @@ struct business_collection {
     GPtrArray* businesses;
     GHashTable* by_id;
     GHashTable* by_city;
-    GTree* by_name;
+    GHashTable* by_letter;  //
 };
 
 /* Business: builder */
@@ -118,14 +118,14 @@ BusinessCollection create_business_collection(
     GPtrArray* businesses,
     GHashTable* by_id,
     GHashTable* by_city,
-    GTree* by_name) {
+    GHashTable* by_letter) {
     BusinessCollection new_business_collection =
         (BusinessCollection) malloc(sizeof(struct business_collection));
     *new_business_collection = (struct business_collection){
         .businesses = businesses,
         .by_id = by_id,
         .by_city = by_city,
-        .by_name = by_name};
+        .by_letter = by_letter};
     return new_business_collection;
 }
 
@@ -172,24 +172,24 @@ void add_businessCollection_by_city(BusinessCollection self, gpointer elem) {
     if (self && elem) g_hash_table_add(self->by_city, elem);
 }
 
-Business get_businessCollection_business_by_name(
+Business get_businessCollection_business_by_letter(
     BusinessCollection self, char* name) {
     if (self)
-        return g_tree_lookup(self->by_name, name);
+        return g_hash_table_lookup(self->by_letter, name);
     else
         return NULL;
 }
 
-void set_businessCollection_by_name(BusinessCollection self, GTree* by_name) {
+void set_businessCollection_by_letter(
+    BusinessCollection self, GHashTable* by_letter) {
     if (self) {
-        self->by_name = by_name;
+        self->by_letter = by_letter;
     }
 }
 
-void add_businessCollection_by_name(
+void add_businessCollection_by_letter(
     BusinessCollection self, Business business) {
-    if (self)
-        g_tree_insert(self->by_name, get_business_name(business), business);
+    if (self) g_hash_table_add(self->by_letter, get_business_name(business));
 }
 
 /* BusinessCollection: free */
@@ -199,11 +199,14 @@ void free_businessCollection(BusinessCollection self) {
         g_ptr_array_set_free_func(self->businesses, (void*) free_business);
         g_ptr_array_free(self->businesses, TRUE);
         g_hash_table_foreach(self->by_id, free_key, NULL);
-        g_hash_table_foreach(self->by_city, free_key, NULL);
-        // g_tree_foreach(self->by_name, free_key_value, NULL);
+        g_hash_table_foreach(self->by_city, free_key_value, "");
+        g_hash_table_foreach(
+            self->by_letter,
+            free_key_value,
+            "");  // also frees array but not its content
         g_hash_table_destroy(self->by_id);
         g_hash_table_destroy(self->by_city);
-        g_tree_destroy(self->by_name);
+        g_hash_table_destroy(self->by_letter);
         free(self);
     }
 }
