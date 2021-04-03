@@ -156,8 +156,8 @@ void add_businessCollection_by_id(BusinessCollection self, gpointer elem) {
     g_hash_table_add(self->by_id, elem);
 }
 
-Business *get_businessCollection_business_by_city(BusinessCollection self,
-                                                  char *city) {
+GPtrArray *get_businessCollection_business_by_city(BusinessCollection self,
+                                                   char *city) {
   if (self && city)
     return g_hash_table_lookup(self->by_city, city);
   else

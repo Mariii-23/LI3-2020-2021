@@ -40,8 +40,8 @@ Business get_businessCollection_business_by_id(BusinessCollection self,
 void set_businessCollection_by_id(BusinessCollection self, GHashTable *by_id);
 void add_businessCollection_by_id(BusinessCollection self, gpointer elem);
 
-Business *get_businessCollection_business_by_city(BusinessCollection self,
-                                                  char *city);
+GPtrArray *get_businessCollection_business_by_city(BusinessCollection self,
+                                                   char *city);
 void set_businessCollection_by_city(BusinessCollection self,
                                     GHashTable *by_city);
 void add_businessCollection_by_city(BusinessCollection self, gpointer elem);
