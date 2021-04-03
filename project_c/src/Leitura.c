@@ -81,9 +81,9 @@ ReviewCollection collect_reviews(FILE* fp) {
     while ((line = read_line(fp))) {
         printf("%s", line);
         Review review = parse_review_line(line);
-        add_to_hash_arr(by_id, get_review_id(review), review);
-        add_to_hash_arr(by_user, get_review_user_id(review), review);
-        add_to_hash_arr(by_business_id, get_review_business_id(review), review);
+        append_to_value(by_id, get_review_id(review), review);
+        append_to_value(by_user, get_review_user_id(review), review);
+        append_to_value(by_business_id, get_review_business_id(review), review);
         g_ptr_array_add(reviews, review);
     }
     return create_review_collection(reviews, by_id, by_user, by_business_id);
@@ -99,8 +99,8 @@ BusinessCollection collect_businesses(FILE* fp) {
     while ((line = read_line(fp))) {
         Business business = parse_business_line(line);
         g_ptr_array_add(businesses, business);
-        add_to_hash_arr(by_id, get_business_id(business), business);
-        add_to_hash_arr(by_city, get_business_city(business), business);
+        append_to_value(by_id, get_business_id(business), business);
+        append_to_value(by_city, get_business_city(business), business);
         /* g_hash_table_insert(by_name, get_business_name(business), business);
          */
         g_tree_insert(by_name, get_business_name(business), business);
