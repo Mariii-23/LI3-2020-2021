@@ -3,19 +3,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void *assert_return(void *ptr) {
-  assert(ptr);
-  return ptr;
+#include "model/reviews.h"
+
+void* assert_return(void* ptr) {
+    assert(ptr);
+    return ptr;
 }
 
-void free_key(gpointer key, gpointer value, gpointer user_data) { free(key); }
-
-void map_free(gpointer key, gpointer value, gpointer user_data) {
-  free(key);
-  free(value);
+void free_key(gpointer key, gpointer value, gpointer user_data) {
+    free(key);
 }
 
-int free_key_tree(gpointer key, gpointer value, gpointer user_data) {
-  free(key);
-  return 0;
+void free_key_value(gpointer key, gpointer value, gpointer user_data) {
+    free(key);
+    free(value);
 }
+void add_to_hash_arr(
+    GHashTable* hash_table, gpointer key, gpointer value_to_add) {
+    GPtrArray* curr = g_hash_table_lookup(hash_table, key);
+    g_ptr_array_add(curr, value_to_add);
+}
+
