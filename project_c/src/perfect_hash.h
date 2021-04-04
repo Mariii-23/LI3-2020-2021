@@ -4,6 +4,7 @@
 #include <stdbool.h>
 typedef struct phf* PerfectHash;
 GPtrArray* phf_lookup(PerfectHash phf, char* key);
-bool phf_add(PerfectHash phf, char* key, char* value);
-void free_phf(PerfectHash phf);
+PerfectHash phf_new();
+bool phf_add(PerfectHash phf, char* key, void* value);
+void phf_free(PerfectHash phf);
 #endif

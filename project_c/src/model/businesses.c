@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "auxiliary.h"
+#include "../auxiliary.h"
+#include "../perfect_hash.h"
 #include "users.h"
 
 struct business {
@@ -20,7 +21,7 @@ struct business_collection {
     GPtrArray* businesses;
     GHashTable* by_id;
     GHashTable* by_city;
-    GHashTable* by_letter;  //
+    PerfectHash by_letter;
 };
 
 /* Business: builder */
@@ -118,7 +119,7 @@ BusinessCollection create_business_collection(
     GPtrArray* businesses,
     GHashTable* by_id,
     GHashTable* by_city,
-    GHashTable* by_letter) {
+    PerfectHash by_letter) {
     BusinessCollection new_business_collection =
         (BusinessCollection) malloc(sizeof(struct business_collection));
     *new_business_collection = (struct business_collection){
@@ -139,7 +140,7 @@ void add_business(BusinessCollection self, Business elem) {
     if (self && elem) g_ptr_array_add(self->businesses, elem);
 }
 
-Business get_businessCollection_business_by_id(
+GPtrArray* get_businessCollection_business_by_id(
     BusinessCollection self, int* user_id) {
     if (self && user_id)
         return g_hash_table_lookup(self->by_id, user_id);
@@ -155,7 +156,7 @@ void add_businessCollection_by_id(BusinessCollection self, gpointer elem) {
     if (self && elem) g_hash_table_add(self->by_id, elem);
 }
 
-Business* get_businessCollection_business_by_city(
+GPtrArray* get_businessCollection_business_by_city(
     BusinessCollection self, char* city) {
     if (self && city)
         return g_hash_table_lookup(self->by_city, city);
@@ -172,16 +173,16 @@ void add_businessCollection_by_city(BusinessCollection self, gpointer elem) {
     if (self && elem) g_hash_table_add(self->by_city, elem);
 }
 
-Business get_businessCollection_business_by_letter(
+GPtrArray* get_businessCollection_business_by_letter(
     BusinessCollection self, char* name) {
     if (self)
-        return g_hash_table_lookup(self->by_letter, name);
+        return phf_lookup(self->by_letter, name);
     else
         return NULL;
 }
 
 void set_businessCollection_by_letter(
-    BusinessCollection self, GHashTable* by_letter) {
+    BusinessCollection self, PerfectHash by_letter) {
     if (self) {
         self->by_letter = by_letter;
     }
@@ -189,7 +190,9 @@ void set_businessCollection_by_letter(
 
 void add_businessCollection_by_letter(
     BusinessCollection self, Business business) {
-    if (self) g_hash_table_add(self->by_letter, get_business_name(business));
+    if (self) {
+        phf_add(self->by_letter, get_business_name(business), business);
+    }
 }
 
 /* BusinessCollection: free */
@@ -200,13 +203,9 @@ void free_businessCollection(BusinessCollection self) {
         g_ptr_array_free(self->businesses, TRUE);
         g_hash_table_foreach(self->by_id, free_key, NULL);
         g_hash_table_foreach(self->by_city, free_key_value, "");
-        g_hash_table_foreach(
-            self->by_letter,
-            free_key_value,
-            "");  // also frees array but not its content
+        phf_free(self->by_letter);
         g_hash_table_destroy(self->by_id);
         g_hash_table_destroy(self->by_city);
-        g_hash_table_destroy(self->by_letter);
         free(self);
     }
 }

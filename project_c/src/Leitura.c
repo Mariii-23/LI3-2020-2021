@@ -8,6 +8,7 @@
 #include "model/businesses.h"
 #include "model/reviews.h"
 #include "model/users.h"
+#include "perfect_hash.h"
 #define LINESIZE 100
 
 static char* read_line(FILE* fp) {
@@ -94,14 +95,13 @@ BusinessCollection collect_businesses(FILE* fp) {
     GPtrArray* businesses = g_ptr_array_new();
     GHashTable* by_id = g_hash_table_new(g_str_hash, g_str_equal);
     GHashTable* by_city = g_hash_table_new(g_str_hash, g_str_equal);
-    GHashTable* by_letter =
-        g_hash_table_new(business_name_hash, compare_first_letter);
+    PerfectHash by_letter = phf_new();
     while ((line = read_line(fp))) {
         Business business = parse_business_line(line);
         g_ptr_array_add(businesses, business);
         g_hash_table_insert(by_id, get_business_id(business), business);
         append_to_value(by_city, get_business_city(business), business);
-        append_to_value(by_letter, get_business_name(business), business);
+        phf_add(by_letter, get_business_name(business), business);
     }
     return create_business_collection(businesses, by_id, by_city, by_letter);
 }

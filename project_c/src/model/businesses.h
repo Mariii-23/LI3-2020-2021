@@ -3,6 +3,7 @@
 
 #include <glib.h>
 
+#include "../perfect_hash.h"
 #include "users.h"
 
 typedef struct business* Business;
@@ -36,25 +37,25 @@ BusinessCollection create_business_collection(
     GPtrArray* businesses,
     GHashTable* by_id,
     GHashTable* by_city,
-    GHashTable* by_letter);
+    PerfectHash by_letter);
 void set_businesses(BusinessCollection self, GPtrArray* businesses);
 void add_business(BusinessCollection self, Business elem);
 
-Business get_businessCollection_business_by_id(
+GPtrArray* get_businessCollection_business_by_id(
     BusinessCollection self, int* user_id);
 void set_businessCollection_by_id(BusinessCollection self, GHashTable* by_id);
 void add_businessCollection_by_id(BusinessCollection self, gpointer elem);
 
-Business* get_businessCollection_business_by_city(
+GPtrArray* get_businessCollection_business_by_city(
     BusinessCollection self, char* city);
 void set_businessCollection_by_city(
     BusinessCollection self, GHashTable* by_city);
 void add_businessCollection_by_city(BusinessCollection self, gpointer elem);
 
-Business get_businessCollection_business_by_letter(
+GPtrArray* get_businessCollection_business_by_letter(
     BusinessCollection self, char* name);
 void set_businessCollection_by_letter(
-    BusinessCollection self, GHashTable* by_letter);
+    BusinessCollection self, PerfectHash by_letter);
 void add_businessCollection_by_letter(
     BusinessCollection self, Business business);
 void free_businessCollection(BusinessCollection self);

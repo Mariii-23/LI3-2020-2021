@@ -14,7 +14,7 @@ PerfectHash phf_new() {
     return phf;
 }
 
-void free_phf(PerfectHash phf) {
+void phf_free(PerfectHash phf) {
     for (int i = 0; i < NUMBER_LETTERS; i++) {
         g_ptr_array_free(phf->phf[i], TRUE);
     }
@@ -34,7 +34,7 @@ GPtrArray* phf_lookup(PerfectHash phf, char* key) {
     return phf->phf[index];
 }
 
-bool phf_add(PerfectHash phf, char* key, char* value) {
+bool phf_add(PerfectHash phf, char* key, void* value) {
     size_t index = hash(key);
     bool is_new = false;
     GPtrArray* elem = phf->phf[index];
