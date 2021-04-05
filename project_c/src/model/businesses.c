@@ -115,18 +115,14 @@ void free_business(Business self) {
 }
 
 /* BusinessCollection: builder */
-BusinessCollection create_business_collection(
-    GPtrArray* businesses,
-    GHashTable* by_id,
-    GHashTable* by_city,
-    PerfectHash by_letter) {
+BusinessCollection create_business_collection() {
     BusinessCollection new_business_collection =
         (BusinessCollection) malloc(sizeof(struct business_collection));
     *new_business_collection = (struct business_collection){
-        .businesses = businesses,
-        .by_id = by_id,
-        .by_city = by_city,
-        .by_letter = by_letter};
+        .businesses = g_ptr_array_new(),
+        .by_id = g_hash_table_new(g_str_hash, g_str_equal),
+        .by_city = g_hash_table_new(g_str_hash, g_str_equal),
+        .by_letter = phf_new()};
     return new_business_collection;
 }
 
@@ -136,8 +132,11 @@ void set_businesses(BusinessCollection self, GPtrArray* businesses) {
     }
 }
 
-void add_business(BusinessCollection self, Business elem) {
-    if (self && elem) g_ptr_array_add(self->businesses, elem);
+void add_business(BusinessCollection collection, Business business) {
+    g_ptr_array_add(collection->businesses, business);
+    g_hash_table_insert(collection->by_id, get_business_id(business), business);
+    append_to_value(collection->by_city, get_business_city(business), business);
+    phf_add(collection->by_letter, get_business_name(business), business);
 }
 
 GPtrArray* get_businessCollection_business_by_id(

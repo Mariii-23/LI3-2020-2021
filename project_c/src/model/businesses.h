@@ -33,11 +33,7 @@ void set_business_categories(Business self, GPtrArray* categories);
 
 void free_business(Business self);
 
-BusinessCollection create_business_collection(
-    GPtrArray* businesses,
-    GHashTable* by_id,
-    GHashTable* by_city,
-    PerfectHash by_letter);
+BusinessCollection create_business_collection();
 void set_businesses(BusinessCollection self, GPtrArray* businesses);
 void add_business(BusinessCollection self, Business elem);
 

@@ -3,7 +3,7 @@
 #include <glib.h>
 #include <string.h>
 
-#include "auxiliary.h"
+#include "../auxiliary.h"
 
 struct user {
     char* user_id;
@@ -24,9 +24,9 @@ User create_user(char* user_id, char* name, GPtrArray* friends) {
     return new_user;
 }
 
-UserCollection create_user_collection(GHashTable* by_id) {
+UserCollection create_user_collection() {
     UserCollection new_collection = malloc(sizeof(struct user_collection));
-    new_collection->by_id = by_id;
+    new_collection->by_id = g_hash_table_new(g_str_hash, g_str_equal);
     return new_collection;
 }
 

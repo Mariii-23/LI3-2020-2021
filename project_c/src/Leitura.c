@@ -10,8 +10,9 @@
 #include "model/users.h"
 #include "perfect_hash.h"
 #define LINESIZE 100
+typedef enum { BUSINESS, REVIEW, USER } Type;
 
-char* read_line(FILE* fp) {
+static char* read_line(FILE* fp) {
     char linha[LINESIZE];
     bool has_new_line = false;
     GString* dynamic_string = g_string_sized_new(LINESIZE);
@@ -24,7 +25,10 @@ char* read_line(FILE* fp) {
     if (has_new_line)
         g_string_truncate(dynamic_string, dynamic_string->len - 1);
     char* final = g_string_free(dynamic_string, FALSE);
-    if (*final == '\0') return NULL;
+    if (*final == '\0') {
+        free(final);
+        return NULL;
+    }
     return final;
 }
 
@@ -39,7 +43,7 @@ static GPtrArray* read_to_array(char* line) {
     return arr;
 }
 
-Business parse_business_line(char* str) {
+static Business parse_business_line(char* str) {
     char* business_id = strtok(str, ";");
     char* name = strtok(NULL, ";");
     char* city = strtok(NULL, ";");
@@ -55,7 +59,7 @@ Business parse_business_line(char* str) {
     return create_business(business_id, name, city, state, categories);
 }
 
-User parse_user_line(char* str) {
+static User parse_user_line(char* str) {
     char* user_id = strtok(str, ";");
     char* name = strtok(NULL, ";");
     if (!user_id || !name) return NULL;
@@ -90,48 +94,36 @@ static Review parse_review_line(char* str) {
 
 ReviewCollection collect_reviews(FILE* fp) {
     char* line;
-    GPtrArray* reviews = g_ptr_array_new();
-    GHashTable* by_id = g_hash_table_new(g_str_hash, g_str_equal);
-    GHashTable* by_user = g_hash_table_new(g_str_hash, g_str_equal);
-    GHashTable* by_business_id = g_hash_table_new(g_str_hash, g_str_equal);
+    ReviewCollection collection = create_review_collection();
     while ((line = read_line(fp))) {
         Review review = parse_review_line(line);
         if (!review) continue;
-        append_to_value(by_id, get_review_id(review), review);
-        append_to_value(by_user, get_review_user_id(review), review);
-        append_to_value(by_business_id, get_review_business_id(review), review);
-        g_ptr_array_add(reviews, review);
         free(line);
     }
-    return create_review_collection(reviews, by_id, by_user, by_business_id);
+    return collection;
 }
 
 BusinessCollection collect_businesses(FILE* fp) {
     char* line;
-    GPtrArray* businesses = g_ptr_array_new();
-    GHashTable* by_id = g_hash_table_new(g_str_hash, g_str_equal);
-    GHashTable* by_city = g_hash_table_new(g_str_hash, g_str_equal);
-    PerfectHash by_letter = phf_new();
+    BusinessCollection collection = create_business_collection();
     while ((line = read_line(fp))) {
         Business business = parse_business_line(line);
-        if (!business) continue;
-        g_ptr_array_add(businesses, business);
-        g_hash_table_insert(by_id, get_business_id(business), business);
-        append_to_value(by_city, get_business_city(business), business);
-        phf_add(by_letter, get_business_name(business), business);
         free(line);
+        if (!business) continue;
+        add_business(collection, business);
     }
-    return create_business_collection(businesses, by_id, by_city, by_letter);
+    return collection;
 }
 
 UserCollection collect_users(FILE* fp) {
     char* line;
-    GHashTable* by_id = g_hash_table_new(g_str_hash, g_str_equal);
+    UserCollection collection = create_user_collection();
     while ((line = read_line(fp))) {
         User user = parse_user_line(line);
-        if (!user) continue;
-        g_hash_table_insert(by_id, get_user_id(user), user);
         free(line);
+        if (!user) continue;
+        add_user(collection, user);
     }
-    return create_user_collection(by_id);
+    return collection;
 }
+
