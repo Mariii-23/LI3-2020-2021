@@ -4,7 +4,6 @@
 #include <glib.h>
 
 #include "businesses.h"
-#include "users.h"
 
 typedef struct review *Review;
 typedef struct review_collection *ReviewCollection;
@@ -41,10 +40,6 @@ char *get_review_text(Review self);
 void set_review_text(Review self, char *text);
 
 void free_review(Review self);
-
-ReviewCollection create_review_collection(GPtrArray *reviews, GHashTable *by_id,
-                                          GHashTable *by_user,
-                                          GHashTable *by_business);
 
 void set_reviewCollection_reviews(ReviewCollection self, GPtrArray *reviews);
 

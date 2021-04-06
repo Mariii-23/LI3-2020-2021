@@ -176,19 +176,6 @@ void free_review(Review self) {
 /* Review Collection */
 /* Review Collection: Builder */
 
-ReviewCollection create_review_collection(GPtrArray *reviews, GHashTable *by_id,
-                                          GHashTable *by_user_id,
-                                          GHashTable *by_business_id) {
-  ReviewCollection new_review_collection =
-      (ReviewCollection)malloc(sizeof(struct review_collection));
-  *new_review_collection =
-      (struct review_collection){.reviews = reviews,
-                                 .by_id = by_id,
-                                 .by_user_id = by_user_id,
-                                 .by_business_id = by_business_id};
-  return new_review_collection;
-}
-
 void set_reviewCollection_reviews(ReviewCollection self, GPtrArray *reviews) {
   if (self && reviews)
     self->reviews = reviews;

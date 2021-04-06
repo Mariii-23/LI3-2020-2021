@@ -3,8 +3,6 @@
 
 #include <glib.h>
 
-#include "users.h"
-
 typedef struct business *Business;
 typedef struct business_collection *BusinessCollection;
 
@@ -28,10 +26,6 @@ void set_business_categories(Business self, GPtrArray *categories);
 
 void free_business(Business self);
 
-BusinessCollection create_business_collection(GPtrArray *businesses,
-                                              GHashTable *by_id,
-                                              GHashTable *by_city,
-                                              GTree *by_name);
 void set_businesses(BusinessCollection self, GPtrArray *businesses);
 void add_business(BusinessCollection self, Business elem);
 

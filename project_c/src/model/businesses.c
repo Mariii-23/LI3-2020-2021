@@ -6,7 +6,6 @@
 #include <string.h>
 
 #include "auxiliary.h"
-#include "users.h"
 
 struct business {
   char *business_id;
@@ -110,21 +109,6 @@ void free_business(Business self) {
     g_ptr_array_free(self->categories, TRUE);
     free(self);
   }
-}
-
-/* BusinessCollection: builder */
-BusinessCollection create_business_collection(GPtrArray *businesses,
-                                              GHashTable *by_id,
-                                              GHashTable *by_city,
-                                              GTree *by_name) {
-  BusinessCollection new_business_collection =
-      (BusinessCollection)malloc(sizeof(struct business_collection));
-  *new_business_collection =
-      (struct business_collection){.businesses = businesses,
-                                   .by_id = by_id,
-                                   .by_city = by_city,
-                                   .by_name = by_name};
-  return new_business_collection;
 }
 
 void set_businesses(BusinessCollection self, GPtrArray *businesses) {
