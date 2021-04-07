@@ -43,7 +43,7 @@ typedef struct function_call {
 
 typedef struct var_assignment {
   char *variable;
-  struct call *value;
+  struct ast *value;
 } VarAssignment;
 
 typedef struct ast {
@@ -68,6 +68,7 @@ void print_error(SyntaxError *error, const char *line);
 GArray *parse_line(const char *string);
 
 SyntaxError *parse_function(const Token *tokens, AST *node, int *consumed);
+SyntaxError *parse_assignment(const Token *tokens, AST *node, int *consumed);
 SyntaxError *parse_expression(const Token *tokens, AST *node, int *consumed);
 
 const char *token_text(const Token *token);

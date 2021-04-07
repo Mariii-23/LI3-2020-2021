@@ -175,13 +175,13 @@ GArray *parse_line(const char *string) {
 // Devolve o token em que deixou de conseguir ler
 SyntaxError *parse_function(const Token *tokens, AST *node, int *consumed) {
   int tok = 0;
-  FunctionCall *call = malloc(sizeof(FunctionCall));
+  FunctionCall *call;
   
   if (tokens[tok].type == TOK_NAME) {
+    call = malloc(sizeof(FunctionCall));
     call->function_name = tokens[tok].text;
     tok++;
   } else {
-    free(call);
     return syntax_error("a function name", &tokens[tok]);
   }
 
@@ -226,15 +226,74 @@ SyntaxError *parse_function(const Token *tokens, AST *node, int *consumed) {
   return NULL;
 }
 
+
+SyntaxError *parse_assignment(const Token *tokens, AST *node, int *consumed) {
+  int tok = 0;
+  VarAssignment *assignment;
+
+  if (tokens[tok].type == TOK_NAME) {
+    assignment = malloc(sizeof(VarAssignment));
+    assignment->variable = tokens[tok].text;
+    tok++;
+  } else {
+    return syntax_error("a name", tokens);
+  }
+
+  if (tokens[tok].type != TOK_EQUALS) {
+    free(assignment);
+    return syntax_error("'='", &tokens[tok]);
+  }
+
+  tok++;
+
+  int c = 0;
+  AST *n = malloc(sizeof(AST));
+  SyntaxError *e = parse_expression(&tokens[tok], n, &c);
+
+  if (e) {
+    free(assignment);
+    free(n);
+    return e;
+  }
+
+  tok += c;
+
+  *consumed = tok;
+  assignment->value = n;
+
+  node->type = AST_ASSIGNMENT;
+  node->value.assignment = assignment;
+
+  return NULL;
+}
+
 SyntaxError *parse_expression(const Token *tokens, AST *node, int *consumed) {
   if (tokens->type == TOK_NUMBER) {
     node->type = AST_NUMBER;
     node->value.number = atoi(tokens->text);
     *consumed = 1;
     return NULL;
+  } else if (tokens->type == TOK_NAME) {
+    // Vamos tentar ler uma função, se não é uma variável
+    SyntaxError *e = parse_function(tokens, node, consumed);
+
+    if (e) {
+      free(e);
+      node->type = AST_VARIABLE;
+      node->value.variable = tokens->text;
+      *consumed = 1;
+    }
+
+    return NULL;
+  } else if (tokens->type == TOK_STRING) {
+    // TODO string escaping
+    node->type = AST_STRING;
+    node->value.string = tokens->text;
+    *consumed = 1;
+    return NULL;
   }
 
-  return syntax_error("a number", tokens);
+  return syntax_error("an expression", tokens);
 }
 
 const char *token_text(const Token *token) {
