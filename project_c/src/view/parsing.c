@@ -130,6 +130,26 @@ const char *identify(const char *string, Element *dest) {
   }
 }
 
+GArray *parse_line(const char *string) {
+  const char *cur_line = string;
+  GArray *line = g_array_new(FALSE, FALSE, sizeof (Element));
+  Element e;
+
+  while (1) {
+    cur_line = identify(cur_line, &e);
+    g_array_append_val(line, e);
+    print_element(&e);
+    if (cur_line == NULL)
+      break;
+  }
+
+  // 1. Criar parsers diferentes, um que lê uma chamada de função
+  // (prioridade 1), outro que lê uma variável (prioridade 2), outro
+  // que lê um valor (prioridade 3).
+
+  return line;
+}
+
 void print_element(Element *e) {
   switch (e->type) {
     case LE_NAME:

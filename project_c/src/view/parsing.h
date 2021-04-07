@@ -31,6 +31,33 @@ Element *split_line(const char *string);
 char *strndup(const char *s, int n);
 const char *identify(const char *string, Element *dest);
 
+typedef enum call_type {
+  CT_FUNCTIONCALL,
+  CT_ASSIGNMENT,
+  CT_VARIABLE
+} CallType;
+
+typedef struct function_call {
+  char *function_name;
+  GArray *args;
+} FunctionCall;
+
+typedef struct var_assignment {
+  char *variable;
+  struct call *value;
+} VarAssignment;
+
+typedef struct call {
+  CallType type;
+  union {
+    FunctionCall *function;
+    VarAssignment *assignment;
+    char *variable;
+  } value;
+} Call;
+
+GArray *parse_line(const char *string);
+
 void print_element(Element *e);
 
 #endif

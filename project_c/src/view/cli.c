@@ -104,11 +104,7 @@ void repl(Commands commands) {
       /*   fprintf(stderr, FG_RED "Command not found: %s" RESET_ALL "\n", cmd); */
       /* } */
 
-      Element *e = malloc(sizeof(Element));
-      while ((line = identify(line, e))) {
-        print_element(e);
-        printf(" ");
-      }
+      parse_line(line);
       printf("\n");
     }
   }
