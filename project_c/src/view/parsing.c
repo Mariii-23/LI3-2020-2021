@@ -253,7 +253,7 @@ const char *token_text(const Token *token) {
       return ")";
     case TOK_SEMICOLON:
       return ";";
-    case TOK_FINISH:
+    default:
       return "";
   }
 }
