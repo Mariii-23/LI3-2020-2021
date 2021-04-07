@@ -104,8 +104,17 @@ void repl(Commands commands) {
       /*   fprintf(stderr, FG_RED "Command not found: %s" RESET_ALL "\n", cmd); */
       /* } */
 
-      parse_line(line);
-      printf("\n");
+      Token *toks = split_line(line);
+      AST n;
+      int consumed = 0;
+      SyntaxError *e = parse_function(toks, &n, &consumed);
+
+      if (!e) {
+        printf(BOLD FG_BLUE "Read %d tokens\n", consumed);
+        printf("Function is called %s!\n" RESET_ALL, n.value.function->function_name);
+      } else {
+        print_error(e, line);
+      }
     }
   }
 }

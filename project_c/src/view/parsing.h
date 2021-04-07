@@ -2,40 +2,39 @@
 #define PARSING_H
 #include <glib.h>
 
-int is_variable_reference(const char *string);
-GArray *split_args(char *string);
-
 // Um elemento pode ser um nome, um igual, uma virgula, um número, parênteses ou um ponto e virgula
-typedef enum lexical_element_type {
-  LE_NAME,        // e.g. x, avg, fromCSV
-  LE_STRING,      // e.g. "business.csv"
-  LE_NUMBER,      // e.g. 0, 15
-  LE_EQUALS,      // =
-  LE_COMMA,       // ,
-  LE_OPAREN,      // (
-  LE_CPAREN,      // )
-  LE_SEMICOLON,   // ;
-  LE_FINISH       // Não temos mais elementos
-} ElementType;
+typedef enum token_type {
+  TOK_NAME,        // e.g. x, avg, fromCSV
+  TOK_STRING,      // e.g. "business.csv"
+  TOK_NUMBER,      // e.g. 0, 15
+  TOK_EQUALS,      // =
+  TOK_COMMA,       // ,
+  TOK_OPAREN,      // (
+  TOK_CPAREN,      // )
+  TOK_SEMICOLON,   // ;
+  TOK_FINISH       // Não temos mais elementos
+} TokenType;
 
-typedef struct lexical_element {
-  ElementType type;
+typedef struct token {
+  TokenType type;
   char *text;
   unsigned int position;
-} Element;
+} Token;
 
 // Com isto podemos converter e.g. data = fromCSV("reviews.csv"); em:
-// { LE_NAME("data"), LE_EQUALS, LE_NAME("fromCSV"), LE_OPAREN, LE_STRING("reviews.csv"), LE_CPAREN, LE_SEMICOLON, LE_FINISH }
+// { TOK_NAME("data"), TOK_EQUALS, TOK_NAME("fromCSV"), TOK_OPAREN, TOK_STRING("reviews.csv"), TOK_CPAREN, TOK_SEMICOLON, TOK_FINISH }
 
-Element *split_line(const char *string);
+Token *split_line(const char *string);
 char *strndup(const char *s, int n);
-const char *identify(const char *string, Element *dest);
+const char *identify(const char *string, Token *dest);
 
-typedef enum call_type {
-  CT_FUNCTIONCALL,
-  CT_ASSIGNMENT,
-  CT_VARIABLE
-} CallType;
+typedef enum ast_type {
+  AST_FUNCTIONCALL,
+  AST_ASSIGNMENT,
+  AST_VARIABLE,
+  AST_NUMBER,
+  AST_STRING
+} ASTType;
 
 typedef struct function_call {
   char *function_name;
@@ -47,17 +46,31 @@ typedef struct var_assignment {
   struct call *value;
 } VarAssignment;
 
-typedef struct call {
-  CallType type;
+typedef struct ast {
+  ASTType type;
   union {
     FunctionCall *function;
     VarAssignment *assignment;
     char *variable;
+    int number;
+    char *string;
   } value;
-} Call;
+} AST;
+
+typedef struct syntax_error {
+  const char *expected;
+  const Token *token;
+} SyntaxError;
+
+SyntaxError *syntax_error(const char *expected, const Token *token);
+void print_error(SyntaxError *error, const char *line);
 
 GArray *parse_line(const char *string);
 
-void print_element(Element *e);
+SyntaxError *parse_function(const Token *tokens, AST *node, int *consumed);
+SyntaxError *parse_expression(const Token *tokens, AST *node, int *consumed);
+
+const char *token_text(const Token *token);
+void print_element(Token *e);
 
 #endif

@@ -1,4 +1,5 @@
 #include "parsing.h"
+#include "colors.h"
 #include <stdio.h>
 #include <glib.h>
 
@@ -43,15 +44,13 @@ GArray *split_args(char *string) {
   return NULL;
 }
 
-Element *split_line(const char *string) {
-  return NULL;
-}
-
 // Duplica n caracteres de uma string
 char *strndup(const char *s, int n) {
   char *copy = malloc(n + 1);
   int i;
 
+  // TODO usar memcpy ou algo do género: memcpy pode ser compilado como uma
+  // única instrução, é consideravelmente mais rápido
   for (i = 0; s[i] && i < n; i++) {
     copy[i] = s[i];
   }
@@ -61,7 +60,7 @@ char *strndup(const char *s, int n) {
   return copy;
 }
 
-const char *identify(const char *string, Element *dest) {
+const char *identify(const char *string, Token *dest) {
   const char *s;
   int i;
 
@@ -71,39 +70,39 @@ const char *identify(const char *string, Element *dest) {
   dest->position = s - string;
 
   if (*s == '\0') {
-    dest->type = LE_FINISH;
+    dest->type = TOK_FINISH;
     dest->text = NULL;
     return NULL;
   } else if (*s == '=') {
-    dest->type = LE_EQUALS;
+    dest->type = TOK_EQUALS;
     dest->text = "=";
     return s + 1;
   } else if (*s == ',') {
-    dest->type = LE_COMMA;
+    dest->type = TOK_COMMA;
     dest->text = ",";
     return s + 1;
   } else if (*s == '(') {
-    dest->type = LE_OPAREN;
+    dest->type = TOK_OPAREN;
     dest->text = "("; 
     return s + 1;
   } else if (*s == ')') {
-    dest->type = LE_CPAREN;
+    dest->type = TOK_CPAREN;
     dest->text = ")";
     return s + 1;
   } else if (*s == ';') {
-    dest->type = LE_SEMICOLON;
+    dest->type = TOK_SEMICOLON;
     dest->text = ";";
     return s + 1;
   } else if (*s >= '0' && *s <= '9') {
     // Encontrámos um número. Vamos ler até encontrarmos algo diferente
     // TODO isto tem de lidar com decimais...
     for (i = 0; s[i] && s[i] >= '0' && s[i] <= '9'; i++);
-    dest->type = LE_NUMBER;
+    dest->type = TOK_NUMBER;
     dest->text = strndup(s, i);
 
     return s + i;
   } else if (*s == '"') {
-    dest->type = LE_STRING;
+    dest->type = TOK_STRING;
     
     // Vamos implementar escaping de strings, simplesmente ignorando um \ e adicionando o caracter a seguir
     
@@ -119,7 +118,7 @@ const char *identify(const char *string, Element *dest) {
 
     return s + i;
   } else {
-    dest->type = LE_NAME;
+    dest->type = TOK_NAME;
 
     // Validação enorme....
     // Com isto emojis são nomes de variáveis válidos, fun fact
@@ -130,53 +129,162 @@ const char *identify(const char *string, Element *dest) {
   }
 }
 
-GArray *parse_line(const char *string) {
+Token *split_line(const char *string) {
   const char *cur_line = string;
-  GArray *line = g_array_new(FALSE, FALSE, sizeof (Element));
-  Element e;
+  // Porquê 6? É o que uma chamada de função básica vai utilizar: nome, dois parênteses, um argumento, ponto e virgula e o final
+  Token *line = malloc(sizeof (Token) * 6);
+  int size = 6;
+  int i = 0;
 
   while (1) {
-    cur_line = identify(cur_line, &e);
-    g_array_append_val(line, e);
-    print_element(&e);
+    const char *prev = cur_line;
+    cur_line = identify(cur_line, &line[i]);
+    line[i].position += prev - string;
     if (cur_line == NULL)
       break;
+    i++;
+    if (i >= size) {
+      size *= 2;
+      line = realloc(line, size * sizeof (Token));
+    }
   }
-
-  // 1. Criar parsers diferentes, um que lê uma chamada de função
-  // (prioridade 1), outro que lê uma variável (prioridade 2), outro
-  // que lê um valor (prioridade 3).
 
   return line;
 }
 
-void print_element(Element *e) {
+// Devolve um syntax error
+SyntaxError *syntax_error(const char *expected, const Token *token) {
+  SyntaxError *err = malloc(sizeof(SyntaxError));
+  err->expected = expected;
+  err->token = token;
+  return err;
+}
+
+void print_error(SyntaxError *error, const char *line) {
+  fprintf(stderr, BOLD FG_RED "Syntax error" RESET_ALL " on position %d. Expected " BOLD "%s" RESET_ALL ", but found " BOLD "'%s'" RESET_ALL ".\n", error->token->position, error->expected, token_text(error->token));
+}
+
+GArray *parse_line(const char *string) {
+  // 1. Criar parsers diferentes, um que lê uma chamada de função
+  // (prioridade 1), outro que lê uma variável (prioridade 2), outro
+  // que lê um valor (prioridade 3).
+
+  return NULL;
+}
+
+// Devolve o token em que deixou de conseguir ler
+SyntaxError *parse_function(const Token *tokens, AST *node, int *consumed) {
+  int tok = 0;
+  FunctionCall *call = malloc(sizeof(FunctionCall));
+  
+  if (tokens[tok].type == TOK_NAME) {
+    call->function_name = tokens[tok].text;
+    tok++;
+  } else {
+    free(call);
+    return syntax_error("a function name", &tokens[tok]);
+  }
+
+  if (tokens[tok].type != TOK_OPAREN) {
+    free(call);
+    return syntax_error("'('", &tokens[tok]);
+  }
+
+  tok++;
+
+  call->args = g_array_new(FALSE, FALSE, sizeof (AST));
+  
+  while (tokens[tok].type != TOK_CPAREN) {
+    int consumed = 0;
+    AST node;
+    SyntaxError *e = parse_expression(&tokens[tok], &node, &consumed);
+
+    if (e) {
+      g_array_free(call->args, TRUE);
+      free(call);
+      return e;
+    }
+
+    tok += consumed;
+
+    if (tokens[tok].type != TOK_CPAREN && tokens[tok].type != TOK_COMMA) {
+      g_array_free(call->args, TRUE);
+      free(call);
+      return syntax_error("',' or ')'", &tokens[tok]);
+    }
+
+    g_array_append_val(call->args, node);
+    if (tokens[tok].type == TOK_COMMA)
+      tok++;
+  }
+
+  tok++;
+  *consumed = tok;
+  node->type = AST_FUNCTIONCALL;
+  node->value.function = call;
+
+  return NULL;
+}
+
+SyntaxError *parse_expression(const Token *tokens, AST *node, int *consumed) {
+  if (tokens->type == TOK_NUMBER) {
+    node->type = AST_NUMBER;
+    node->value.number = atoi(tokens->text);
+    *consumed = 1;
+    return NULL;
+  }
+
+  return syntax_error("a number", tokens);
+}
+
+const char *token_text(const Token *token) {
+  switch (token->type) {
+    case TOK_NAME:
+    case TOK_STRING:
+    case TOK_NUMBER:
+      return token->text;
+    case TOK_EQUALS:
+      return "=";
+    case TOK_COMMA:
+      return ",";
+    case TOK_OPAREN:
+      return "(";
+    case TOK_CPAREN:
+      return ")";
+    case TOK_SEMICOLON:
+      return ";";
+    case TOK_FINISH:
+      return "";
+  }
+}
+
+void print_element(Token *e) {
   switch (e->type) {
-    case LE_NAME:
+    case TOK_NAME:
       printf("NAME(%s)", e->text);
       break;
-    case LE_STRING:
+    case TOK_STRING:
       printf("STRING(%s)", e->text);
       break;
-    case LE_NUMBER:
+    case TOK_NUMBER:
       printf("NUMBER(%s)", e->text);
       break;
-    case LE_EQUALS:
+    case TOK_EQUALS:
       printf("=");
       break;
-    case LE_COMMA:
+    case TOK_COMMA:
       printf(",");
       break;
-    case LE_OPAREN:
+    case TOK_OPAREN:
       printf("(");
       break;
-    case LE_CPAREN:
+    case TOK_CPAREN:
       printf(")");
       break;
-    case LE_SEMICOLON:
+    case TOK_SEMICOLON:
       printf(";");
       break;
-    case LE_FINISH:
+    case TOK_FINISH:
       printf("FINISH");
       break;
   }
