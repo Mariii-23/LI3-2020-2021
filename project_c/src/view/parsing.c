@@ -2,6 +2,7 @@
 #include "colors.h"
 #include <stdio.h>
 #include <glib.h>
+#include <stdlib.h>
 
 // Verifica se a string é uma referência a uma variável
 int is_variable_reference(const char *string) {
@@ -294,6 +295,29 @@ SyntaxError *parse_expression(const Token *tokens, AST *node, int *consumed) {
   }
 
   return syntax_error("an expression", tokens);
+}
+
+SyntaxError *parse_statement(const Token *tokens, AST *node, int *consumed) {
+  SyntaxError *e = parse_function(tokens, node, consumed);
+
+  if (e) {
+    free(e);
+    e = parse_assignment(tokens, node, consumed);
+
+    if (e) {
+      free(e);
+      return syntax_error("a statement", tokens);
+    } 
+  }
+
+  if (tokens[*consumed].type != TOK_SEMICOLON) {
+    free(e);
+    return syntax_error("';'", &tokens[*consumed]);
+  }
+
+  *consumed += 1;
+
+  return NULL;
 }
 
 const char *token_text(const Token *token) {

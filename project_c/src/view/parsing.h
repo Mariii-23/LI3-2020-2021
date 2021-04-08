@@ -70,6 +70,7 @@ GArray *parse_line(const char *string);
 SyntaxError *parse_function(const Token *tokens, AST *node, int *consumed);
 SyntaxError *parse_assignment(const Token *tokens, AST *node, int *consumed);
 SyntaxError *parse_expression(const Token *tokens, AST *node, int *consumed);
+SyntaxError *parse_statement(const Token *tokens, AST *node, int *consumed);
 
 const char *token_text(const Token *token);
 void print_element(Token *e);

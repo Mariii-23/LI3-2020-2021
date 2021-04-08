@@ -107,13 +107,17 @@ void repl(Commands commands) {
       Token *toks = split_line(line);
       AST n;
       int consumed = 0;
-      SyntaxError *e = parse_assignment(toks, &n, &consumed);
+      SyntaxError *e = NULL;
+      while (e == NULL && toks->type != TOK_FINISH) {
+        e = parse_statement(toks, &n, &consumed);
+        toks += consumed;
 
-      if (!e) {
-        printf(BOLD FG_BLUE "Read %d tokens\n", consumed);
-        printf("Variable is called %s!\n" RESET_ALL, n.value.assignment->variable);
-      } else {
-        print_error(e, line);
+        if (!e) {
+          printf(BOLD FG_BLUE "Read %d tokens\n", consumed);
+          /* printf("Variable is called %s!\n" RESET_ALL, n.value.assignment->variable); */
+        } else {
+          print_error(e, line);
+        }
       }
     }
   }
