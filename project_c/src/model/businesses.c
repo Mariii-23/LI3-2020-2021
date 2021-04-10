@@ -137,8 +137,7 @@ void add_business(BusinessCollection collection, Business business) {
   phf_add(collection->by_letter, get_business_name(business), business);
 }
 
-GPtrArray *get_businessCollection_business_by_id(BusinessCollection self,
-                                                 int *user_id) {
+GPtrArray *get_business_by_id(BusinessCollection self, char *user_id) {
   if (self && user_id)
     return g_hash_table_lookup(self->by_id, user_id);
   else

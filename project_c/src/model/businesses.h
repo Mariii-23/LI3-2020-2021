@@ -35,7 +35,7 @@ void add_business(BusinessCollection self, Business elem);
 BusinessCollection create_business_collection();
 
 GPtrArray *get_businessCollection_business_by_id(BusinessCollection self,
-                                                 int *user_id);
+                                                 char *user_id);
 void set_businessCollection_by_id(BusinessCollection self, GHashTable *by_id);
 void add_businessCollection_by_id(BusinessCollection self, gpointer elem);
 
@@ -45,8 +45,7 @@ void set_businessCollection_by_city(BusinessCollection self,
                                     GHashTable *by_city);
 void add_businessCollection_by_city(BusinessCollection self, gpointer elem);
 
-GPtrArray *get_businessCollection_business_by_letter(BusinessCollection self,
-                                                     char *name);
+GPtrArray *get_business_by_letter(BusinessCollection self, char *name);
 void set_businessCollection_by_letter(BusinessCollection self,
                                       PerfectHash by_letter);
 void add_businessCollection_by_letter(BusinessCollection self,
