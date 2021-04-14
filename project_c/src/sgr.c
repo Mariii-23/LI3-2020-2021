@@ -8,6 +8,7 @@
 #include "model/reviews.h"
 #include "model/users.h"
 #include "stats.h"
+#define QUERY_THREE_FIELDS 5
 
 struct sgr {
     UserCollection catalogo_users;
@@ -43,9 +44,8 @@ SGR load_sgr(char* users, char* businesses, char* reviews) {
 TABLE business_info(SGR sgr, char* business_id) {
     TABLE table = malloc(sizeof(struct table));
     char* fields[] = {"name", "cidade", "estado", "stars", "numero_reviews"};
-    size_t n_fields = sizeof(fields);
-    GPtrArray* field_names = g_ptr_array_sized_new(n_fields);
-    for (size_t i = 0; i < n_fields; i++) {
+    GPtrArray* field_names = g_ptr_array_sized_new(QUERY_THREE_FIELDS);
+    for (size_t i = 0; i < QUERY_THREE_FIELDS; i++) {
         g_ptr_array_add(field_names, fields[i]);  // literals
     }
     table->field_names = field_names;
