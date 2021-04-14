@@ -151,11 +151,6 @@ void set_businessCollection_by_id(BusinessCollection self, GHashTable *by_id) {
     self->by_id = by_id;
 }
 
-void add_businessCollection_by_id(BusinessCollection self, gpointer elem) {
-  if (self && elem)
-    g_hash_table_add(self->by_id, elem);
-}
-
 GPtrArray *get_businessCollection_business_by_city(BusinessCollection self,
                                                    char *city) {
   if (self && city)
@@ -170,11 +165,6 @@ void set_businessCollection_by_city(BusinessCollection self,
     self->by_city = by_city;
 }
 
-void add_businessCollection_by_city(BusinessCollection self, gpointer elem) {
-  if (self && elem)
-    g_hash_table_add(self->by_city, elem);
-}
-
 GPtrArray *get_businessCollection_business_by_letter(BusinessCollection self,
                                                      char *name) {
   if (self)
@@ -187,13 +177,6 @@ void set_businessCollection_by_letter(BusinessCollection self,
                                       PerfectHash by_letter) {
   if (self) {
     self->by_letter = by_letter;
-  }
-}
-
-void add_businessCollection_by_letter(BusinessCollection self,
-                                      Business business) {
-  if (self) {
-    phf_add(self->by_letter, get_business_name(business), business);
   }
 }
 
