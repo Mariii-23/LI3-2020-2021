@@ -97,8 +97,9 @@ ReviewCollection collect_reviews(FILE* fp) {
     ReviewCollection collection = create_review_collection();
     while ((line = read_line(fp))) {
         Review review = parse_review_line(line);
-        if (!review) continue;
         free(line);
+        if (!review) continue;
+        add_review(collection, review);
     }
     return collection;
 }

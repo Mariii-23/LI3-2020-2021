@@ -38,7 +38,7 @@ void set_businesses(BusinessCollection self, GPtrArray* businesses);
 void add_business(BusinessCollection self, Business elem);
 
 GPtrArray* get_businessCollection_business_by_id(
-    BusinessCollection self, int* user_id);
+    BusinessCollection self, char* user_id);
 void set_businessCollection_by_id(BusinessCollection self, GHashTable* by_id);
 void add_businessCollection_by_id(BusinessCollection self, gpointer elem);
 
