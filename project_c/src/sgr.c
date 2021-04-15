@@ -6,8 +6,8 @@
 #include "Leitura.h"
 #include "model/businesses.h"
 #include "model/reviews.h"
+#include "model/stats.h"
 #include "model/users.h"
-#include "stats.h"
 #define QUERY_THREE_FIELDS 5
 
 struct sgr {
@@ -43,20 +43,22 @@ SGR load_sgr(char* users, char* businesses, char* reviews) {
 // Query 3
 TABLE business_info(SGR sgr, char* business_id) {
     TABLE table = malloc(sizeof(struct table));
-    char* fields[] = {"name", "cidade", "estado", "stars", "numero_reviews"};
+    char* fields[] = {"nome", "cidade", "estado", "stars", "numero_reviews"};
     GPtrArray* field_names = g_ptr_array_sized_new(QUERY_THREE_FIELDS);
     for (size_t i = 0; i < QUERY_THREE_FIELDS; i++) {
         g_ptr_array_add(field_names, fields[i]);  // literals
     }
     table->field_names = field_names;
-    GPtrArray* lines = g_ptr_array_sized_new(1);  // apenas um negocio
-    // to change, adicao do business
-    g_ptr_array_add(
-        lines,
-        get_businessCollection_business_by_id(
-            sgr->catalogo_businesses, business_id));
+    GPtrArray* lines = g_ptr_array_sized_new(QUERY_THREE_FIELDS);
+    Business business = get_businessCollection_business_by_id(
+        sgr->catalogo_businesses, business_id);
+    g_ptr_array_add(lines, get_business_name(business));
+    g_ptr_array_add(lines, get_business_city(business));
+    g_ptr_array_add(lines, get_business_state(business));
+    // g_ptr_array_add(lines, get_average_number_stars(business_id));
+    int numero_reviews =
+        get_number_reviews_by_business(sgr->catalogo_reviews, business_id);
+    g_ptr_array_add(lines, g_strdup_printf("%d", numero_reviews));
     table->lines = lines;
-
     return table;
 }
-
