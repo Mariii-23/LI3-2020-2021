@@ -46,14 +46,15 @@ void add_review(ReviewCollection collection, Review review);
 
 void set_reviewCollection_reviews(ReviewCollection self, GPtrArray *reviews);
 
-Review get_reviewCollection_review_by_id(ReviewCollection self, char *id);
+GPtrArray *get_reviewCollection_review_by_id(ReviewCollection self, char *id);
 void set_reviewCollection_by_id(ReviewCollection self, GHashTable *by_id);
 
-Review get_reviewCollection_review_by_user_id(ReviewCollection self, char *id);
+GPtrArray *get_reviewCollection_review_by_user_id(ReviewCollection self,
+                                                  char *id);
 void set_reviewCollection_by_user(ReviewCollection self, GHashTable *by_user);
 
-Review get_reviewCollection_review_by_business_id(ReviewCollection self,
-                                                  char *id);
+GPtrArray *get_reviewCollection_review_by_business_id(ReviewCollection self,
+                                                      char *id);
 void set_reviewCollection_by_business(ReviewCollection self,
                                       GHashTable *by_business);
 void free_reviewCollection(ReviewCollection self);

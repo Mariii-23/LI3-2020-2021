@@ -200,7 +200,7 @@ void set_reviewCollection_reviews(ReviewCollection self, GPtrArray *reviews) {
     self->reviews = reviews;
 }
 
-Review get_reviewCollection_review_by_id(ReviewCollection self, char *id) {
+GPtrArray *get_reviewCollection_review_by_id(ReviewCollection self, char *id) {
   if (self && id)
     return g_hash_table_lookup(self->by_id, id);
   else
@@ -212,7 +212,8 @@ void set_reviewCollection_by_id(ReviewCollection self, GHashTable *by_id) {
     self->by_id = by_id;
 }
 
-Review get_reviewCollection_review_by_user_id(ReviewCollection self, char *id) {
+GPtrArray *get_reviewCollection_review_by_user_id(ReviewCollection self,
+                                                  char *id) {
   if (self && id)
     return g_hash_table_lookup(self->by_user_id, id);
   else
@@ -224,8 +225,8 @@ void set_reviewCollection_by_user(ReviewCollection self, GHashTable *by_user) {
     self->by_user_id = by_user;
 }
 
-Review get_reviewCollection_review_by_business_id(ReviewCollection self,
-                                                  char *id) {
+GPtrArray *get_reviewCollection_review_by_business_id(ReviewCollection self,
+                                                      char *id) {
   if (self && id)
     return g_hash_table_lookup(self->by_business_id, id);
   else

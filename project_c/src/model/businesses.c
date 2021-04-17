@@ -139,9 +139,9 @@ void add_business(BusinessCollection collection, Business business) {
 }
 
 GPtrArray *get_businessCollection_business_by_id(BusinessCollection self,
-                                                 char *user_id) {
-  if (self && user_id)
-    return g_hash_table_lookup(self->by_id, user_id);
+                                                 char *id) {
+  if (self && id)
+    return g_hash_table_lookup(self->by_id, id);
   else
     return NULL;
 }

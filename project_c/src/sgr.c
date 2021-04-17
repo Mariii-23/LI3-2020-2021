@@ -8,8 +8,9 @@
 #include "model/reviews.h"
 #include "model/users.h"
 #include "stats.h"
+#define QUERY_TWO_FIELDS 1
 #define QUERY_THREE_FIELDS 5
-#define QUERY_FOUR_FIELDS 4
+#define QUERY_FOUR_FIELDS 2
 #define QUERY_SIX_FIELDS 3
 #define MAX_BUFFER 100
 
@@ -42,6 +43,29 @@ SGR load_sgr(char *users, char *businesses, char *reviews) {
   return sgr;
 }
 
+// Query 2
+TABLE businesses_started_by_letter(SGR sgr, char letter) {
+
+  TABLE table = malloc(sizeof(struct table));
+  GPtrArray *field_names = g_ptr_array_sized_new(QUERY_TWO_FIELDS);
+  g_ptr_array_add(field_names, "Name");
+  table->field_names = field_names;
+
+  GPtrArray *lines = g_ptr_array_sized_new(1);
+  GPtrArray *list = get_businessCollection_business_by_letter(
+      sgr->catalogo_businesses, &letter);
+
+  int size = list->len;
+  for (int i = 0; i < size; i++) {
+    char *name = get_business_name(g_ptr_array_index(list, i));
+    g_ptr_array_add(lines, name);
+  }
+
+  table->lines = lines;
+
+  return table;
+}
+
 // Query 3
 TABLE business_info(SGR sgr, char *business_id) {
   TABLE table = malloc(sizeof(struct table));
@@ -61,7 +85,7 @@ TABLE business_info(SGR sgr, char *business_id) {
 }
 
 // Query 4
-TABLE query4(SGR sgr, char *id) {
+TABLE bussinesses_reviewed(SGR sgr, char *id) {
   TABLE table = malloc(sizeof(struct table));
 
   char *fields[] = {"id", "nome"};
@@ -71,16 +95,20 @@ TABLE query4(SGR sgr, char *id) {
   }
   table->field_names = field_names;
 
-  GPtrArray *lines = g_ptr_array_sized_new(0);
+  GPtrArray *lines = g_ptr_array_sized_new(1);
 
   GPtrArray *reviews_array =
       get_reviewCollection_review_by_user_id(sgr->catalogo_reviews, id);
+
   int size = reviews_array->len;
   for (int i = 0; i < size; i++) {
     Review review = g_ptr_array_index(reviews_array, i);
-    Business business = get_businessCollection_business_by_id(
-        sgr->catalogo_businesses, get_review_business_id(review));
-
+    // ??
+    Business business = g_ptr_array_index(
+        get_businessCollection_business_by_id(sgr->catalogo_businesses,
+                                              get_review_business_id(review)),
+        1);
+    // ??
     GPtrArray *aux = g_ptr_array_sized_new(QUERY_FOUR_FIELDS);
     g_ptr_array_add(aux, get_business_id(business));
     g_ptr_array_add(aux, get_business_name(business));
@@ -92,7 +120,7 @@ TABLE query4(SGR sgr, char *id) {
 }
 
 // Query 5
-TABLE query5(SGR sgr, int stars, char *city) {
+TABLE businesses_with_stars_and_city(SGR sgr, float stars, char *city) {
   TABLE table = malloc(sizeof(struct table));
   GPtrArray *array_by_city =
       get_businessCollection_business_by_city(sgr->catalogo_businesses, city);
@@ -111,23 +139,36 @@ TABLE query5(SGR sgr, int stars, char *city) {
 
   for (int i = 0; i < size; i++) {
     Business business = g_ptr_array_index(array_by_city, i);
-    Review review = get_reviewCollection_review_by_business_id(
+    GPtrArray *reviews = get_reviewCollection_review_by_business_id(
         sgr->catalogo_reviews, get_business_id(business));
 
-    if (get_review_stars(review) >= stars) {
+    int size_reviews = reviews->len; // tamanho do array
+    for (int j = 0; j < size_reviews; j++) {
+      Review review = g_ptr_array_index(reviews, j);
+      if (get_review_stars(review) >= stars) {
 
-      GPtrArray *aux = g_ptr_array_sized_new(QUERY_SIX_FIELDS);
-      g_ptr_array_add(aux, get_business_id(business));
-      g_ptr_array_add(aux, get_business_name(business));
+        GPtrArray *aux = g_ptr_array_sized_new(QUERY_SIX_FIELDS);
+        g_ptr_array_add(aux, get_business_id(business));
+        g_ptr_array_add(aux, get_business_name(business));
 
-      char buf[MAX_BUFFER];
-      gcvt(get_review_stars(review), MAX_BUFFER, buf);
-      g_ptr_array_add(aux, buf);
+        char buf[MAX_BUFFER];
+        gcvt(get_review_stars(review), MAX_BUFFER, buf);
+        g_ptr_array_add(aux, buf);
 
-      g_ptr_array_add(lines, aux);
+        g_ptr_array_add(lines, aux);
+      }
     }
   }
   table->lines = lines;
 
   return table;
 }
+
+// Query 6
+TABLE top_businesses_by_city(SGR sgr, int top);
+// Query 7
+TABLE international_users(SGR sgr);
+// Query 8
+TABLE top_businesses_with_category(SGR sgr, int top, char *category);
+// Query 9
+TABLE reviews_with_word(SGR sgr, int top, char *word);
