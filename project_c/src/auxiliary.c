@@ -52,3 +52,20 @@ guint business_name_hash(gconstpointer word) {
 gpointer strdup_copy(gconstpointer src, gpointer data) {
     return g_strdup(src);
 }
+
+GPtrArray* build_ptr_array(char* ptr_array[], int N) {
+    GPtrArray* new_array = g_ptr_array_sized_new(N);
+    for (size_t i = 0; i < N; i++) {
+        g_ptr_array_add(new_array, ptr_array[i]);
+    }
+    return new_array;
+}
+
+void fprint_str_array(FILE* stream, GPtrArray* arr, char* delim) {
+    for (int i = 0; i < arr->len; i++) {
+        char* d = delim;
+        if (i == 0) d = "";
+        fprintf(stream, "%s%s", d, (char*) g_ptr_array_index(arr, i));
+    }
+    fputc('\n', stream);
+}

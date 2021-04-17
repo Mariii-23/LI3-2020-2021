@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include "Leitura.h"
+#include "auxiliary.h"
 #include "model/businesses.h"
 #include "model/reviews.h"
 #include "model/stats.h"
@@ -36,22 +37,13 @@ SGR load_sgr(char* users, char* businesses, char* reviews) {
 }
 
 // Query 3
-GPtrArray* build_head(char* fields[], int N) {
-    GPtrArray* field_names = g_ptr_array_sized_new(N);
-    for (size_t i = 0; i < N; i++) {
-        g_ptr_array_add(field_names, fields[i]);  // literals
-    }
-    return field_names;
-}
 TABLE business_info(SGR sgr, char* business_id) {
     char* query_three_fields[] = {
         "nome", "cidade", "estado", "stars", "numero_reviews"};
     TABLE table =
-        new_table(build_head(query_three_fields, QUERY_THREE_FIELDS_N));
-
+        new_table(build_ptr_array(query_three_fields, QUERY_THREE_FIELDS_N));
     Business business = get_businessCollection_business_by_id(
         sgr->catalogo_businesses, business_id);
-
     new_line(table);
     add_to_last_line(table, get_business_name(business));
     add_to_last_line(table, get_business_city(business));

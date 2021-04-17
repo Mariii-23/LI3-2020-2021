@@ -14,7 +14,7 @@
 #define LINESIZE 100
 typedef enum { BUSINESS, REVIEW, USER } Type;
 
-static char* read_line(FILE* fp) {
+char* read_line(FILE* fp) {
     char linha[LINESIZE];
     bool has_new_line = false;
     GString* dynamic_string = g_string_sized_new(LINESIZE);
@@ -34,7 +34,7 @@ static char* read_line(FILE* fp) {
     return final;
 }
 
-static GPtrArray* read_to_array(char* line, char* delim) {
+GPtrArray* read_to_array(char* line, char* delim) {
     char* item = strtok(line, delim);
     if (!item) return NULL;
     GPtrArray* arr = g_ptr_array_new();
@@ -44,24 +44,7 @@ static GPtrArray* read_to_array(char* line, char* delim) {
     }
     return arr;
 }
-
 // read from csv generically
-TABLE from_csv(char* filename, char* delim) {
-    FILE* fp = fopen(filename, "r");
-    char* header = read_line(fp);
-    GPtrArray* fields = read_to_array(header, delim);
-    TABLE table = new_table(fields);
-    char* line;
-    while ((line = read_line(fp))) {
-        new_line(table);
-        GPtrArray* line_in_array = read_to_array(line, delim);
-        for (int i = 0; line_in_array->len; i++) {
-            add_to_last_line(table, g_ptr_array_index(line_in_array, i));
-        }
-    }
-    return table;
-}
-
 static Business parse_business_line(char* str) {
     char* business_id = strtok(str, ";");
     char* name = strtok(NULL, ";");
@@ -114,6 +97,7 @@ static Review parse_review_line(char* str) {
 
 ReviewCollection collect_reviews(FILE* fp) {
     char* line;
+    char* header = read_line(fp);
     ReviewCollection collection = create_review_collection();
     while ((line = read_line(fp))) {
         Review review = parse_review_line(line);
@@ -126,6 +110,7 @@ ReviewCollection collect_reviews(FILE* fp) {
 
 BusinessCollection collect_businesses(FILE* fp) {
     char* line;
+    char* header = read_line(fp);
     BusinessCollection collection = create_business_collection();
     while ((line = read_line(fp))) {
         Business business = parse_business_line(line);
@@ -138,6 +123,7 @@ BusinessCollection collect_businesses(FILE* fp) {
 
 UserCollection collect_users(FILE* fp) {
     char* line;
+    char* header = read_line(fp);
     UserCollection collection = create_user_collection();
     while ((line = read_line(fp))) {
         User user = parse_user_line(line);
