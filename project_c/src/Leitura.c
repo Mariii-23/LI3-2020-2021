@@ -7,8 +7,10 @@
 #include "auxiliary.h"
 #include "model/businesses.h"
 #include "model/reviews.h"
+#include "model/table.h"
 #include "model/users.h"
 #include "perfect_hash.h"
+#include "sgr.h"
 #define LINESIZE 100
 typedef enum { BUSINESS, REVIEW, USER } Type;
 
@@ -32,15 +34,32 @@ static char* read_line(FILE* fp) {
     return final;
 }
 
-static GPtrArray* read_to_array(char* line) {
-    char* item = strtok(line, ",");
+static GPtrArray* read_to_array(char* line, char* delim) {
+    char* item = strtok(line, delim);
     if (!item) return NULL;
     GPtrArray* arr = g_ptr_array_new();
     while (item) {
         g_ptr_array_add(arr, g_strdup(item));
-        item = strtok(NULL, ",");
+        item = strtok(NULL, delim);
     }
     return arr;
+}
+
+// read from csv generically
+TABLE from_csv(char* filename, char* delim) {
+    FILE* fp = fopen(filename, "r");
+    char* header = read_line(fp);
+    GPtrArray* fields = read_to_array(header, delim);
+    TABLE table = new_table(fields);
+    char* line;
+    while ((line = read_line(fp))) {
+        new_line(table);
+        GPtrArray* line_in_array = read_to_array(line, delim);
+        for (int i = 0; line_in_array->len; i++) {
+            add_to_last_line(table, g_ptr_array_index(line_in_array, i));
+        }
+    }
+    return table;
 }
 
 static Business parse_business_line(char* str) {
@@ -55,7 +74,8 @@ static Business parse_business_line(char* str) {
     // char* resto = ;
     // if (strchr(resto, ';')) return NULL;
     // set tiver ainda mais parametros ou o nome tiver ; ?
-    categories = read_to_array(strtok(NULL, ";"));  // passar o resto da linha
+    categories =
+        read_to_array(strtok(NULL, ";"), ",");  // passar o resto da linha
     return create_business(business_id, name, city, state, categories);
 }
 
@@ -63,7 +83,7 @@ static User parse_user_line(char* str) {
     char* user_id = strtok(str, ";");
     char* name = strtok(NULL, ";");
     if (!user_id || !name) return NULL;
-    GPtrArray* users = read_to_array(strtok(NULL, ";"));
+    GPtrArray* users = read_to_array(strtok(NULL, ";"), ",");
     return create_user(user_id, name, users);
 }
 
@@ -127,4 +147,3 @@ UserCollection collect_users(FILE* fp) {
     }
     return collection;
 }
-

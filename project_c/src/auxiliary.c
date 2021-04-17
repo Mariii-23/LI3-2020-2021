@@ -34,6 +34,11 @@ void append_to_value(
     g_ptr_array_add(curr, value_to_add);
 }
 
+void* get_last_ptr(GPtrArray* array) {
+    int len = array->len;
+    return array->pdata[len - 1];
+}
+
 gboolean compare_first_letter(gconstpointer key1, gconstpointer key2) {
     return ((char*) key1)[0] == ((char*) key2)[0];
 }
@@ -42,4 +47,8 @@ guint business_name_hash(gconstpointer word) {
     char first = ((char*) word)[0];
     size_t other_chars = ('Z' % 'A') + 1;
     return first >= 'A' && first <= 'z' ? (first % 'a') % 'A' : other_chars;
+}
+
+gpointer strdup_copy(gconstpointer src, gpointer data) {
+    return g_strdup(src);
 }

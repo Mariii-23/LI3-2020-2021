@@ -1,6 +1,7 @@
 #ifndef SGR_H
 #define SGR_H
 
+#include "glib.h"
 typedef struct sgr* SGR;
 typedef struct table* TABLE;
 
