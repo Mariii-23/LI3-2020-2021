@@ -188,7 +188,8 @@ ReviewCollection create_review_collection() {
 }
 
 void add_review(ReviewCollection collection, Review review) {
-  append_to_value(collection->by_id, get_review_id(review), review);
+  g_hash_table_insert(collection->by_id, get_review_id(review), review);
+
   append_to_value(collection->by_user_id, get_review_user_id(review), review);
   append_to_value(collection->by_business_id, get_review_business_id(review),
                   review);
@@ -200,7 +201,7 @@ void set_reviewCollection_reviews(ReviewCollection self, GPtrArray *reviews) {
     self->reviews = reviews;
 }
 
-GPtrArray *get_reviewCollection_review_by_id(ReviewCollection self, char *id) {
+Review get_reviewCollection_review_by_id(ReviewCollection self, char *id) {
   if (self && id)
     return g_hash_table_lookup(self->by_id, id);
   else

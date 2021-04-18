@@ -46,7 +46,7 @@ void add_review(ReviewCollection collection, Review review);
 
 void set_reviewCollection_reviews(ReviewCollection self, GPtrArray *reviews);
 
-GPtrArray *get_reviewCollection_review_by_id(ReviewCollection self, char *id);
+Review get_reviewCollection_review_by_id(ReviewCollection self, char *id);
 void set_reviewCollection_by_id(ReviewCollection self, GHashTable *by_id);
 
 GPtrArray *get_reviewCollection_review_by_user_id(ReviewCollection self,

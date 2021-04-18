@@ -34,8 +34,8 @@ void add_business(BusinessCollection self, Business elem);
 
 BusinessCollection create_business_collection();
 
-GPtrArray *get_businessCollection_business_by_id(BusinessCollection self,
-                                                 char *id);
+Business get_businessCollection_business_by_id(BusinessCollection self,
+                                               char *id);
 void set_businessCollection_by_id(BusinessCollection self, GHashTable *by_id);
 
 GPtrArray *get_businessCollection_business_by_city(BusinessCollection self,
