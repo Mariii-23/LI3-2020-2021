@@ -23,6 +23,10 @@ void new_line(TABLE table) {
     g_ptr_array_add(table->lines, g_ptr_array_new());
 }
 
+GPtrArray* get_field_names(TABLE table) {
+    return g_ptr_array_copy(table->field_names, strdup_copy, NULL);
+}
+
 void add_to_last_line(TABLE table, char* field) {
     GPtrArray* last_line = get_last_ptr(table->lines);
     g_ptr_array_add(last_line, g_strdup(field));
@@ -44,7 +48,25 @@ size_t number_lines_table(TABLE table) {
     return table->lines->len;
 }
 
+char* table_index(TABLE table, size_t i, size_t j) {
+    GPtrArray* line = table->lines->pdata[i];
+    return line->pdata[j];
+}
+size_t get_number_lines_table(TABLE table) {
+    return table->lines->len;
+}
+
 GPtrArray* line_at_index_table(TABLE table, size_t index) {
     return g_ptr_array_index(table->lines, index);
 }
 
+void free_ptr_array_deep(GPtrArray* arr) {
+    g_ptr_array_set_free_func(arr, free);
+    g_ptr_array_free(arr, TRUE);
+}
+void free_table(TABLE table) {
+    free_ptr_array_deep(table->field_names);
+    g_ptr_array_set_free_func(table->lines, (void*) free_ptr_array_deep);
+    g_ptr_array_free(table->lines, TRUE);
+    free(table);
+}

@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "colors.h"
+#include "../view/colors.h"
 
 // Verifica se a string é uma referência a uma variável
 int is_variable_reference(const char* string) {

@@ -1,6 +1,7 @@
 #include "commands.h"
 
 #include <glib.h>
+#include <stdbool.h>
 #include <stdio.h>
 
 #include "Leitura.h"
@@ -8,6 +9,8 @@
 #include "cli.h"
 #include "colors.h"
 #include "model/table.h"
+
+typedef enum { LT = -1, EQ, GT } OPERATOR;
 
 void cmd_quit(GArray* args) {
     printf("Goodbye!\n");
@@ -42,10 +45,53 @@ TABLE from_csv(char* filename, char* delim) {
     }
     return table;
 }
-
 void to_csv(TABLE table, char* filename, char* delim) {
     FILE* fp = fopen(filename, "w");
     fprintf_table(fp, table, delim, delim);
+}
+// to change
+ssize_t whereis_field(TABLE table, char* field_name) {
+    int i;
+    GPtrArray* field_names = get_field_names(table);
+    for (i = 0; i < field_names->len; i++) {
+        if (!strcmp(field_names->pdata[i], field_name)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+bool matches_by_operator(int the_value, int current_value, OPERATOR op) {
+    int res = current_value - the_value;
+    return res == (op * res);
+}
+
+TABLE filter(TABLE table, char* field_name, char* value, OPERATOR op) {
+    GPtrArray* fields = g_ptr_array_sized_new(1);
+    g_ptr_array_add(fields, field_name);
+    TABLE table_two = new_table(fields);
+    ssize_t col_index = whereis_field(table, field_name);
+    if (col_index != -1) {
+        printf("No such field in this table\n");
+        free_table(table_two);
+        return NULL;
+    }
+    size_t number_lines = get_number_lines_table(table);
+    for (int i = 0; i < number_lines; i++) {
+        char* elem = table_index(table, i, col_index);
+        if (matches_by_operator(atoi(value), atoi(elem), op)) {
+            new_line(table_two);
+            add_to_last_line(table_two, elem);
+        }
+    }
+    return table_two;
+}
+void projection(TABLE table, size_t col, ...) {
+    // TODO
+}
+
+char* indexation(TABLE table, char* line, char* col) {
+    return table_index(table, atoi(line), atoi(col));
 }
 
 // Regista todos os comandos
