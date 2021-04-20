@@ -7,12 +7,13 @@
 #include "model/reviews.h"
 #include "model/users.h"
 #include "sgr.h"
+#include "stats.h"
 
 GPtrArray* read_to_array(char* line, char* delim);
 char* read_line(FILE* fp);
-UserCollection collect_users(FILE* fp);
-BusinessCollection collect_businesses(FILE* fp);
-ReviewCollection collect_reviews(FILE* fp);
+UserCollection collect_users(FILE* fp, Stats stats);
+BusinessCollection collect_businesses(FILE* fp, Stats stats);
+ReviewCollection collect_reviews(FILE* fp, Stats stats);
 
 #endif
 

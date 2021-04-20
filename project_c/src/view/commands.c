@@ -69,13 +69,14 @@ bool matches_by_operator(int the_value, int current_value, OPERATOR op) {
 TABLE filter(TABLE table, char* field_name, char* value, OPERATOR op) {
     GPtrArray* fields = g_ptr_array_sized_new(1);
     g_ptr_array_add(fields, field_name);
-    TABLE table_two = new_table(fields);
     ssize_t col_index = whereis_field(table, field_name);
     if (col_index != -1) {
         printf("No such field in this table\n");
-        free_table(table_two);
+        // se o field_name for dinamico tambem tem que se fazer free
+        g_ptr_array_free(fields, TRUE);
         return NULL;
     }
+    TABLE table_two = new_table(fields);
     size_t number_lines = get_number_lines_table(table);
     for (int i = 0; i < number_lines; i++) {
         char* elem = table_index(table, i, col_index);

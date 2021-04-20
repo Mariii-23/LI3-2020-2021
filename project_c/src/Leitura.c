@@ -11,6 +11,7 @@
 #include "model/users.h"
 #include "perfect_hash.h"
 #include "sgr.h"
+#include "stats.h"
 #define LINESIZE 100
 typedef enum { BUSINESS, REVIEW, USER } Type;
 
@@ -45,7 +46,7 @@ GPtrArray* read_to_array(char* line, char* delim) {
     return arr;
 }
 // read from csv generically
-static Business parse_business_line(char* str) {
+static Business parse_business_line(char* str, Stats stats) {
     char* business_id = strtok(str, ";");
     char* name = strtok(NULL, ";");
     char* city = strtok(NULL, ";");
@@ -62,7 +63,7 @@ static Business parse_business_line(char* str) {
     return create_business(business_id, name, city, state, categories);
 }
 
-static User parse_user_line(char* str) {
+static User parse_user_line(char* str, Stats stats) {
     char* user_id = strtok(str, ";");
     char* name = strtok(NULL, ";");
     if (!user_id || !name) return NULL;
@@ -70,7 +71,7 @@ static User parse_user_line(char* str) {
     return create_user(user_id, name, users);
 }
 
-static Review parse_review_line(char* str) {
+static Review parse_review_line(char* str, Stats stats) {
     char* review_id = strtok(str, ";");
     char* user_id = strtok(NULL, ";");
     char* business_id = strtok(NULL, ";");
@@ -95,12 +96,12 @@ static Review parse_review_line(char* str) {
         text);
 }
 
-ReviewCollection collect_reviews(FILE* fp) {
+ReviewCollection collect_reviews(FILE* fp, Stats stats) {
     char* line;
     char* header = read_line(fp);
     ReviewCollection collection = create_review_collection();
     while ((line = read_line(fp))) {
-        Review review = parse_review_line(line);
+        Review review = parse_review_line(line, stats);
         free(line);
         if (!review) continue;
         add_review(collection, review);
@@ -108,12 +109,12 @@ ReviewCollection collect_reviews(FILE* fp) {
     return collection;
 }
 
-BusinessCollection collect_businesses(FILE* fp) {
+BusinessCollection collect_businesses(FILE* fp, Stats stats) {
     char* line;
     char* header = read_line(fp);
     BusinessCollection collection = create_business_collection();
     while ((line = read_line(fp))) {
-        Business business = parse_business_line(line);
+        Business business = parse_business_line(line, stats);
         free(line);
         if (!business) continue;
         add_business(collection, business);
@@ -121,12 +122,12 @@ BusinessCollection collect_businesses(FILE* fp) {
     return collection;
 }
 
-UserCollection collect_users(FILE* fp) {
+UserCollection collect_users(FILE* fp, Stats stats) {
     char* line;
     char* header = read_line(fp);
     UserCollection collection = create_user_collection();
     while ((line = read_line(fp))) {
-        User user = parse_user_line(line);
+        User user = parse_user_line(line, stats);
         free(line);
         if (!user) continue;
         add_user(collection, user);
