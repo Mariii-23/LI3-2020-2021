@@ -17,6 +17,7 @@ TABLE new_table(GPtrArray* fields) {
     TABLE table = malloc(sizeof(struct table));
     table->field_names = g_ptr_array_copy(fields, strdup_copy, NULL);
     table->lines = g_ptr_array_new();
+    free_ptr_array_deep(fields);
     return table;
 }
 void new_line(TABLE table) {
@@ -60,10 +61,6 @@ GPtrArray* line_at_index_table(TABLE table, size_t index) {
     return g_ptr_array_index(table->lines, index);
 }
 
-void free_ptr_array_deep(GPtrArray* arr) {
-    g_ptr_array_set_free_func(arr, free);
-    g_ptr_array_free(arr, TRUE);
-}
 void free_table(TABLE table) {
     free_ptr_array_deep(table->field_names);
     g_ptr_array_set_free_func(table->lines, (void*) free_ptr_array_deep);

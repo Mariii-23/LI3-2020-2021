@@ -69,3 +69,8 @@ void fprint_str_array(FILE* stream, GPtrArray* arr, char* delim) {
     }
     fputc('\n', stream);
 }
+void free_ptr_array_deep(GPtrArray* arr) {
+    g_ptr_array_set_free_func(arr, free);
+    g_ptr_array_free(arr, TRUE);
+}
+

@@ -84,6 +84,7 @@ static Review parse_review_line(char* str, Stats stats) {
     if (!review_id || !user_id || !business_id || !stars || !useful || !funny ||
         !cool || !date || !text)
         return NULL;
+    update_average_stars(stats, business_id, stars);
     return create_review(
         review_id,
         user_id,

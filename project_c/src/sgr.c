@@ -69,17 +69,18 @@ TABLE businesses_started_by_letter(SGR sgr, char letter) {
     table->field_names = build_head(fields, QUERY_TWO_FIELDS_N);
 
     GPtrArray* lines = g_ptr_array_sized_new(1);
+    char new_str[2];
+    new_str[0] = letter;
+    new_str[1] = 0;
     GPtrArray* list = get_businessCollection_business_by_letter(
-        sgr->catalogo_businesses, &letter);
-
+        sgr->catalogo_businesses, new_str);
     int size = list->len;
     for (int i = 0; i < size; i++) {
         char* name = get_business_name(g_ptr_array_index(list, i));
         g_ptr_array_add(lines, name);
     }
-
+    // falta apresentar o size
     table->lines = lines;
-
     return table;
 }
 
@@ -173,13 +174,11 @@ TABLE businesses_with_stars_and_city(SGR sgr, float stars, char* city) {
         }
     }
     table->lines = lines;
-
     return table;
 }
 
 // Query 6
 TABLE top_businesses_by_city(SGR sgr, int top);
-
 // Query 7
 TABLE international_users(SGR sgr);
 // Query 8
