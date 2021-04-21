@@ -2,13 +2,13 @@
 #define EXEC_H
 
 #include "parsing.h"
+#include "model/state.h"
+#include <glib.h>
 
-typedef struct variable Variable;
+Variable execute(STATE state, AST *ast);
 
-Variable *execute(AST *ast);
+void free_var(Variable var);
 
-void free_var(Variable *var);
-
-void print_var(Variable *var);
+void print_var(Variable var);
 
 #endif

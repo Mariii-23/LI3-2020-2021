@@ -1,44 +1,62 @@
 #include "exec.h"
 #include "sgr.h"
+#include "model/table.h"
+#include "model/state.h"
 #include "parsing.h"
 
-enum variable_type {
-  VAR_NUMBER,
-  VAR_SGR,
-  VAR_TABLE,
-  VAR_STRING,
+struct function {
+  VariableType return_type;
+  const char *help_text; // Pode ser NULL
+
+  int n_args;
+  VariableType *arg_types;
 };
 
 struct variable {
-  enum variable_type type;
+  VariableType type;
   char *name;     // Pode ser null se não tiver nome
-  union {
-    int number;
-    SGR *sgr;
-    TABLE *table;
-    char *string;
-  } value;
+  VariableValue value;
 };
 
-Variable *execute(AST *ast) {
-  Variable *ret = NULL;
+Variable execute(STATE state, AST *ast) {
+  Variable ret = NULL;
+  VariableValue val;
+  char *str;
 
   switch (ast->type) {
     case AST_VARIABLE:
+      ret = find_variable(state, ast->value.variable);
       break;
     case AST_NUMBER:
-      ret = malloc(sizeof (Variable));
-      ret->type = VAR_NUMBER;
-      ret->name = NULL;
-      ret->value.number = ast->value.number;
+      val.number = ast->value.number;
+      ret = init_var(VAR_NUMBER, val, NULL);
       break;
-    default: break;
+    case AST_STRING:
+      // Tenho de retirar as aspas
+      str = malloc(strlen(ast->value.string) - 1);
+      int i = 0, j = 0;
+      
+      for (; ast->value.string[j]; j++) {
+        if (ast->value.string[j] != '"') {
+          // TODO
+        }
+      }
+
+      break;
+    case AST_ASSIGNMENT:
+      ret = execute(state, ast->value.assignment->value);
+      set_var_name(ret, ast->value.assignment->variable);
+      create_variable(state, ret);
+      break;
+    case AST_FUNCTIONCALL:
+      // TODO!!!
+      break;
   }
 
   return ret;
 }
 
-void free_var(Variable *var) {
+void free_var(Variable var) {
   if (var->name) {
     free(var->name);
   }
@@ -50,10 +68,16 @@ void free_var(Variable *var) {
       break;
     case VAR_SGR:
       // alguma cena para fazer free da SGR
+      /* free_sgr(var->value.sgr); */
       free(var);
       break;
     case VAR_TABLE:
       // mesma coisa que para a SGR
+      /* free_table(var->value.table); */
+      free(var);
+      break;
+    case VAR_FUNCTION:
+      free(var->value.function);
       free(var);
       break;
     default:
@@ -62,6 +86,6 @@ void free_var(Variable *var) {
   }
 }
 
-void print_var(Variable *var) {
+void print_var(Variable var) {
   // TODO
 }
