@@ -102,6 +102,7 @@ const char *type_name(VariableType type) {
     case VAR_ANY:
       return "any";
   }
+  return NULL;
 }
 
 STATE init_state() {

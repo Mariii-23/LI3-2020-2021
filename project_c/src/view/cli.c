@@ -88,6 +88,13 @@ char** command_complete(const char* text, int start, int end) {
   return completion_buffer;
 }
 
+#define define_function(state, name, handler, ret, n_args, args, help) {\
+  VariableType f_args[] = args;\
+  VariableValue val;\
+  val.function = create_function(n_args, ret, handler, f_args, help);\
+  create_variable(state, init_var(VAR_FUNCTION, val, name));\
+}
+
 // Executa o Read-Eval-Print Loop
 void repl(Commands commands) {
   char *line;
@@ -98,10 +105,7 @@ void repl(Commands commands) {
   STATE state = init_state();
 
   // Funções novas
-  VariableType print_args[] = {VAR_ANY};
-  VariableValue print_val;
-  print_val.function = create_function(1, VAR_VOID, print, print_args, NULL);
-  create_variable(state, init_var(VAR_FUNCTION, print_val, "print"));
+  define_function(state, "print", print, VAR_VOID, 1, {VAR_ANY}, NULL);
 
   // O readline devolve NULL quando chega ao EOF
   while ((line = readline(BOLD FG_CYAN "> " RESET_ALL))) {
