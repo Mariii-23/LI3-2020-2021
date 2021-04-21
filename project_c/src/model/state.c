@@ -15,7 +15,7 @@ struct function {
   int n_args;
   VariableType *args;
 
-  void *function;
+  FunctionPtr function;
 };
 
 Variable init_var(VariableType type, VariableValue val, const char *name) {
@@ -60,6 +60,12 @@ void free_var(Variable var) {
   }
 }
 
+void free_if_possible(STATE state, Variable var) {
+  if (var->name == NULL || find_variable(state, var->name) == NULL) {
+    free_var(var);
+  }
+}
+
 VariableType get_var_type(Variable var) {
   return var->type;
 }
@@ -73,8 +79,33 @@ void set_var_name(Variable var, char *name) {
     var->name = name;
 }
 
+Variable void_var() {
+  VariableValue val;
+  val.number = 0;
+  return init_var(VAR_VOID, val, NULL);
+}
+
+const char *type_name(VariableType type) {
+  switch(type) {
+    case VAR_NUMBER:
+      return "number";
+    case VAR_SGR:
+      return "SGR";
+    case VAR_TABLE:
+      return "table";
+    case VAR_STRING:
+      return "string";
+    case VAR_FUNCTION:
+      return "function";
+    case VAR_VOID:
+      return "void";
+    case VAR_ANY:
+      return "any";
+  }
+}
+
 STATE init_state() {
-  return g_tree_new(g_strcmp0);
+  return g_tree_new((int (*)(const void*, const void *)) g_strcmp0);
 }
 
 void create_variable(STATE state, Variable var) {
@@ -83,4 +114,28 @@ void create_variable(STATE state, Variable var) {
 
 Variable find_variable(STATE state, char *name) {
   return g_tree_lookup(state, name);
+}
+
+FunctionVal create_function(int n_args, VariableType return_type, FunctionPtr function, const VariableType* args, const char *help) {
+  FunctionVal ret = malloc(sizeof (struct function));
+  
+  ret->return_type = return_type;
+  ret->help_text = help;
+  ret->args = memcpy(malloc(n_args * sizeof(VariableType)), args, n_args);
+  ret->n_args = n_args;
+  ret->function = function;
+
+  return ret;
+}
+
+int get_n_args(FunctionVal func) {
+  return func->n_args;
+}
+
+VariableType get_arg_type(FunctionVal func, int i) {
+  return func->args[i];
+}
+
+FunctionPtr get_function(FunctionVal func) {
+  return func->function;
 }

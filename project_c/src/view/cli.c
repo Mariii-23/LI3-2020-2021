@@ -9,6 +9,7 @@
 #include "colors.h"
 #include "controller/parsing.h"
 #include "controller/exec.h"
+#include "controller/commands.h"
 #include "model/state.h"
 
 struct command {
@@ -96,6 +97,12 @@ void repl(Commands commands) {
 
   STATE state = init_state();
 
+  // Funções novas
+  VariableType print_args[] = {VAR_ANY};
+  VariableValue print_val;
+  print_val.function = create_function(1, VAR_VOID, print, print_args, NULL);
+  create_variable(state, init_var(VAR_FUNCTION, print_val, "print"));
+
   // O readline devolve NULL quando chega ao EOF
   while ((line = readline(BOLD FG_CYAN "> " RESET_ALL))) {
     // Se a linha não for nula...
@@ -115,9 +122,12 @@ void repl(Commands commands) {
         if (!e) {
           Variable v = execute(state, &ast);
 
-          print_var(v);
+          if (v) {
+            if (get_var_type(v) != VAR_VOID)
+              print_var(v);
 
-          free(v);
+            free_if_possible(state, v);
+          }
         } else {
           print_error(e, line);
         }
