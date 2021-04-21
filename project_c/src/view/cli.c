@@ -9,6 +9,7 @@
 #include "colors.h"
 #include "controller/parsing.h"
 #include "controller/exec.h"
+#include "model/state.h"
 
 struct command {
   char* name;
@@ -93,6 +94,8 @@ void repl(Commands commands) {
   g_commands = commands;
   rl_attempted_completion_function = command_complete;
 
+  STATE state = init_state();
+
   // O readline devolve NULL quando chega ao EOF
   while ((line = readline(BOLD FG_CYAN "> " RESET_ALL))) {
     // Se a linha não for nula...
@@ -110,7 +113,7 @@ void repl(Commands commands) {
         toks += consumed;
 
         if (!e) {
-          Variable *v = execute(&ast);
+          Variable v = execute(state, &ast);
 
           print_var(v);
 

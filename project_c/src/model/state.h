@@ -27,7 +27,7 @@ typedef struct variable *Variable;
 // valores
 typedef GTree *STATE;
 
-Variable init_var(VariableType type, VariableValue val, char *name);
+Variable init_var(VariableType type, VariableValue val, const char *name);
 void free_var(Variable var);
 VariableType get_var_type(Variable var);
 VariableValue get_var_value(Variable var);
