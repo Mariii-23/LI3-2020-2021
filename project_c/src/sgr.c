@@ -137,35 +137,6 @@ TABLE businesses_with_stars_and_city(SGR sgr, float stars, char* city) {
     char* fields[] = {"id", "name", "stars"};
     TABLE table = new_table(build_ptr_array(fields, QUERY_FIVE_FIELDS_N));
 
-    GPtrArray* array_by_city =
-        get_businessCollection_business_by_city(sgr->catalogo_businesses, city);
-
-    int size = array_by_city->len;  // tamanho do array
-
-    GPtrArray* lines = g_ptr_array_sized_new(1);
-
-    for (int i = 0; i < size; i++) {
-        Business business = g_ptr_array_index(array_by_city, i);
-        GPtrArray* reviews = get_reviewCollection_review_by_business_id(
-            sgr->catalogo_reviews, get_business_id(business));
-
-        int size_reviews = reviews->len;  // tamanho do array
-        for (int j = 0; j < size_reviews; j++) {
-            Review review = g_ptr_array_index(reviews, j);
-            if (get_review_stars(review) >= stars) {
-
-                GPtrArray* aux = g_ptr_array_sized_new(QUERY_SIX_FIELDS_N);
-                g_ptr_array_add(aux, get_business_id(business));
-                g_ptr_array_add(aux, get_business_name(business));
-
-                char buf[MAX_BUFFER];
-                gcvt(get_review_stars(review), MAX_BUFFER, buf);
-                g_ptr_array_add(aux, buf);
-
-                g_ptr_array_add(lines, aux);
-            }
-        }
-    }
     return table;
 }
 
