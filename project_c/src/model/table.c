@@ -15,9 +15,10 @@ struct table {
 
 TABLE new_table(GPtrArray* fields) {
     TABLE table = malloc(sizeof(struct table));
-    table->field_names = g_ptr_array_copy(fields, strdup_copy, NULL);
+    table->field_names = fields;
+    // g_ptr_array_copy(fields, strdup_copy, NULL);
     table->lines = g_ptr_array_new();
-    free_ptr_array_deep(fields);
+    // free_ptr_array_deep(fields);
     return table;
 }
 void new_line(TABLE table) {

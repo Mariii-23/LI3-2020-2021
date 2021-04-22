@@ -7,11 +7,11 @@
 #include "auxiliary.h"
 #include "model/businesses.h"
 #include "model/reviews.h"
+#include "model/stats.h"
 #include "model/table.h"
 #include "model/users.h"
 #include "perfect_hash.h"
 #include "sgr.h"
-#include "stats.h"
 #define LINESIZE 100
 typedef enum { BUSINESS, REVIEW, USER } Type;
 

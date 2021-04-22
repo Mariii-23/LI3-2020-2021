@@ -10,7 +10,6 @@
 #include "model/stats.h"
 #include "model/table.h"
 #include "model/users.h"
-#include "stats.h"
 
 #define QUERY_TWO_FIELDS_N 1
 #define QUERY_THREE_FIELDS_N 5

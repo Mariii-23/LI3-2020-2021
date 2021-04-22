@@ -5,9 +5,9 @@
 
 #include "model/businesses.h"
 #include "model/reviews.h"
+#include "model/stats.h"
 #include "model/users.h"
 #include "sgr.h"
-#include "stats.h"
 
 GPtrArray* read_to_array(char* line, char* delim);
 char* read_line(FILE* fp);
