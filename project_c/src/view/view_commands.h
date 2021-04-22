@@ -8,6 +8,7 @@ Variable print(Variable* args);
 Variable quit(Variable* args);
 Variable help(Variable* args);
 Variable cmd_from_csv(Variable* args);
+Variable cmd_to_csv(Variable* args);
 Variable show(Variable* args);
 
 #endif

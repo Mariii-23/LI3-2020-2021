@@ -116,6 +116,16 @@ void repl(Commands commands) {
         "From CSV",
         VAR_STRING,
         VAR_STRING);
+    define_function(
+        state,
+        "to_csv",
+        cmd_to_csv,
+        VAR_VOID,
+        3,
+        "From CSV",
+        VAR_TABLE,
+        VAR_STRING,
+        VAR_STRING);
     // O readline devolve NULL quando chega ao EOF
     while ((line = readline(BOLD FG_CYAN "> " RESET_ALL))) {
         // Se a linha não for nula...
