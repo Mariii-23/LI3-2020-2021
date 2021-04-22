@@ -2,8 +2,8 @@
 #define SGR_H
 
 #include "glib.h"
+#include "model/table.h"
 typedef struct sgr* SGR;
-typedef struct table* TABLE;
 
 SGR init_sgr();
 void free_sgr(SGR sgr);

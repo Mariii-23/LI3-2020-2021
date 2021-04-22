@@ -27,13 +27,6 @@ struct sgr {
     Stats estatisticas;
 };
 
-struct table {
-    GPtrArray* field_names;  // Nomes dos fields, no caso de um business são os
-                             // campos dos businesses que é cada coluna
-    GPtrArray*
-        lines;  // cada linha, que neste caso seria informação sobre um business
-};
-
 GPtrArray* build_head(char* fields[], int N) {
     GPtrArray* field_names = g_ptr_array_sized_new(N);
     for (size_t i = 0; i < N; i++) {
@@ -63,11 +56,8 @@ SGR load_sgr(char* users, char* businesses, char* reviews) {
 // Query 2
 TABLE businesses_started_by_letter(SGR sgr, char letter) {
 
-    TABLE table = malloc(sizeof(struct table));
     char* fields[] = {"Name"};
-    table->field_names = build_head(fields, QUERY_TWO_FIELDS_N);
-
-    GPtrArray* lines = g_ptr_array_sized_new(1);
+    TABLE table = new_table(build_ptr_array(fields, QUERY_TWO_FIELDS_N));
     char new_str[2];
     new_str[0] = letter;
     new_str[1] = 0;
@@ -76,10 +66,13 @@ TABLE businesses_started_by_letter(SGR sgr, char letter) {
     int size = list->len;
     for (int i = 0; i < size; i++) {
         char* name = get_business_name(g_ptr_array_index(list, i));
-        g_ptr_array_add(lines, name);
+        add_field(table, name);
+        free(name);
     }
     // falta apresentar o size
-    table->lines = lines;
+    char* size_str = g_strdup_printf("%d", size);
+    add_field(table, size_str);
+    free(size_str);
     return table;
 }
 
@@ -96,26 +89,28 @@ TABLE business_info(SGR sgr, char* business_id) {
     char* numero_reviews = g_strdup_printf(
         "%d",
         get_number_reviews_by_business(sgr->catalogo_reviews, business_id));
-    new_line(table);
-    add_to_last_line(table, get_business_name(business));
-    add_to_last_line(table, get_business_city(business));
-    add_to_last_line(table, get_business_state(business));
-    add_to_last_line(table, numero_stars);
-    add_to_last_line(table, numero_reviews);
+    // new_line(table);
+    char* business_name = get_business_name(business);
+    char* business_city = get_business_city(business);
+    char* business_state = get_business_state(business);
+    add_field(table, business_name);
+    add_field(table, business_city);
+    add_field(table, business_state);
+    add_field(table, numero_stars);
+    add_field(table, numero_reviews);
     free(numero_reviews);
     free(numero_stars);
+    free(business_city);
+    free(business_name);
+    free(business_state);
     return table;
 }
 
 // Query 4
 TABLE bussinesses_reviewed(SGR sgr, char* id) {
-    TABLE table = malloc(sizeof(struct table));
 
     char* fields[] = {"id", "nome"};
-
-    table->field_names = build_head(fields, QUERY_FOUR_FIELDS_N);
-
-    GPtrArray* lines = g_ptr_array_sized_new(1);
+    TABLE table = new_table(build_ptr_array(fields, QUERY_FOUR_FIELDS_N));
 
     GPtrArray* reviews_array =
         get_reviewCollection_review_by_user_id(sgr->catalogo_reviews, id);
@@ -123,25 +118,24 @@ TABLE bussinesses_reviewed(SGR sgr, char* id) {
     int size = reviews_array->len;
     for (int i = 0; i < size; i++) {
         Review review = g_ptr_array_index(reviews_array, i);
-
+        char* business_id = get_review_business_id(review);
         Business business = get_businessCollection_business_by_id(
-            sgr->catalogo_businesses, get_review_business_id(review));
-
-        GPtrArray* aux = g_ptr_array_sized_new(QUERY_FOUR_FIELDS_N);
-        g_ptr_array_add(aux, get_business_id(business));
-        g_ptr_array_add(aux, get_business_name(business));
-        g_ptr_array_add(lines, aux);
+            sgr->catalogo_businesses, business_id);
+        char* business_name = get_business_name(business);
+        add_field(table, business_id);
+        add_field(table, business_name);
+        free(business_id);
+        free(business_name);
+        // free business quando a mariana alterar as cenas
     }
-    table->lines = lines;
 
     return table;
 }
 
 // Query 5
 TABLE businesses_with_stars_and_city(SGR sgr, float stars, char* city) {
-    TABLE table = malloc(sizeof(struct table));
     char* fields[] = {"id", "name", "stars"};
-    table->field_names = build_head(fields, QUERY_FIVE_FIELDS_N);
+    TABLE table = new_table(build_ptr_array(fields, QUERY_FIVE_FIELDS_N));
 
     GPtrArray* array_by_city =
         get_businessCollection_business_by_city(sgr->catalogo_businesses, city);
@@ -172,7 +166,6 @@ TABLE businesses_with_stars_and_city(SGR sgr, float stars, char* city) {
             }
         }
     }
-    table->lines = lines;
     return table;
 }
 

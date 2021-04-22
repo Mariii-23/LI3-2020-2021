@@ -35,7 +35,23 @@ char* read_line(FILE* fp) {
     return final;
 }
 
-GPtrArray* read_to_array(char* line, char* delim) {
+char** read_to_array(char* line, char* delim, size_t number_fields) {
+    char* item = strtok(line, delim);
+    if (!item) return NULL;
+    char** array = malloc(sizeof(char*) * number_fields);
+    array[0] = g_strdup(item);
+    for (size_t i = 1; i < number_fields; i++) {
+        item = strtok(NULL, delim);
+        array[i] = g_strdup(item);
+    }
+    if (strtok(NULL, delim)) {
+        free(array);
+        return NULL;
+    }
+    return array;
+}
+
+GPtrArray* read_to_ptr_array(char* line, char* delim) {
     char* item = strtok(line, delim);
     if (!item) return NULL;
     GPtrArray* arr = g_ptr_array_new();
@@ -59,7 +75,7 @@ static Business parse_business_line(char* str, Stats stats) {
     // if (strchr(resto, ';')) return NULL;
     // set tiver ainda mais parametros ou o nome tiver ; ?
     categories =
-        read_to_array(strtok(NULL, ";"), ",");  // passar o resto da linha
+        read_to_ptr_array(strtok(NULL, ";"), ",");  // passar o resto da linha
     return create_business(business_id, name, city, state, categories);
 }
 
@@ -67,7 +83,7 @@ static User parse_user_line(char* str, Stats stats) {
     char* user_id = strtok(str, ";");
     char* name = strtok(NULL, ";");
     if (!user_id || !name) return NULL;
-    GPtrArray* users = read_to_array(strtok(NULL, ";"), ",");
+    GPtrArray* users = read_to_ptr_array(strtok(NULL, ";"), ",");
     return create_user(user_id, name, users);
 }
 

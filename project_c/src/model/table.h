@@ -6,15 +6,13 @@
 typedef struct table* TABLE;
 
 TABLE new_table(GPtrArray* fields);
-void set_fieldnames(TABLE table, GPtrArray* field_names);
-void new_line(TABLE table);
-void add_to_last_line(TABLE table, char* field);
-void add_field_name(TABLE table, char* field_name);
-char* table_index(TABLE table, size_t i, size_t j);
+void add_field(TABLE table, char* field);
 void fprintf_table(
     FILE* stream, TABLE table, char* delim_header, char* delim_main);
-GPtrArray* get_field_names(TABLE table);
+char* table_index(TABLE table, size_t i, size_t j);
+size_t get_number_fields_table(TABLE table);
 size_t get_number_lines_table(TABLE table);
 void free_table(TABLE table);
+
 #endif
 

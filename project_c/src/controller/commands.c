@@ -29,18 +29,19 @@ void cmd_print(GArray* args) {
 TABLE from_csv(char* filename, char* delim) {
     FILE* fp = fopen(filename, "r");
     char* header = read_line(fp);
-    GPtrArray* fields = read_to_array(header, delim);
+    GPtrArray* fields = read_to_ptr_array(header, delim);
+    free(header);
     TABLE table = new_table(fields);
     char* line;
-    int lin = 0;
+    size_t n_fields = fields->len;
     while ((line = read_line(fp))) {
-        lin++;
-        new_line(table);
-        GPtrArray* line_in_array = read_to_array(line, delim);
-        for (int i = 0; i < line_in_array->len; i++) {
-            char* test = g_ptr_array_index(line_in_array, i);
-            add_to_last_line(table, test);
-            free(test);
+        char** line_in_array = read_to_array(line, delim, n_fields);
+        if (!line_in_array) {
+            // TODO free
+            return NULL;
+        }
+        for (int i = 0; i < n_fields; i++) {
+            add_field(table, line_in_array[i]);
         }
     }
     return table;
@@ -49,23 +50,22 @@ void to_csv(TABLE table, char* filename, char* delim) {
     FILE* fp = fopen(filename, "w");
     fprintf_table(fp, table, delim, delim);
 }
-// to change
-ssize_t whereis_field(TABLE table, char* field_name) {
-    int i;
-    GPtrArray* field_names = get_field_names(table);
-    for (i = 0; i < field_names->len; i++) {
-        if (!strcmp(field_names->pdata[i], field_name)) {
-            return i;
-        }
-    }
-    return -1;
-}
 
 bool matches_by_operator(int the_value, int current_value, OPERATOR op) {
     int res = current_value - the_value;
     return res == (op * res);
 }
 
+// to change
+ssize_t whereis_field(TABLE table, char* field_name) {
+    int j;
+    for (j = 0; j < get_number_fields_table(table); j++) {
+        if (!strcmp(table_index(table, 0, j), field_name)) {
+            return j;
+        }
+    }
+    return -1;
+}
 TABLE filter(TABLE table, char* field_name, char* value, OPERATOR op) {
     GPtrArray* fields = g_ptr_array_sized_new(1);
     g_ptr_array_add(fields, field_name);
@@ -81,13 +81,12 @@ TABLE filter(TABLE table, char* field_name, char* value, OPERATOR op) {
     for (int i = 0; i < number_lines; i++) {
         char* elem = table_index(table, i, col_index);
         if (matches_by_operator(atoi(value), atoi(elem), op)) {
-            new_line(table_two);
-            add_to_last_line(table_two, elem);
+            add_field(table, elem);
         }
     }
     return table_two;
 }
-void projection(TABLE table, size_t col, ...) {
+void projection(TABLE table, size_t* col, size_t n_colunas) {
     // TODO
 }
 

@@ -61,13 +61,13 @@ GPtrArray* build_ptr_array(char* ptr_array[], int N) {
     return new_array;
 }
 
-void fprint_str_array(FILE* stream, GPtrArray* arr, char* delim) {
+void fprint_str_array(
+    FILE* stream, GPtrArray* arr, size_t n_fields, char* delim) {
     for (int i = 0; i < arr->len; i++) {
-        char* d = delim;
-        if (i == 0) d = "";
-        fprintf(stream, "%s%s", d, (char*) g_ptr_array_index(arr, i));
+        char p_new_line[4] = "";
+        if (i > 0 && ((i + 1) % n_fields) == 0) strcpy(p_new_line, " |\n");
+        fprintf(stream, "%s%s%s", delim, (char*) arr->pdata[i], p_new_line);
     }
-    fputc('\n', stream);
 }
 void free_ptr_array_deep(GPtrArray* arr) {
     g_ptr_array_set_free_func(arr, free);
