@@ -27,6 +27,9 @@ void add_field(TABLE table, char* field) {
 void fprintf_table(
     FILE* stream, TABLE table, char* delim_header, char* delim_main) {
     fprint_str_array(stream, table->lines, table->number_fields, delim_header);
+    if (stream != stdout && stream != stdin && stream != stderr) {
+        fclose(stream);
+    }
 }
 char* table_index(TABLE table, size_t i, size_t j) {
     return table->lines->pdata[i * table->number_fields + j];

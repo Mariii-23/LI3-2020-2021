@@ -64,9 +64,16 @@ GPtrArray* build_ptr_array(char* ptr_array[], int N) {
 void fprint_str_array(
     FILE* stream, GPtrArray* arr, size_t n_fields, char* delim) {
     for (int i = 0; i < arr->len; i++) {
-        char p_new_line[4] = "";
-        if (i > 0 && ((i + 1) % n_fields) == 0) strcpy(p_new_line, " |\n");
-        fprintf(stream, "%s%s%s", delim, (char*) arr->pdata[i], p_new_line);
+        char c[2] = "";
+        char* d = delim;
+        if (((i + 1) % n_fields) == 0) {
+            d = "";
+            c[0] = '\n';
+        }
+        fprintf(stream, "%s%s%s", (char*) arr->pdata[i], d, c);
+    }
+    if (stream != stdout && stream != stdin && stream != stderr) {
+        fclose(stream);
     }
 }
 void free_ptr_array_deep(GPtrArray* arr) {
