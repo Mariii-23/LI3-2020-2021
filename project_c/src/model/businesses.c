@@ -40,63 +40,38 @@ Business create_business(char *business_id, char *name, char *city, char *state,
 
 char *get_business_id(Business self) {
   if (self)
-    return self->business_id;
+    return g_strdup(self->business_id);
   else
     return NULL;
-}
-
-void set_business_id(Business self, char *business_id) {
-  if (self && business_id)
-    self->business_id = g_strdup(business_id);
 }
 
 char *get_business_name(Business self) {
   if (self)
-    return self->name;
+    return g_strdup(self->name);
   else
     return NULL;
-}
-
-void set_business_name(Business self, char *name) {
-  if (self && name)
-    self->name = g_strdup(name);
 }
 
 char *get_business_city(Business self) {
   if (self)
-    return self->city;
+    return g_strdup(self->city);
   else
     return NULL;
-}
-
-void set_business_city(Business self, char *city) {
-  if (self)
-    self->city = g_strdup(city);
 }
 
 char *get_business_state(Business self) {
   if (self)
-    return self->state;
+    return g_strdup(self->state);
   else
     return NULL;
 }
 
-void set_business_state(Business self, char *state) {
-  if (self && state)
-    self->state = g_strdup(state);
-}
-
+// Encapsulamento ver
 GPtrArray *get_business_categories(Business self) {
   if (self)
     return self->categories;
   else
     return NULL;
-}
-
-void set_busines_categories(Business self, GPtrArray *categories) {
-  if (self && categories) {
-    self->categories = categories;
-  }
 }
 
 /* Business: free */
@@ -123,17 +98,9 @@ BusinessCollection create_business_collection() {
   return new_business_collection;
 }
 
-void set_businesses(BusinessCollection self, GPtrArray *businesses) {
-  if (self && businesses) {
-    self->businesses = businesses;
-  }
-}
-
 void add_business(BusinessCollection collection, Business business) {
   g_ptr_array_add(collection->businesses, business);
   g_hash_table_insert(collection->by_id, get_business_id(business), business);
-  /* append_to_value(collection->by_city, get_business_city(business),
-   * business); */
   phf_add(collection->by_letter, get_business_name(business), business);
 }
 
@@ -143,11 +110,6 @@ Business get_businessCollection_business_by_id(BusinessCollection self,
     return g_hash_table_lookup(self->by_id, id);
   else
     return NULL;
-}
-
-void set_businessCollection_by_id(BusinessCollection self, GHashTable *by_id) {
-  if (self && by_id)
-    self->by_id = by_id;
 }
 
 void add_businessCollection_by_id(BusinessCollection self, gpointer elem) {
@@ -161,13 +123,6 @@ GPtrArray *get_businessCollection_business_by_letter(BusinessCollection self,
     return phf_lookup(self->by_letter, name);
   else
     return NULL;
-}
-
-void set_businessCollection_by_letter(BusinessCollection self,
-                                      PerfectHash by_letter) {
-  if (self) {
-    self->by_letter = by_letter;
-  }
 }
 
 void add_businessCollection_by_letter(BusinessCollection self,

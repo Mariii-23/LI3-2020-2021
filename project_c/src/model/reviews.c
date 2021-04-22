@@ -50,7 +50,7 @@ Review create_review(char *review_id, char *user_id, char *business_id,
 /* Review: getters and setters */
 char *get_review_id(Review self) {
   if (self) {
-    return self->review_id;
+    return g_strdup(self->review_id);
   } else
     return NULL;
 }

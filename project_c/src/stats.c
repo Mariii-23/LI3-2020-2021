@@ -53,8 +53,9 @@ void update_average_stars(Stats stats, char *business_id, float new_star) {
 /* } */
 
 float get_average_number_stars(Stats stats, char *business_id) {
-  return *(double *)g_hash_table_lookup(stats->business_id_to_stars,
-                                        business_id);
+  return ((StarsTuple)g_hash_table_lookup(stats->business_id_to_stars,
+                                          business_id))
+      ->current_average;
 }
 
 int is_empty_stats(Stats stats) {
@@ -71,30 +72,26 @@ int is_empty_business_id_to_stars(Stats stats) {
   return empty;
 }
 
-void start_table_iter_init_city_to_stars(GHashTableIter *iter, Stats stats) {
+void start_table_iter_init_business_id_hash_table(GHashTableIter *iter,
+                                                  Stats stats) {
   if (!stats && !iter)
     return;
   g_hash_table_iter_init(iter, stats->business_id_to_stars);
 }
 
-void start_table_iter_init_category_to_stars(GHashTableIter *iter,
-                                             Stats stats) {
-  if (!stats && !iter)
-    return;
-  g_hash_table_iter_init(iter, stats->category_to_business_by_star);
-}
 // se der 0 deu null, 1 deu valor
 int iter_next_table_business_id_to_stars(GHashTableIter *iter, int *stars,
                                          char **business_id) {
   int empty = 0;
-  gpointer *key, *value;
+  char *key = NULL;
+  StarsTuple value = NULL;
 
-  if (g_hash_table_iter_next(iter, key, value)) {
-    float star = ((StarsTuple)value)->current_average;
-    *stars = star;
-    // verificar
-    char *id = (char *)*key;
-    strcpy(*business_id, id);
+  if (!stars && !business_id)
+    return empty;
+
+  if (g_hash_table_iter_next(iter, (gpointer *)&key, (gpointer *)&value)) {
+    *stars = value->current_average;
+    strcpy(*business_id, g_strdup(key));
     empty = 1;
   } else {
     *stars = 0;
@@ -163,7 +160,6 @@ void add_category_to_business_by_star(Stats stats, char *category,
         gs_list, init_city_tuple(stars, business_id), compare_stars, NULL);
 }
 
-// alterar isto, pra "modo" table
 GSList *n_larger_gs_list(int N, GSList *gs_list) {
   GSList *new = gs_list = g_slist_alloc();
   int size = g_slist_length(gs_list);
@@ -190,6 +186,7 @@ GSList *n_larger_than_gs_list(int N, GSList *gs_list) {
   return new;
 }
 
+// alterar isto, pra "modo" table
 GSList *n_larger_city_star(Stats stats, char *city, int N) {
   GSList *new = NULL;
   if (stats && stats->city_to_business_by_star)

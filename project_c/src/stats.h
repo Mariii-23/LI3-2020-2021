@@ -10,8 +10,8 @@ void update_average_stars(Stats stats, char *business_id, float new_star);
 int is_empty_business_id_to_stars(Stats stats);
 int is_empty_stats(Stats stats);
 
-void start_table_iter_init_city_to_stars(GHashTableIter *iter, Stats stats);
-void start_table_iter_init_category_to_stars(GHashTableIter *iter, Stats stats);
+void start_table_iter_init_business_id_hash_table(GHashTableIter *iter,
+                                                  Stats stats);
 
 int iter_next_table_business_id_to_stars(GHashTableIter *iter, int *stars,
                                          char **business_id);

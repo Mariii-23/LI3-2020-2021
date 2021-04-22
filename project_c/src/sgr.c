@@ -157,7 +157,7 @@ TABLE top_businesses_with_category(SGR sgr, int top, char *category);
 // Query 9
 TABLE reviews_with_word(SGR sgr, int top, char *word);
 
-static void build_city_to_business_by_star(SGR sgr) {
+static void build_city_hash_table(SGR sgr) {
 
   if (!sgr && !is_empty_stats(sgr->estatisticas) &&
       !is_empty_business_id_to_stars(sgr->estatisticas))
@@ -167,7 +167,7 @@ static void build_city_to_business_by_star(SGR sgr) {
 
   GHashTableIter iter;
 
-  start_table_iter_init_city_to_stars(&iter, sgr->estatisticas);
+  start_table_iter_init_business_id_hash_table(&iter, sgr->estatisticas);
 
   int current_average;
   char *business_id;
@@ -189,9 +189,9 @@ static void build_category_hash_table(SGR sgr) {
     return;
 
   init_category_to_business_by_star(sgr->estatisticas);
-  GHashTableIter iter;
 
-  start_table_iter_init_category_to_stars(&iter, sgr->estatisticas);
+  GHashTableIter iter;
+  start_table_iter_init_business_id_hash_table(&iter, sgr->estatisticas);
 
   int current_average;
   char *business_id;
