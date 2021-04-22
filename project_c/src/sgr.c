@@ -167,17 +167,46 @@ static void build_city_to_business_by_star(SGR sgr) {
 
   GHashTableIter iter;
 
-  start_table_iter_init_business_id_to_stars(&iter, sgr->estatisticas);
+  start_table_iter_init_city_to_stars(&iter, sgr->estatisticas);
 
   int current_average;
   char *business_id;
 
-  while (!iter_next_table_business_id_to_stars(&iter, &current_average,
-                                               &business_id)) {
+  while (iter_next_table_business_id_to_stars(&iter, &current_average,
+                                              &business_id)) {
     char *city = get_business_city(get_businessCollection_business_by_id(
         sgr->catalogo_businesses, business_id));
 
     add_city_to_business_by_star(sgr->estatisticas, city, business_id,
                                  current_average);
+  }
+}
+
+static void build_category_hash_table(SGR sgr) {
+
+  if (!sgr && !is_empty_stats(sgr->estatisticas) &&
+      !is_empty_business_id_to_stars(sgr->estatisticas))
+    return;
+
+  init_category_to_business_by_star(sgr->estatisticas);
+  GHashTableIter iter;
+
+  start_table_iter_init_category_to_stars(&iter, sgr->estatisticas);
+
+  int current_average;
+  char *business_id;
+
+  while (iter_next_table_business_id_to_stars(&iter, &current_average,
+                                              &business_id)) {
+
+    GPtrArray *categories =
+        get_business_categories(get_businessCollection_business_by_id(
+            sgr->catalogo_businesses, business_id));
+
+    gint size = categories->len;
+    for (int i = 0; i < size; i++)
+      add_category_to_business_by_star(sgr->estatisticas,
+                                       g_ptr_array_index(categories, i),
+                                       business_id, current_average);
   }
 }

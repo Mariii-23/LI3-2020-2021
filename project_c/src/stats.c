@@ -41,16 +41,17 @@ void update_average_stars(Stats stats, char *business_id, float new_star) {
       tuplo->number_reviews;
 }
 
-static void build_category_hash_table(Stats stats) {
-  stats->business_id_to_stars = g_hash_table_new(g_str_hash, g_str_equal);
-  // TODO
-}
+/* static void build_category_hash_table(Stats stats) { */
+/*   stats->business_id_to_stars = g_hash_table_new(g_str_hash, g_str_equal); */
+/*   // TODO */
+/* } */
 
-static void build_city_hash_table(Stats stats) {
-  stats->category_to_business_by_star =
-      g_hash_table_new(g_str_hash, g_str_equal);
-  // TODO
-}
+/* static void build_city_hash_table(Stats stats) { */
+/*   stats->category_to_business_by_star = */
+/*       g_hash_table_new(g_str_hash, g_str_equal); */
+/*   // TODO */
+/* } */
+
 float get_average_number_stars(Stats stats, char *business_id) {
   return *(double *)g_hash_table_lookup(stats->business_id_to_stars,
                                         business_id);
@@ -70,13 +71,18 @@ int is_empty_business_id_to_stars(Stats stats) {
   return empty;
 }
 
-void start_table_iter_init_business_id_to_stars(GHashTableIter *iter,
-                                                Stats stats) {
+void start_table_iter_init_city_to_stars(GHashTableIter *iter, Stats stats) {
   if (!stats && !iter)
     return;
   g_hash_table_iter_init(iter, stats->business_id_to_stars);
 }
 
+void start_table_iter_init_category_to_stars(GHashTableIter *iter,
+                                             Stats stats) {
+  if (!stats && !iter)
+    return;
+  g_hash_table_iter_init(iter, stats->category_to_business_by_star);
+}
 // se der 0 deu null, 1 deu valor
 int iter_next_table_business_id_to_stars(GHashTableIter *iter, int *stars,
                                          char **business_id) {
@@ -84,13 +90,15 @@ int iter_next_table_business_id_to_stars(GHashTableIter *iter, int *stars,
   gpointer *key, *value;
 
   if (g_hash_table_iter_next(iter, key, value)) {
-    *stars = ((StarsTuple)value)->current_average;
+    float star = ((StarsTuple)value)->current_average;
+    *stars = star;
     // verificar
-    strcpy(*business_id, (char *)key);
+    char *id = (char *)*key;
+    strcpy(*business_id, id);
     empty = 1;
   } else {
     *stars = 0;
-    strcpy("", *business_id);
+    strcpy(*business_id, "");
   }
 
   return empty;
@@ -108,8 +116,14 @@ gint compare_stars(gconstpointer key1, gconstpointer key2, gpointer user_data) {
 }
 
 void init_city_to_business_by_star(Stats stats) {
-  if (stats)
+  if (stats && !stats->business_id_to_stars)
     stats->business_id_to_stars = g_hash_table_new(g_str_hash, g_str_equal);
+}
+
+void init_category_to_business_by_star(Stats stats) {
+  if (stats && !stats->category_to_business_by_star)
+    stats->category_to_business_by_star =
+        g_hash_table_new(g_str_hash, g_str_equal);
 }
 
 void add_city_to_business_by_star(Stats stats, char *city, char *business_id,
@@ -135,13 +149,11 @@ void add_category_to_business_by_star(Stats stats, char *category,
   if (!stats)
     return;
 
-  if (!stats->business_id_to_stars)
-    stats->business_id_to_stars = g_hash_table_new(g_str_hash, g_str_equal);
+  if (!stats->city_to_business_by_star)
+    stats->city_to_business_by_star = g_hash_table_new(g_str_hash, g_str_equal);
 
-  // isto mudaria
-  GSList *gs_list = g_hash_table_lookup(stats->business_id_to_stars, category);
-  /* GSList *gs_list = g_hash_table_lookup(stats->categoty_to_stars, category);
-   */
+  GSList *gs_list =
+      g_hash_table_lookup(stats->category_to_business_by_star, category);
 
   if (!gs_list) {
     gs_list = g_slist_alloc();
@@ -149,4 +161,39 @@ void add_category_to_business_by_star(Stats stats, char *category,
   } else
     gs_list = g_slist_insert_sorted_with_data(
         gs_list, init_city_tuple(stars, business_id), compare_stars, NULL);
+}
+
+// alterar isto, pra "modo" table
+GSList *n_larger_gs_list(int N, GSList *gs_list) {
+  GSList *new = gs_list = g_slist_alloc();
+  int size = g_slist_length(gs_list);
+  for (int i = 0; i < size && i < N; i++) {
+    // verificar se tem q ser copia
+    new = g_slist_append(new, g_slist_nth(gs_list, i));
+  }
+  return new;
+}
+
+GSList *n_larger_than_gs_list(int N, GSList *gs_list) {
+  GSList *new = gs_list = g_slist_alloc();
+  int stop = 0;
+  int size = g_slist_length(gs_list);
+  for (int i = 0; !stop && i < size; i++) {
+    gpointer cont = g_slist_nth(gs_list, i);
+    if (((CityTuple)cont)->stars < N) {
+      stop = 1;
+      continue;
+    }
+    // verificar se tem q ser copia
+    new = g_slist_append(new, cont);
+  }
+  return new;
+}
+
+GSList *n_larger_city_star(Stats stats, char *city, int N) {
+  GSList *new = NULL;
+  if (stats && stats->city_to_business_by_star)
+    new = n_larger_gs_list(
+        N, g_hash_table_lookup(stats->city_to_business_by_star, city));
+  return new;
 }
