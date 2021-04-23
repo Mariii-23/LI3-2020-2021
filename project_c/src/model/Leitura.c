@@ -5,13 +5,12 @@
 #include <string.h>
 
 #include "auxiliary.h"
-#include "model/businesses.h"
-#include "model/reviews.h"
-#include "model/stats.h"
-#include "model/table.h"
-#include "model/users.h"
-#include "perfect_hash.h"
+#include "businesses.h"
+#include "reviews.h"
 #include "sgr.h"
+#include "stats.h"
+#include "table.h"
+#include "users.h"
 #define LINESIZE 100
 typedef enum { BUSINESS, REVIEW, USER } Type;
 

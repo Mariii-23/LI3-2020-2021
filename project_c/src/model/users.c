@@ -3,7 +3,7 @@
 #include <glib.h>
 #include <string.h>
 
-#include "../auxiliary.h"
+#include "auxiliary.h"
 
 struct user {
     char* user_id;
