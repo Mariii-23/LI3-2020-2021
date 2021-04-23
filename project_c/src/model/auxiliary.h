@@ -4,7 +4,7 @@
 #include <glib.h>
 #include <stdio.h>
 
-#include "model/reviews.h"
+#include "reviews.h"
 void* assert_return(void* ptr);
 void free_key(gpointer key, gpointer value, gpointer user_data);
 void free_key_value(gpointer key, gpointer value, gpointer user_data);
