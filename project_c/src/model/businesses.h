@@ -3,7 +3,7 @@
 
 #include <glib.h>
 
-#include "../perfect_hash.h"
+#include "perfect_hash.h"
 #include "users.h"
 
 typedef struct business *Business;
@@ -27,6 +27,7 @@ void free_business(Business self);
 void add_business(BusinessCollection self, Business elem);
 
 BusinessCollection create_business_collection();
+
 Business get_businessCollection_business_by_id(BusinessCollection self,
                                                char *id);
 GPtrArray *get_businessCollection_business_by_city(BusinessCollection self,

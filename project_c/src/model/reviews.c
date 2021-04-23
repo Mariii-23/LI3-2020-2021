@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../auxiliary.h"
+#include "auxiliary.h"
 #include "businesses.h"
 #include "users.h"
 

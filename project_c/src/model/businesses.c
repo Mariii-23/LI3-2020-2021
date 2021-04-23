@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../auxiliary.h"
-#include "../perfect_hash.h"
+#include "auxiliary.h"
+#include "perfect_hash.h"
 #include "users.h"
 
 struct business {
@@ -18,20 +18,22 @@ struct business {
 };
 
 struct business_collection {
-  GPtrArray *businesses; // é mesmo necessario, tendo o by_id?
+  GPtrArray *businesses;
   GHashTable *by_id;
   PerfectHash by_letter;
 };
 
 /* Business: builder */
+
 Business create_business(char *business_id, char *name, char *city, char *state,
                          GPtrArray *categories) {
   Business new_business = (Business)malloc(sizeof(struct business));
-  *new_business = (struct business){.business_id = g_strdup(business_id),
-                                    .name = g_strdup(name),
-                                    .city = g_strdup(city),
-                                    .state = g_strdup(state),
-                                    .categories = categories};
+  *new_business = (struct business){
+      .business_id = g_strdup(business_id),
+      .name = g_strdup(name),
+      .city = g_strdup(city),
+      .state = g_strdup(state),
+      .categories = g_ptr_array_copy(categories, strdup_copy, NULL)};
   return new_business;
 }
 

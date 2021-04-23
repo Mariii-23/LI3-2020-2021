@@ -20,6 +20,13 @@ TABLE new_table(GPtrArray* header) {
     return table;
 }
 
+TABLE new_table_without_fields(size_t number_fields) {
+    TABLE table = malloc(sizeof(struct table));
+    table->lines = g_ptr_array_sized_new(number_fields);
+    table->number_fields = number_fields;
+    return table;
+}
+
 void add_field(TABLE table, char* field) {
     g_ptr_array_add(table->lines, g_strdup(field));
 }
@@ -41,6 +48,14 @@ size_t get_number_fields_table(TABLE table) {
     return table->number_fields;
 }
 
+GPtrArray* get_fields_table(TABLE table) {
+    size_t number_fields = table->number_fields;
+    GPtrArray* fields = g_ptr_array_sized_new(number_fields);
+    for (int i = 0; i < number_fields; i++) {
+        g_ptr_array_add(fields, g_strdup(g_ptr_array_index(table->lines, i)));
+    }
+    return fields;
+}
 void free_table(TABLE table) {
     free_ptr_array_deep(table->lines);
     free(table);

@@ -12,6 +12,8 @@ void fprintf_table(
 char* table_index(TABLE table, size_t i, size_t j);
 size_t get_number_fields_table(TABLE table);
 size_t get_number_lines_table(TABLE table);
+GPtrArray* get_fields_table(TABLE table);
+TABLE new_table_without_fields(size_t number_fields);
 void free_table(TABLE table);
 
 #endif

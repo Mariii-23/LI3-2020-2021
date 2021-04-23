@@ -3,11 +3,11 @@
 
 #include <stdio.h>
 
-#include "model/businesses.h"
-#include "model/reviews.h"
-#include "model/stats.h"
-#include "model/users.h"
+#include "businesses.h"
+#include "reviews.h"
 #include "sgr.h"
+#include "stats.h"
+#include "users.h"
 
 GPtrArray* read_to_ptr_array(char* line, char* delim);
 char** read_to_array(char* line, char* delim, size_t number_fields);
