@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "../model/Leitura.h"
 #include "../model/auxiliary.h"
+#include "../model/leitura.h"
 #include "model/table.h"
 #include "view/colors.h"
 

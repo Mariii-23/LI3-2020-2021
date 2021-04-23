@@ -3,9 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Leitura.h"
 #include "auxiliary.h"
 #include "businesses.h"
+#include "leitura.h"
 #include "reviews.h"
 #include "stats.h"
 #include "table.h"
@@ -132,8 +132,11 @@ TABLE bussinesses_reviewed(SGR sgr, char *id) {
     add_field(table, business_name);
     free(business_id);
     free(business_name);
-    // free business quando a mariana alterar as cenas
+    free_business(business);
   }
+
+  g_ptr_array_set_free_func(reviews_array, (void *)free_review);
+  g_ptr_array_free(reviews_array, TRUE);
 
   return table;
 }
