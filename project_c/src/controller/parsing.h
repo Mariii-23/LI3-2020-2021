@@ -13,6 +13,10 @@ typedef enum token_type {
     TOK_OPAREN,     // (
     TOK_CPAREN,     // )
     TOK_SEMICOLON,  // ;
+    TOK_OSQ,        // [
+    TOK_CSQ,        // ]
+    TOK_OBRACKET,   // {
+    TOK_CBRACKET,   // }
     TOK_FINISH      // Não temos mais elementos
 } TokenType;
 
@@ -34,7 +38,9 @@ typedef enum ast_type {
     AST_ASSIGNMENT,
     AST_VARIABLE,
     AST_NUMBER,
-    AST_STRING
+    AST_STRING,
+    AST_INDEX,
+    AST_ARRAY
 } ASTType;
 
 typedef struct function_call {
@@ -47,6 +53,11 @@ typedef struct var_assignment {
     struct ast* value;
 } VarAssignment;
 
+typedef struct indexed {
+    struct ast* expression;
+    struct ast* index;
+} Indexed;
+
 typedef struct ast {
     ASTType type;
     union {
@@ -55,6 +66,8 @@ typedef struct ast {
         char* variable;
         int number;
         char* string;
+        GArray* array;
+        Indexed* index;
     } value;
 } AST;
 
@@ -72,6 +85,8 @@ SyntaxError* parse_function(const Token* tokens, AST* node, int* consumed);
 SyntaxError* parse_assignment(const Token* tokens, AST* node, int* consumed);
 SyntaxError* parse_expression(const Token* tokens, AST* node, int* consumed);
 SyntaxError* parse_statement(const Token* tokens, AST* node, int* consumed);
+SyntaxError* parse_array(const Token* tokens, AST* node, int* consumed);
+SyntaxError* parse_index(const Token* tokens, AST* node, int* consumed);
 
 const char* token_text(const Token* token);
 void print_element(Token* e);
