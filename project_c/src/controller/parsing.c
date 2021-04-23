@@ -288,37 +288,66 @@ SyntaxError* parse_assignment(const Token* tokens, AST* node, int* consumed) {
 }
 
 SyntaxError* parse_expression(const Token* tokens, AST* node, int* consumed) {
-    if (tokens->type == TOK_NUMBER) {
-        node->type = AST_NUMBER;
-        node->value.number = atoi(tokens->text);
-        *consumed = 1;
-        return NULL;
-    }
-    else if (tokens->type == TOK_NAME) {
-        // Vamos tentar ler uma função, se não é uma variável
-        SyntaxError* e = parse_function(tokens, node, consumed);
-
-        if (e) {
-            free(e);
-            node->type = AST_VARIABLE;
-            node->value.variable = tokens->text;
-            *consumed = 1;
+    *consumed = 0;
+    do {
+        int consumed_now = 0;
+        if (tokens[*consumed].type == TOK_NUMBER) {
+            node->type = AST_NUMBER;
+            node->value.number = atoi(tokens->text);
+            consumed_now = 1;
         }
+        else if (tokens[*consumed].type == TOK_NAME) {
+            // Vamos tentar ler uma função, se não é uma variável
+            SyntaxError* e = parse_function(tokens, node, &consumed_now);
 
-        return NULL;
-    }
-    else if (tokens->type == TOK_OBRACKET) {
-        return parse_array(tokens, node, consumed);
-    }
-    else if (tokens->type == TOK_STRING) {
-        // TODO string escaping
-        node->type = AST_STRING;
-        node->value.string = tokens->text;
-        *consumed = 1;
-        return NULL;
-    }
+            if (e) {
+                free(e);
+                node->type = AST_VARIABLE;
+                node->value.variable = tokens->text;
+                consumed_now = 1;
+            }
+        }
+        else if (tokens[*consumed].type == TOK_OBRACKET) {
+            SyntaxError* e = parse_array(tokens, node, &consumed_now);
+            if (e) {
+                return e;
+            }
+        }
+        else if (tokens[*consumed].type == TOK_STRING) {
+            node->type = AST_STRING;
+            node->value.string = tokens->text;
+            consumed_now = 1;
+        }
+        else if (tokens[*consumed].type == TOK_OSQ) {
+            AST *index = malloc(sizeof(AST));
+            int c = 0;
+            consumed_now += 1;
+            SyntaxError* e = parse_expression(tokens + *consumed + consumed_now, index, &c);
+            if (e) {
+                free(index);
+                return e;
+            }
+            consumed_now += c;
 
-    return syntax_error("an expression", tokens);
+            if (tokens[*consumed + consumed_now].type != TOK_CSQ) {
+                free(index);
+                return syntax_error("']'", tokens + *consumed);
+            }
+
+            consumed_now += 1;
+
+            Indexed *indexed = malloc(sizeof(struct indexed));
+            indexed->expression = memcpy(malloc(sizeof(AST)), node, sizeof(AST));
+            indexed->index = index;
+            node->type = AST_INDEX;
+            node->value.index = indexed;
+        } else {
+            // TODO free_ast
+            return syntax_error("an expression", tokens);
+        }
+        *consumed += consumed_now;
+    } while (tokens[*consumed].type == TOK_OSQ);
+    return NULL;
 }
 
 SyntaxError* parse_statement(const Token* tokens, AST* node, int* consumed) {

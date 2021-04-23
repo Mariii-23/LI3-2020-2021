@@ -53,6 +53,11 @@ typedef struct var_assignment {
     struct ast* value;
 } VarAssignment;
 
+typedef struct indexed {
+    struct ast* expression;
+    struct ast* index;
+} Indexed;
+
 typedef struct ast {
     ASTType type;
     union {
@@ -62,7 +67,7 @@ typedef struct ast {
         int number;
         char* string;
         GArray* array;
-        int index;
+        Indexed* index;
     } value;
 } AST;
 
