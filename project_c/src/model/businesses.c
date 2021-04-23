@@ -18,13 +18,12 @@ struct business {
 };
 
 struct business_collection {
-  GPtrArray *businesses;
+  GPtrArray *businesses; // é mesmo necessario, tendo o by_id?
   GHashTable *by_id;
   PerfectHash by_letter;
 };
 
 /* Business: builder */
-
 Business create_business(char *business_id, char *name, char *city, char *state,
                          GPtrArray *categories) {
   Business new_business = (Business)malloc(sizeof(struct business));
@@ -66,12 +65,27 @@ char *get_business_state(Business self) {
     return NULL;
 }
 
-// Encapsulamento ver
 GPtrArray *get_business_categories(Business self) {
   if (self)
-    return self->categories;
+    return g_ptr_array_copy(self->categories, strdup_copy, NULL);
   else
     return NULL;
+}
+
+static Business clone_business(Business self) {
+
+  Business new_business = (Business)malloc(sizeof(struct business));
+  *new_business =
+      (struct business){.business_id = get_business_id(self),
+                        .name = get_business_name(self),
+                        .city = get_business_city(self),
+                        .state = get_business_state(self),
+                        .categories = get_business_categories(self)};
+  return new_business;
+}
+
+static gpointer g_business_copy(gconstpointer src, gpointer data) {
+  return clone_business((Business)src);
 }
 
 /* Business: free */
@@ -99,37 +113,27 @@ BusinessCollection create_business_collection() {
 }
 
 void add_business(BusinessCollection collection, Business business) {
-  g_ptr_array_add(collection->businesses, business);
-  g_hash_table_insert(collection->by_id, get_business_id(business), business);
-  phf_add(collection->by_letter, get_business_name(business), business);
+  Business clone = clone_business(business);
+  g_ptr_array_add(collection->businesses, clone);
+  g_hash_table_insert(collection->by_id, business->business_id, clone);
+  phf_add(collection->by_letter, business->name, clone);
 }
 
 Business get_businessCollection_business_by_id(BusinessCollection self,
                                                char *id) {
   if (self && id)
-    return g_hash_table_lookup(self->by_id, id);
+    return clone_business(g_hash_table_lookup(self->by_id, id));
   else
     return NULL;
-}
-
-void add_businessCollection_by_id(BusinessCollection self, gpointer elem) {
-  if (self && elem)
-    g_hash_table_add(self->by_id, elem);
 }
 
 GPtrArray *get_businessCollection_business_by_letter(BusinessCollection self,
                                                      char *name) {
   if (self)
-    return phf_lookup(self->by_letter, name);
+    return g_ptr_array_copy(phf_lookup(self->by_letter, name), g_business_copy,
+                            NULL);
   else
     return NULL;
-}
-
-void add_businessCollection_by_letter(BusinessCollection self,
-                                      Business business) {
-  if (self) {
-    phf_add(self->by_letter, get_business_name(business), business);
-  }
 }
 
 /* BusinessCollection: free */

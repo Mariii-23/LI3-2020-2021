@@ -55,36 +55,18 @@ char *get_review_id(Review self) {
     return NULL;
 }
 
-void set_review_id(Review self, char *review_id) {
-  if (self && review_id) {
-    self->review_id = g_strdup(review_id);
-  }
-}
-
 char *get_review_user_id(Review self) {
   if (self) {
-    return self->user_id;
+    return g_strdup(self->user_id);
   } else
     return NULL;
-}
-
-void set_review_user_id(Review self, char *user_id) {
-  if (self && user_id) {
-    self->user_id = g_strdup(user_id);
-  }
 }
 
 char *get_review_business_id(Review self) {
   if (self) {
-    return self->business_id;
+    return g_strdup(self->business_id);
   } else
     return NULL;
-}
-
-void set_review_business_id(Review self, char *business_id) {
-  if (self && business_id) {
-    self->business_id = g_strdup(business_id);
-  }
 }
 
 float get_review_stars(Review self) {
@@ -94,23 +76,11 @@ float get_review_stars(Review self) {
     return -1;
 }
 
-void set_review_stars(Review self, float stars) {
-  if (self) {
-    self->stars = stars;
-  }
-}
-
 int get_review_useful(Review self) {
   if (self) {
     return self->useful;
   } else
     return -1;
-}
-
-void set_review_useful(Review self, int useful) {
-  if (self) {
-    self->useful = useful;
-  }
 }
 
 int get_review_funny(Review self) {
@@ -120,12 +90,6 @@ int get_review_funny(Review self) {
     return (-1);
 }
 
-void set_review_funny(Review self, int funny) {
-  if (self) {
-    self->funny = funny;
-  }
-}
-
 int get_review_cool(Review self) {
   if (self) {
     return self->cool;
@@ -133,35 +97,36 @@ int get_review_cool(Review self) {
     return -1;
 }
 
-void set_review_cool(Review self, int cool) {
-  if (self) {
-    self->cool = cool;
-  }
-}
-
 char *get_review_date(Review self) {
   if (self)
-    return self->date;
+    return g_strdup(self->date);
   else
     return NULL;
 }
 
-void set_review_date(Review self, char *date) {
-  if (self && date)
-    self->date = g_strdup(date);
-}
-
 char *get_review_text(Review self) {
   if (self) {
-    return self->text;
+    return g_strdup(self->text);
   } else
     return NULL;
 }
 
-void set_review_text(Review self, char *text) {
-  if (self && text) {
-    self->text = g_strdup(text);
-  }
+static Review clone_review(Review self) {
+  Review new_review = (Review)malloc(sizeof(struct review));
+  *new_review = (struct review){.review_id = g_strdup(self->review_id),
+                                .user_id = g_strdup(self->user_id),
+                                .business_id = g_strdup(self->business_id),
+                                .stars = self->stars,
+                                .useful = self->useful,
+                                .funny = self->funny,
+                                .cool = self->cool,
+                                .date = g_strdup(self->date),
+                                .text = g_strdup(self->text)};
+  return new_review;
+}
+
+static gpointer g_review_copy(gconstpointer src, gpointer data) {
+  return clone_review((Review)src);
 }
 
 void free_review(Review self) {
@@ -188,29 +153,19 @@ ReviewCollection create_review_collection() {
 }
 
 void add_review(ReviewCollection collection, Review review) {
-  g_hash_table_insert(collection->by_id, get_review_id(review), review);
+  Review new = clone_review(review);
+  g_hash_table_insert(collection->by_id, review->review_id, new);
 
-  append_to_value(collection->by_user_id, get_review_user_id(review), review);
-  append_to_value(collection->by_business_id, get_review_business_id(review),
-                  review);
-  g_ptr_array_add(collection->reviews, review);
-}
-
-void set_reviewCollection_reviews(ReviewCollection self, GPtrArray *reviews) {
-  if (self && reviews)
-    self->reviews = reviews;
+  append_to_value(collection->by_user_id, review->user_id, new);
+  append_to_value(collection->by_business_id, review->business_id, new);
+  g_ptr_array_add(collection->reviews, new);
 }
 
 Review get_reviewCollection_review_by_id(ReviewCollection self, char *id) {
   if (self && id)
-    return g_hash_table_lookup(self->by_id, id);
+    return clone_review(g_hash_table_lookup(self->by_id, id));
   else
     return NULL;
-}
-
-void set_reviewCollection_by_id(ReviewCollection self, GHashTable *by_id) {
-  if (self && by_id)
-    self->by_id = by_id;
 }
 
 int get_number_reviews_by_business(ReviewCollection self, char *business_id) {
@@ -220,28 +175,19 @@ int get_number_reviews_by_business(ReviewCollection self, char *business_id) {
 GPtrArray *get_reviewCollection_review_by_user_id(ReviewCollection self,
                                                   char *id) {
   if (self && id)
-    return g_hash_table_lookup(self->by_user_id, id);
+    return g_ptr_array_copy(g_hash_table_lookup(self->by_user_id, id),
+                            g_review_copy, NULL);
   else
     return NULL;
-}
-
-void set_reviewCollection_by_user(ReviewCollection self, GHashTable *by_user) {
-  if (self && by_user)
-    self->by_user_id = by_user;
 }
 
 GPtrArray *get_reviewCollection_review_by_business_id(ReviewCollection self,
                                                       char *id) {
   if (self && id)
-    return g_hash_table_lookup(self->by_business_id, id);
+    return g_ptr_array_copy(g_hash_table_lookup(self->by_business_id, id),
+                            g_review_copy, NULL);
   else
     return NULL;
-}
-
-void set_reviewCollection_by_business(ReviewCollection self,
-                                      GHashTable *by_business) {
-  if (self && by_business)
-    self->by_business_id = by_business;
 }
 
 void free_reviewCollection(ReviewCollection self) {

@@ -29,19 +29,11 @@ void add_business(BusinessCollection self, Business elem);
 BusinessCollection create_business_collection();
 Business get_businessCollection_business_by_id(BusinessCollection self,
                                                char *id);
-
-void add_businessCollection_by_id(BusinessCollection self, gpointer elem);
-
 GPtrArray *get_businessCollection_business_by_city(BusinessCollection self,
                                                    char *city);
-/* void add_businessCollection_by_city(BusinessCollection self, gpointer elem);
- */
 
 GPtrArray *get_businessCollection_business_by_letter(BusinessCollection self,
                                                      char *name);
-
-void add_businessCollection_by_letter(BusinessCollection self,
-                                      Business business);
 
 void free_businessCollection(BusinessCollection self);
 #endif
