@@ -28,26 +28,40 @@ void cmd_print(GArray* args) {
 
 TABLE from_csv(char* filename, char* delim) {
     FILE* fp = fopen(filename, "r");
+    if (!fp) {
+        printf("Error reading file %s\n", filename);
+        return NULL;
+    }
     char* header = read_line(fp);
     GPtrArray* fields = read_to_ptr_array(header, delim);
     free(header);
     TABLE table = new_table(fields);
     char* line;
     size_t n_fields = fields->len;
+    size_t invalid_lines = 0;
     while ((line = read_line(fp))) {
         char** line_in_array = read_to_array(line, delim, n_fields);
+        free(line);
         if (!line_in_array) {
-            // TODO free
-            return NULL;
+            // ignorar linhas invalidas
+            invalid_lines++;
+            continue;
         }
         for (int i = 0; i < n_fields; i++) {
-            add_field(table, line_in_array[i]);
+            char* field = line_in_array[i];
+            add_field(table, field);
+            free(field);
         }
     }
+    printf("%zu Invalid lines in csv\n", invalid_lines);
     return table;
 }
 void to_csv(TABLE table, char* filename, char* delim) {
     FILE* fp = fopen(filename, "w");
+    if (!fp) {
+        printf("Error opening file %s\n", filename);
+        return;
+    }
     fprintf_table(fp, table, delim, delim);
 }
 

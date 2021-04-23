@@ -35,15 +35,20 @@ char* read_line(FILE* fp) {
 }
 
 char** read_to_array(char* line, char* delim, size_t number_fields) {
+    // ver se tem campos a mais ou a menos
     char* item = strtok(line, delim);
     if (!item) return NULL;
     char** array = malloc(sizeof(char*) * number_fields);
     array[0] = g_strdup(item);
-    for (size_t i = 1; i < number_fields; i++) {
+    int i = 0;
+    for (; i < number_fields; i++) {
         item = strtok(NULL, delim);
         array[i] = g_strdup(item);
     }
     if (strtok(NULL, delim)) {
+        for (int j = 0; j < i; j++) {
+            free(array[j]);
+        }
         free(array);
         return NULL;
     }
@@ -66,7 +71,8 @@ static Business parse_business_line(char* str, Stats stats) {
     char* name = strtok(NULL, ";");
     char* city = strtok(NULL, ";");
     char* state = strtok(NULL, ";");
-    if (!business_id || !name || !city || !state) {
+    if (!state) {
+        // nao tem campos suficientes
         return NULL;
     }
     GPtrArray* categories = NULL;
@@ -81,7 +87,7 @@ static Business parse_business_line(char* str, Stats stats) {
 static User parse_user_line(char* str, Stats stats) {
     char* user_id = strtok(str, ";");
     char* name = strtok(NULL, ";");
-    if (!user_id || !name) return NULL;
+    if (!name) return NULL;
     GPtrArray* users = read_to_ptr_array(strtok(NULL, ";"), ",");
     return create_user(user_id, name, users);
 }
@@ -96,9 +102,7 @@ static Review parse_review_line(char* str, Stats stats) {
     int cool = atoi(strtok(NULL, ";"));
     char* date = strtok(NULL, ";");
     char* text = strtok(NULL, ";");
-    if (!review_id || !user_id || !business_id || !stars || !useful || !funny ||
-        !cool || !date || !text)
-        return NULL;
+    if (!text) return NULL;
     update_average_stars(stats, business_id, stars);
     return create_review(
         review_id,
@@ -114,7 +118,6 @@ static Review parse_review_line(char* str, Stats stats) {
 
 ReviewCollection collect_reviews(FILE* fp, Stats stats) {
     char* line;
-    char* header = read_line(fp);
     ReviewCollection collection = create_review_collection();
     while ((line = read_line(fp))) {
         Review review = parse_review_line(line, stats);
@@ -127,7 +130,6 @@ ReviewCollection collect_reviews(FILE* fp, Stats stats) {
 
 BusinessCollection collect_businesses(FILE* fp, Stats stats) {
     char* line;
-    char* header = read_line(fp);
     BusinessCollection collection = create_business_collection();
     while ((line = read_line(fp))) {
         Business business = parse_business_line(line, stats);
@@ -140,7 +142,6 @@ BusinessCollection collect_businesses(FILE* fp, Stats stats) {
 
 UserCollection collect_users(FILE* fp, Stats stats) {
     char* line;
-    char* header = read_line(fp);
     UserCollection collection = create_user_collection();
     while ((line = read_line(fp))) {
         User user = parse_user_line(line, stats);
