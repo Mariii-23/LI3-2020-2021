@@ -1,3 +1,5 @@
+#include <glib.h>
+#include <gmodule.h>
 #include "exec.h"
 
 #include "../model/sgr.h"
@@ -52,6 +54,28 @@ Variable execute(STATE state, AST* ast) {
                 create_variable(state, ret);
             }
             break;
+        case AST_ARRAY:
+            {
+              GPtrArray *array = g_ptr_array_new();
+              GArray *array_ast = ast->value.array;
+
+              for (int i = 0; i < array_ast->len; i++) {
+                AST element = g_array_index(array_ast, AST, i);
+                Variable result = execute(state, &element);
+                if (!result) {
+                  for (int j = 0; j < i; j++) {
+                    free_if_possible(state, g_ptr_array_index(array, j));
+                  }
+                  return NULL;
+                }
+
+                g_ptr_array_add(array, result);
+              }
+
+              val.array = array;
+              ret = init_var(VAR_ARRAY, val, NULL);
+              break;
+            }
         case AST_FUNCTIONCALL: {
             // Dentro de um block para podermos definir variáveis
 
@@ -119,28 +143,31 @@ Variable execute(STATE state, AST* ast) {
 }
 
 void print_var(Variable var) {
-    // TODO
-    switch (get_var_type(var)) {
-        case VAR_STRING:
-            printf("String: %s\n", get_var_value(var).string);
-            break;
-        case VAR_NUMBER:
-            printf("Number: %d\n", get_var_value(var).number);
-            break;
-        case VAR_FUNCTION:
-            printf("Function\n");
-            break;
-        case VAR_SGR:
-            printf("SGR\n");
-            break;  // TODO!
-        case VAR_TABLE:
-            printf("Table\n");
-            break;
-        case VAR_VOID:
-            printf("Void\n");
-            break;
-        case VAR_ANY:
-            printf("Unknown type\n");
-            break;
-    }
+  // TODO
+  switch (get_var_type(var)) {
+    case VAR_STRING:
+      printf("String: %s\n", get_var_value(var).string);
+      break;
+    case VAR_NUMBER:
+      printf("Number: %d\n", get_var_value(var).number);
+      break;
+    case VAR_FUNCTION:
+      printf("Function\n");
+      break;
+    case VAR_ARRAY:
+      printf("Array: %d elements\n", get_var_value(var).array->len);
+      break;
+    case VAR_SGR:
+      printf("SGR\n");
+      break; // TODO!
+    case VAR_TABLE:
+      printf("Table\n");
+      break;
+    case VAR_VOID:
+      printf("Void\n");
+      break;
+    case VAR_ANY:
+      printf("Unknown type\n");
+      break;
+  }
 }

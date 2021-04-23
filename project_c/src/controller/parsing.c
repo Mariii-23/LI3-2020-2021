@@ -192,14 +192,6 @@ void print_error(SyntaxError* error, const char* line) {
         token_text(error->token));
 }
 
-GArray* parse_line(const char* string) {
-    // 1. Criar parsers diferentes, um que lê uma chamada de função
-    // (prioridade 1), outro que lê uma variável (prioridade 2), outro
-    // que lê um valor (prioridade 3).
-
-    return NULL;
-}
-
 // Devolve o token em que deixou de conseguir ler
 SyntaxError* parse_function(const Token* tokens, AST* node, int* consumed) {
     int tok = 0;
@@ -315,7 +307,7 @@ SyntaxError* parse_expression(const Token* tokens, AST* node, int* consumed) {
 
         return NULL;
     }
-    else if (tokens->type == TOK_OPAREN) {
+    else if (tokens->type == TOK_OBRACKET) {
         return parse_array(tokens, node, consumed);
     }
     else if (tokens->type == TOK_STRING) {
@@ -366,7 +358,7 @@ SyntaxError* parse_array(const Token* tokens, AST* node, int* consumed) {
     while (tokens[tok].type != TOK_CBRACKET) {
         int consumed = 0;
         AST node;
-        SyntaxError* e = parse_expression(&tokens[consumed], &node, &consumed);
+        SyntaxError* e = parse_expression(&tokens[tok + consumed], &node, &consumed);
 
         if (e) {
             g_array_free(array, TRUE);

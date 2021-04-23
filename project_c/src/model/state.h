@@ -12,6 +12,7 @@ typedef enum variable_type {
   VAR_STRING,
   VAR_FUNCTION,
   VAR_VOID,
+  VAR_ARRAY,
   VAR_ANY
 } VariableType;
 
@@ -21,6 +22,7 @@ typedef union {
   TABLE table;
   char *string;
   struct function *function;
+  GPtrArray *array;
 } VariableValue;
 
 typedef struct variable *Variable;
