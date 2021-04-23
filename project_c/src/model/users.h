@@ -16,6 +16,6 @@ char *get_user_id(User user);
 char *get_user_name(User user);
 GPtrArray *get_friends(User user);
 GList *get_users(UserCollection user_collection);
-User get_user_by_id(UserCollection user_collection, int *user_id);
+User get_user_by_id(UserCollection user_collection, char *user_id);
 
 #endif

@@ -153,6 +153,9 @@ ReviewCollection create_review_collection() {
 }
 
 void add_review(ReviewCollection collection, Review review) {
+  if (!collection && !review)
+    return;
+
   Review new = clone_review(review);
   g_hash_table_insert(collection->by_id, review->review_id, new);
 
@@ -162,10 +165,15 @@ void add_review(ReviewCollection collection, Review review) {
 }
 
 Review get_reviewCollection_review_by_id(ReviewCollection self, char *id) {
-  if (self && id)
-    return clone_review(g_hash_table_lookup(self->by_id, id));
-  else
-    return NULL;
+  Review new = NULL;
+  if (!self && !id)
+    return new;
+
+  Review aux = g_hash_table_lookup(self->by_id, id);
+  if (aux)
+    new = clone_review(aux);
+
+  return new;
 }
 
 int get_number_reviews_by_business(ReviewCollection self, char *business_id) {
@@ -174,20 +182,26 @@ int get_number_reviews_by_business(ReviewCollection self, char *business_id) {
 
 GPtrArray *get_reviewCollection_review_by_user_id(ReviewCollection self,
                                                   char *id) {
-  if (self && id)
-    return g_ptr_array_copy(g_hash_table_lookup(self->by_user_id, id),
-                            g_review_copy, NULL);
-  else
-    return NULL;
+  GPtrArray *new = NULL;
+  if (!self && !id)
+    return new;
+
+  GPtrArray *aux = g_hash_table_lookup(self->by_user_id, id);
+  if (aux)
+    new = g_ptr_array_copy(aux, g_review_copy, NULL);
+  return new;
 }
 
 GPtrArray *get_reviewCollection_review_by_business_id(ReviewCollection self,
                                                       char *id) {
-  if (self && id)
-    return g_ptr_array_copy(g_hash_table_lookup(self->by_business_id, id),
-                            g_review_copy, NULL);
-  else
-    return NULL;
+  GPtrArray *new = NULL;
+  if (!self && !id)
+    return new;
+
+  GPtrArray *aux = g_hash_table_lookup(self->by_business_id, id);
+  if (aux)
+    new = g_ptr_array_copy(aux, g_review_copy, NULL);
+  return new;
 }
 
 void free_reviewCollection(ReviewCollection self) {

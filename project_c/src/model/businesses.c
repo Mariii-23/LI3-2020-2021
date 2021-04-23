@@ -68,7 +68,7 @@ char *get_business_state(Business self) {
 }
 
 GPtrArray *get_business_categories(Business self) {
-  if (self)
+  if (self && self->categories)
     return g_ptr_array_copy(self->categories, strdup_copy, NULL);
   else
     return NULL;
@@ -115,6 +115,8 @@ BusinessCollection create_business_collection() {
 }
 
 void add_business(BusinessCollection collection, Business business) {
+  if (!collection && !business)
+    return;
   Business clone = clone_business(business);
   g_ptr_array_add(collection->businesses, clone);
   g_hash_table_insert(collection->by_id, business->business_id, clone);
@@ -123,19 +125,28 @@ void add_business(BusinessCollection collection, Business business) {
 
 Business get_businessCollection_business_by_id(BusinessCollection self,
                                                char *id) {
-  if (self && id)
-    return clone_business(g_hash_table_lookup(self->by_id, id));
-  else
-    return NULL;
+  Business new = NULL;
+  if (!self && !id)
+    return new;
+
+  Business aux = g_hash_table_lookup(self->by_id, id);
+  if (aux)
+    new = clone_business(aux);
+
+  return new;
 }
 
 GPtrArray *get_businessCollection_business_by_letter(BusinessCollection self,
                                                      char *name) {
-  if (self)
-    return g_ptr_array_copy(phf_lookup(self->by_letter, name), g_business_copy,
-                            NULL);
-  else
-    return NULL;
+  GPtrArray *new = NULL;
+  if (!self)
+    return new;
+
+  GPtrArray *aux = phf_lookup(self->by_letter, name);
+  if (aux)
+    new = g_ptr_array_copy(aux, g_business_copy, NULL);
+
+  return new;
 }
 
 /* BusinessCollection: free */
