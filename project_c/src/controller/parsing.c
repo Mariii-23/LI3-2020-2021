@@ -83,6 +83,26 @@ const char* identify(const char* string, Token* dest) {
         dest->text = ")";
         return s + 1;
     }
+    else if (*s == '{') {
+        dest->type = TOK_OBRACKET;
+        dest->text = "{";
+        return s + 1;
+    }
+    else if (*s == '}') {
+        dest->type = TOK_CBRACKET;
+        dest->text = "}";
+        return s + 1;
+    }
+    else if (*s == '[') {
+        dest->type = TOK_OSQ;
+        dest->text = "[";
+        return s + 1;
+    }
+    else if (*s == ']') {
+        dest->type = TOK_CSQ;
+        dest->text = "]";
+        return s + 1;
+    }
     else if (*s == ';') {
         dest->type = TOK_SEMICOLON;
         dest->text = ";";
@@ -121,6 +141,7 @@ const char* identify(const char* string, Token* dest) {
         // Com isto emojis são nomes de variáveis válidos, fun fact
         for (i = 0; s[i] && s[i] != '"' && s[i] != ' ' && s[i] != '\t' &&
                     s[i] != '\n' && s[i] != '=' && s[i] != '(' && s[i] != ')' &&
+                    s[i] != '[' && s[i] != ']' && s[i] != '{' && s[i] != '}' &&
                     s[i] != ';' && s[i] != ',';
              i++)
             ;
@@ -294,6 +315,9 @@ SyntaxError* parse_expression(const Token* tokens, AST* node, int* consumed) {
 
         return NULL;
     }
+    else if (tokens->type == TOK_OPAREN) {
+        return parse_array(tokens, node, consumed);
+    }
     else if (tokens->type == TOK_STRING) {
         // TODO string escaping
         node->type = AST_STRING;
@@ -324,6 +348,44 @@ SyntaxError* parse_statement(const Token* tokens, AST* node, int* consumed) {
     }
 
     *consumed += 1;
+
+    return NULL;
+}
+
+SyntaxError* parse_array(const Token* tokens, AST* node, int* consumed) {
+    int tok = 0;
+
+    if (tokens[0].type != TOK_OBRACKET) {
+        return syntax_error("'{'", tokens);
+    }
+
+    tok += 1;
+    node->type = AST_ARRAY;
+    GArray *array = g_array_new(FALSE, FALSE, sizeof(AST));
+
+    while (tokens[tok].type != TOK_CBRACKET) {
+        int consumed = 0;
+        AST node;
+        SyntaxError* e = parse_expression(&tokens[consumed], &node, &consumed);
+
+        if (e) {
+            g_array_free(array, TRUE);
+            return e;
+        }
+
+        tok += consumed;
+
+        if (tokens[tok].type != TOK_CBRACKET && tokens[tok].type != TOK_COMMA) {
+            g_array_free(array, TRUE);
+            return syntax_error("',' or '}'", &tokens[tok]);
+        }
+
+        g_array_append_val(array, node);
+        if (tokens[tok].type == TOK_COMMA) tok++;
+    }
+
+    node->value.array = array;
+    *consumed = tok + 1;
 
     return NULL;
 }
@@ -374,6 +436,18 @@ void print_element(Token* e) {
             break;
         case TOK_SEMICOLON:
             printf(";");
+            break;
+        case TOK_OSQ:
+            printf("[");
+            break;
+        case TOK_CSQ:
+            printf("]");
+            break;
+        case TOK_OBRACKET:
+            printf("{");
+            break;
+        case TOK_CBRACKET:
+            printf("}");
             break;
         case TOK_FINISH:
             printf("FINISH");
