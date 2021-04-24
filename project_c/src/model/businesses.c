@@ -21,6 +21,9 @@ struct business_collection {
   GPtrArray *businesses;
   GHashTable *by_id;
   PerfectHash by_letter;
+
+  GHashTable *by_state; // Hash* Id-> Hash* State
+                        // ->GPtrArray* City
 };
 
 /* Business: builder */
@@ -110,8 +113,30 @@ BusinessCollection create_business_collection() {
   *new_business_collection = (struct business_collection){
       .businesses = g_ptr_array_new(),
       .by_id = g_hash_table_new(g_str_hash, g_str_equal),
-      .by_letter = phf_new()};
+      .by_letter = phf_new(),
+      .by_state = g_hash_table_new(g_str_hash, g_str_equal)};
   return new_business_collection;
+}
+
+static void add_id_state_city(GHashTable *hash_map, Business business) {
+  if (!hash_map)
+    return;
+
+  char *id = business->business_id;
+  char *state = business->state;
+  char *city = business->city;
+
+  GHashTable *hash_state = g_hash_table_lookup(hash_map, id);
+
+  if (!hash_state) {
+    GHashTable *new_hash_state = g_hash_table_new(g_str_hash, g_str_equal);
+    append_to_value(new_hash_state, state, city);
+
+    g_hash_table_insert(hash_map, id, new_hash_state);
+    return;
+  }
+
+  append_to_value(hash_state, state, city);
 }
 
 void add_business(BusinessCollection collection, Business business) {
@@ -121,6 +146,7 @@ void add_business(BusinessCollection collection, Business business) {
   g_ptr_array_add(collection->businesses, clone);
   g_hash_table_insert(collection->by_id, business->business_id, clone);
   phf_add(collection->by_letter, business->name, clone);
+  add_id_state_city(collection->by_state, clone);
 }
 
 Business get_businessCollection_business_by_id(BusinessCollection self,
@@ -149,6 +175,24 @@ GPtrArray *get_businessCollection_business_by_letter(BusinessCollection self,
   return new;
 }
 
+GSList *business_id_more_than_one_state(BusinessCollection self) {
+  if (!self)
+    return NULL;
+
+  GSList *new_list = g_slist_alloc();
+
+  GHashTableIter iter;
+  gpointer key, value;
+
+  g_hash_table_iter_init(&iter, self->by_state);
+  while (g_hash_table_iter_next(&iter, &key, &value)) {
+    if (((GPtrArray *)value)->len > 1)
+      new_list = g_slist_prepend(new_list, g_strdup((char *)key));
+  }
+
+  return new_list;
+}
+
 /* BusinessCollection: free */
 
 void free_businessCollection(BusinessCollection self) {
@@ -158,6 +202,8 @@ void free_businessCollection(BusinessCollection self) {
     g_hash_table_foreach(self->by_id, free_key, NULL);
     phf_free(self->by_letter);
     g_hash_table_destroy(self->by_id);
+    // verificar
+    g_hash_table_destroy(self->by_state);
     free(self);
   }
 }

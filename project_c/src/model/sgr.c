@@ -226,8 +226,35 @@ TABLE top_businesses_by_city(SGR sgr, int top) {
   all_n_larger_than_city_star(sgr->estatisticas, top, table);
   return table;
 }
+
 // Query 7
-TABLE international_users(SGR sgr);
+TABLE international_users(SGR sgr) {
+  char *fields[] = {"id", "name", "stars"};
+  TABLE table = new_table(build_ptr_array(fields, QUERY_SEVEN_FIELDS_N));
+
+  GSList *list = business_id_more_than_one_state(sgr->catalogo_businesses);
+  char *business_id;
+  int i = 0;
+
+  while ((business_id = (char *)g_slist_nth_data(list, i)) != NULL) {
+    add_field(table, business_id);
+    i++;
+  }
+
+  g_slist_free_full(list, free);
+  if (list)
+    g_slist_free(list);
+
+  // TODO Falta adicionar o nº total de business
+  // numero total = i;
+  // ????
+  char *size_str = g_strdup_printf("%d", i);
+  add_field(table, size_str);
+  free(size_str);
+
+  return table;
+}
+
 // Query 8
 TABLE top_businesses_with_category(SGR sgr, int top, char *category) {
   char *fields[] = {"id", "name", "stars"};
@@ -236,5 +263,6 @@ TABLE top_businesses_with_category(SGR sgr, int top, char *category) {
   n_larger_category_star(sgr->estatisticas, category, top, table);
   return table;
 }
+
 // Query 9
 TABLE reviews_with_word(SGR sgr, int top, char *word);

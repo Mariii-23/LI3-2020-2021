@@ -36,5 +36,7 @@ GPtrArray *get_businessCollection_business_by_city(BusinessCollection self,
 GPtrArray *get_businessCollection_business_by_letter(BusinessCollection self,
                                                      char *name);
 
+GSList *business_id_more_than_one_state(BusinessCollection self);
+
 void free_businessCollection(BusinessCollection self);
 #endif
