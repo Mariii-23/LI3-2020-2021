@@ -52,17 +52,19 @@ static void build_city_hash_table(SGR sgr) {
 
   while (iter_next_table_business_id_to_stars(&iter, &current_average,
                                               &business_id)) {
-    char *city = get_business_city(get_businessCollection_business_by_id(
-        sgr->catalogo_businesses, business_id));
 
-    char *name = get_business_name(get_businessCollection_business_by_id(
-        sgr->catalogo_businesses, business_id));
+    Business business = get_businessCollection_business_by_id(
+        sgr->catalogo_businesses, business_id);
+
+    char *city = get_business_city(business);
+
+    char *name = get_business_name(business);
 
     add_city_to_business_by_star(sgr->estatisticas, city, business_id,
                                  current_average, name);
-
     free(city);
     free(name);
+    free_business(business);
   }
 }
 

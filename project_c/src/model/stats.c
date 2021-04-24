@@ -49,18 +49,6 @@ void update_average_stars(Stats stats, char *business_id, float new_star) {
       tuplo->number_reviews;
 }
 
-/* static void build_category_hash_table(Stats stats) { */
-/*   stats->business_id_to_stars = g_hash_table_new(g_str_hash,
- * g_str_equal); */
-/*   // TODO */
-/* } */
-
-/* static void build_city_hash_table(Stats stats) { */
-/*   stats->category_to_business_by_star = */
-/*       g_hash_table_new(g_str_hash, g_str_equal); */
-/*   // TODO */
-/* } */
-
 float get_average_number_stars(Stats stats, char *business_id) {
   return ((StarsTuple)g_hash_table_lookup(stats->business_id_to_stars,
                                           business_id))
@@ -159,7 +147,18 @@ void add_city_to_business_by_star(Stats stats, char *city, char *business_id,
 
   CityTuple value = init_city_tuple(stars, business_id, name);
 
-  append_to_value(stats->city_to_business_by_star, city, value);
+  GSList *aux = g_hash_table_lookup(stats->city_to_business_by_star, city);
+
+  if (!aux) {
+    GSList *list = g_slist_alloc();
+    list = g_slist_append(list, value);
+    g_hash_table_insert(stats->city_to_business_by_star, city, list);
+    return;
+  }
+
+  GSList *new_list =
+      g_slist_insert_sorted_with_data(aux, value, compare_stars, NULL);
+  g_hash_table_insert(stats->city_to_business_by_star, city, new_list);
 }
 
 void add_category_to_business_by_star(Stats stats, char *category,
@@ -173,7 +172,20 @@ void add_category_to_business_by_star(Stats stats, char *category,
         g_hash_table_new(g_str_hash, g_str_equal);
 
   CityTuple value = init_city_tuple(stars, business_id, name);
-  append_to_value(stats->city_to_business_by_star, category, value);
+
+  GSList *aux =
+      g_hash_table_lookup(stats->category_to_business_by_star, category);
+
+  if (!aux) {
+    GSList *list = g_slist_alloc();
+    list = g_slist_append(list, value);
+    g_hash_table_insert(stats->category_to_business_by_star, category, list);
+    return;
+  }
+
+  GSList *new_list =
+      g_slist_insert_sorted_with_data(aux, value, compare_stars, NULL);
+  g_hash_table_insert(stats->category_to_business_by_star, category, new_list);
 }
 
 static GSList *n_larger_gs_list(int N, GSList *gs_list) {
