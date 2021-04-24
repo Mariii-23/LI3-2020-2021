@@ -14,7 +14,7 @@
 #define QUERY_TWO_FIELDS_N 1
 #define QUERY_THREE_FIELDS_N 5
 #define QUERY_FOUR_FIELDS_N 2
-#define QUERY_FIVE_FIELDS_N 3
+#define QUERY_FIVE_FIELDS_N 2
 #define QUERY_SIX_FIELDS_N 3
 #define QUERY_SEVEN_FIELDS_N 1
 #define QUERY_EIGHT_FIELDS_N 3
@@ -209,18 +209,30 @@ TABLE bussinesses_reviewed(SGR sgr, char *id) {
 
 // Query 5
 TABLE businesses_with_stars_and_city(SGR sgr, float stars, char *city) {
-  char *fields[] = {"id", "name", "stars"};
+  char *fields[] = {"id", "name"};
   TABLE table = new_table(build_ptr_array(fields, QUERY_FIVE_FIELDS_N));
 
-  n_larger_city_star(sgr->estatisticas, city, stars, table);
+  n_larger_city_star(sgr->estatisticas, city, stars, table, 1);
   return table;
 }
 
 // Query 6
-TABLE top_businesses_by_city(SGR sgr, int top);
+TABLE top_businesses_by_city(SGR sgr, int top) {
+  char *fields[] = {"id", "name", "stars"};
+  TABLE table = new_table(build_ptr_array(fields, QUERY_SIX_FIELDS_N));
+
+  all_n_larger_than_city_star(sgr->estatisticas, top, table);
+  return table;
+}
 // Query 7
 TABLE international_users(SGR sgr);
 // Query 8
-TABLE top_businesses_with_category(SGR sgr, int top, char *category);
+TABLE top_businesses_with_category(SGR sgr, int top, char *category) {
+  char *fields[] = {"id", "name", "stars"};
+  TABLE table = new_table(build_ptr_array(fields, QUERY_EIGHT_FIELDS_N));
+
+  n_larger_category_star(sgr->estatisticas, category, top, table);
+  return table;
+}
 // Query 9
 TABLE reviews_with_word(SGR sgr, int top, char *word);

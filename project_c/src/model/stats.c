@@ -118,6 +118,22 @@ CityTuple init_city_tuple(float stars, char *business_id, char *name) {
   return tuplo;
 }
 
+CityTuple copy_city_tuple(CityTuple self) {
+  CityTuple tuplo = calloc(1, sizeof(struct city_tuple));
+  tuplo->business_id = g_strdup(self->business_id);
+  tuplo->stars = self->stars;
+  tuplo->name = g_strdup(self->name);
+  return tuplo;
+}
+
+void free_city_tuple(CityTuple self) {
+  free(self->business_id);
+  free(self->name);
+  free(self);
+}
+
+void free_g_city_tuple(gpointer data) { free_city_tuple((CityTuple)data); }
+
 gint compare_stars(gconstpointer key1, gconstpointer key2, gpointer user_data) {
   return ((CityTuple)key1)->stars - ((CityTuple)key2)->stars;
 }
@@ -163,10 +179,10 @@ void add_category_to_business_by_star(Stats stats, char *category,
 static GSList *n_larger_gs_list(int N, GSList *gs_list) {
   GSList *new = gs_list = g_slist_alloc();
   int size = g_slist_length(gs_list);
-  for (int i = 0; i < size && i < N; i++) {
-    // verificar se tem q ser copia
-    new = g_slist_append(new, g_slist_nth(gs_list, i));
-  }
+
+  for (int i = 0; i < size && i < N; i++)
+    new = g_slist_append(new, copy_city_tuple(g_slist_nth_data(gs_list, i)));
+
   return new;
 }
 
@@ -174,24 +190,30 @@ static GSList *n_larger_than_gs_list(int N, GSList *gs_list) {
   GSList *new = gs_list = g_slist_alloc();
   int stop = 0;
   int size = g_slist_length(gs_list);
+
   for (int i = 0; !stop && i < size; i++) {
-    gpointer cont = g_slist_nth(gs_list, i);
-    if (((CityTuple)cont)->stars < N) {
+    CityTuple cont = g_slist_nth_data(gs_list, i);
+
+    if (cont->stars < N) {
       stop = 1;
       continue;
     }
-    // verificar se tem q ser copia
-    new = g_slist_append(new, cont);
+    new = g_slist_append(new, copy_city_tuple(cont));
   }
   return new;
 }
 
-void n_larger_city_star(Stats stats, char *city, int N, TABLE table) {
+void n_larger_city_star(Stats stats, char *city, int N, TABLE table,
+                        int larger_than) {
   if (!stats && !stats->city_to_business_by_star)
     return;
 
-  GSList *list = n_larger_gs_list(
-      N, g_hash_table_lookup(stats->city_to_business_by_star, city));
+  GSList *list =
+      larger_than
+          ? n_larger_than_gs_list(
+                N, g_hash_table_lookup(stats->city_to_business_by_star, city))
+          : n_larger_gs_list(
+                N, g_hash_table_lookup(stats->city_to_business_by_star, city));
 
   if (!list)
     return;
@@ -200,15 +222,65 @@ void n_larger_city_star(Stats stats, char *city, int N, TABLE table) {
   int i = 0;
 
   while ((value = g_slist_nth_data(list, i)) != NULL) {
-    char *id = value->business_id;
+    char *id = g_strdup(value->business_id);
+    char *name = value->name;
+    char *stars = g_strdup_printf("%f", value->stars);
+
+    add_field(table, id);
+    add_field(table, name);
+    if (larger_than == 0)
+      add_field(table, stars);
+    free(id);
+    free(stars);
+    i++;
+  }
+  // free do list
+  g_slist_free_full(list, free_g_city_tuple);
+  if (list)
+    g_slist_free(list);
+}
+
+void all_n_larger_than_city_star(Stats stats, int N, TABLE table) {
+
+  GList *all_keys = g_hash_table_get_keys(stats->city_to_business_by_star);
+
+  int size = g_list_length(all_keys);
+
+  for (int i = 0; i < size; i++) {
+    char *city = g_strdup(g_list_nth_data(all_keys, i));
+    n_larger_city_star(stats, city, N, table, 0);
+    free(city);
+  }
+  // free all_key??
+}
+
+void n_larger_category_star(Stats stats, char *category, int N, TABLE table) {
+  if (!stats && !stats->city_to_business_by_star)
+    return;
+
+  GSList *list = n_larger_gs_list(
+      N, g_hash_table_lookup(stats->category_to_business_by_star, category));
+
+  if (!list)
+    return;
+
+  CityTuple value;
+  int i = 0;
+
+  while ((value = g_slist_nth_data(list, i)) != NULL) {
+    char *id = g_strdup(value->business_id);
     char *name = value->name;
     char *stars = g_strdup_printf("%f", value->stars);
 
     add_field(table, id);
     add_field(table, name);
     add_field(table, stars);
+    free(id);
     free(stars);
     i++;
   }
-  // free do list?? -> depende se a funcao faz copia ou nao
+  // free do list
+  g_slist_free_full(list, free_g_city_tuple);
+  if (list)
+    g_slist_free(list);
 }

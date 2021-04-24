@@ -31,5 +31,9 @@ void add_category_to_business_by_star(Stats stats, char *category,
 /* GSList *n_larger_gs_list(int N, GSList *gs_list); */
 /* GSList *n_larger_city_star(Stats stats, char *city, int N); */
 
-void n_larger_city_star(Stats stats, char *city, int N, TABLE table);
+void n_larger_city_star(Stats stats, char *city, int N, TABLE table,
+                        int larger_than);
+
+void all_n_larger_than_city_star(Stats stats, int N, TABLE table);
+void n_larger_category_star(Stats stats, char *category, int N, TABLE table);
 #endif
