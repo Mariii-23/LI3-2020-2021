@@ -186,7 +186,7 @@ GSList *business_id_more_than_one_state(BusinessCollection self) {
 
   g_hash_table_iter_init(&iter, self->by_state);
   while (g_hash_table_iter_next(&iter, &key, &value)) {
-    if (((GPtrArray *)value)->len > 1)
+    if (g_hash_table_size((GHashTable *)value) > 1)
       new_list = g_slist_prepend(new_list, g_strdup((char *)key));
   }
 
