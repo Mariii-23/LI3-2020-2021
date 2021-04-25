@@ -2,37 +2,110 @@
 
 #include "controller/commands.h"
 #include "controller/exec.h"
+#include "model/sgr.h"
 #include "model/state.h"
 #include "model/table.h"
 
-Variable print(Variable* args) {
-    print_var(*args);
-    return void_var();
+Variable print(Variable *args) {
+  print_var(*args);
+  return void_var();
 }
 
-Variable quit(Variable* args) {
-    exit(0);
-    return NULL;
+Variable quit(Variable *args) {
+  exit(0);
+  return NULL;
 }
 
-Variable show(Variable* args) {
-    fprintf_table(stdout, get_var_value(args[0]).table, " | ", " | ");
+Variable show(Variable *args) {
+  fprintf_table(stdout, get_var_value(args[0]).table, " | ", " | ");
 
-    return void_var();
+  return void_var();
 }
 
-Variable cmd_from_csv(Variable* args) {
-    VariableValue val;
-    val.table =
-        from_csv(get_var_value(args[0]).string, get_var_value(args[1]).string);
-    return init_var(VAR_TABLE, val, NULL);
+Variable cmd_from_csv(Variable *args) {
+  VariableValue val;
+  val.table =
+      from_csv(get_var_value(args[0]).string, get_var_value(args[1]).string);
+  return init_var(VAR_TABLE, val, NULL);
 }
 
-Variable cmd_to_csv(Variable* args) {
-    to_csv(
-        get_var_value(args[0]).table,
-        get_var_value(args[1]).string,
-        get_var_value(args[2]).string);
-    return void_var();
+Variable cmd_to_csv(Variable *args) {
+  to_csv(get_var_value(args[0]).table, get_var_value(args[1]).string,
+         get_var_value(args[2]).string);
+  return void_var();
 }
 
+// Query 1
+Variable cmd_load_sgr(Variable *args) {
+  VariableValue val;
+  val.sgr =
+      load_sgr(get_var_value(args[0]).string, get_var_value(args[1]).string,
+               get_var_value(args[2]).string);
+  return init_var(VAR_SGR, val, NULL);
+}
+
+// Query 2
+Variable cmd_businesses_started_by_letter(Variable *args) {
+  VariableValue val;
+  val.table = businesses_started_by_letter(get_var_value(args[0]).sgr,
+                                           // deveria ser char
+                                           get_var_value(args[1]).string[0]);
+  return init_var(VAR_TABLE, val, NULL);
+}
+
+// Query 3
+Variable cmd_business_info(Variable *args) {
+  VariableValue val;
+  val.table =
+      business_info(get_var_value(args[0]).sgr, get_var_value(args[1]).string);
+  return init_var(VAR_TABLE, val, NULL);
+}
+
+// Query 4
+Variable cmd_businesses_reviewed(Variable *args) {
+  VariableValue val;
+  val.table = businesses_reviewed(get_var_value(args[0]).sgr,
+                                  get_var_value(args[1]).string);
+  return init_var(VAR_TABLE, val, NULL);
+}
+
+// Query 5
+Variable cmd_businesses_with_stars_and_city(Variable *args) {
+  VariableValue val;
+  val.table = businesses_with_stars_and_city(get_var_value(args[0]).sgr,
+                                             get_var_value(args[1]).number,
+                                             get_var_value(args[2]).string);
+  return init_var(VAR_TABLE, val, NULL);
+}
+
+// Query 6
+Variable cmd_top_businesses_by_city(Variable *args) {
+  VariableValue val;
+  val.table = top_businesses_by_city(get_var_value(args[0]).sgr,
+                                     get_var_value(args[1]).number);
+  return init_var(VAR_TABLE, val, NULL);
+}
+
+// Query 7
+Variable cmd_international_users(Variable *args) {
+  VariableValue val;
+  val.table = international_users(get_var_value(args[0]).sgr);
+  return init_var(VAR_TABLE, val, NULL);
+}
+
+// Query 8
+Variable cmd_top_businesses_with_category(Variable *args) {
+  VariableValue val;
+  val.table = top_businesses_with_category(get_var_value(args[0]).sgr,
+                                           get_var_value(args[1]).number,
+                                           get_var_value(args[2]).string);
+  return init_var(VAR_TABLE, val, NULL);
+}
+
+// Query 9
+Variable cmd_reviews_with_word(Variable *args) {
+  VariableValue val;
+  val.table = reviews_with_word(get_var_value(args[0]).sgr,
+                                get_var_value(args[1]).string);
+  return init_var(VAR_TABLE, val, NULL);
+}
