@@ -108,7 +108,18 @@ const char* type_name(VariableType type) {
 }
 
 STATE init_state() {
-    return g_tree_new((int (*)(const void*, const void*)) g_strcmp0);
+    STATE s = g_tree_new((int (*)(const void*, const void*)) g_strcmp0);
+
+    // Vamos criar variáveis globais para os comparators
+    VariableValue val;
+    val.operator = GT;
+    create_variable(s, init_var(VAR_OPERATOR, val, "GT"));
+    val.operator = EQ;
+    create_variable(s, init_var(VAR_OPERATOR, val, "EQ"));
+    val.operator = LT;
+    create_variable(s, init_var(VAR_OPERATOR, val, "LT"));
+
+    return s;
 }
 
 void create_variable(STATE state, Variable var) {

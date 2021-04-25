@@ -211,6 +211,9 @@ void print_var(Variable var) {
         case VAR_ARRAY:
             printf("Array: %d elements\n", get_var_value(var).array->len);
             break;
+        case VAR_OPERATOR:
+            printf("Operator: %d\n", get_var_value(var).operator);
+            break;
         case VAR_SGR:
             printf("SGR\n");
             break; // TODO!

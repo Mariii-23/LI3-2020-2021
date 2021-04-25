@@ -3,6 +3,7 @@
 #include <glib.h>
 #include "sgr.h"
 #include "model/table.h"
+#include "controller/commands.h"
 
 // Uma variável é qualquer valor no programa - incluindo funções.
 typedef enum variable_type {
@@ -13,6 +14,7 @@ typedef enum variable_type {
   VAR_FUNCTION,
   VAR_VOID,
   VAR_ARRAY,
+  VAR_OPERATOR,
   VAR_ANY
 } VariableType;
 
@@ -23,6 +25,7 @@ typedef union {
   char *string;
   struct function *function;
   GPtrArray *array;
+  OPERATOR operator;
 } VariableValue;
 
 typedef struct variable *Variable;
