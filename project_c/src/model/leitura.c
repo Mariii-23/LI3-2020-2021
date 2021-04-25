@@ -40,7 +40,7 @@ char** read_to_array(char* line, char* delim, size_t number_fields) {
     if (!item) return NULL;
     char** array = malloc(sizeof(char*) * number_fields);
     array[0] = g_strdup(item);
-    int i = 0;
+    int i = 1;
     for (; i < number_fields; i++) {
         item = strtok(NULL, delim);
         array[i] = g_strdup(item);
