@@ -18,6 +18,7 @@
 #define QUERY_SIX_FIELDS_N 3
 #define QUERY_SEVEN_FIELDS_N 1
 #define QUERY_EIGHT_FIELDS_N 3
+#define QUERY_NINE_FIELDS_N 1
 #define MAX_BUFFER 100
 
 struct sgr {
@@ -270,4 +271,9 @@ TABLE top_businesses_with_category(SGR sgr, int top, char* category) {
 }
 
 // Query 9
-TABLE reviews_with_word(SGR sgr, int top, char* word);
+TABLE reviews_with_word(SGR sgr, char* word) {
+    char* fields[] = {"id"};
+    TABLE table = new_table(build_ptr_array(fields, QUERY_NINE_FIELDS_N));
+    review_id_with_word_in_text(sgr->catalogo_reviews, word, table);
+    return table;
+}
