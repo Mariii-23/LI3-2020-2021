@@ -24,6 +24,6 @@ TABLE international_users(SGR sgr);
 // Query 8
 TABLE top_businesses_with_category(SGR sgr, int top, char* category);
 // Query 9
-TABLE reviews_with_word(SGR sgr, int top, char* word);
+TABLE reviews_with_word(SGR sgr, char* word);
 
 #endif
