@@ -132,11 +132,11 @@ bool validate_review(Review review) {
 }
 
 ReviewCollection collect_reviews(FILE *fp, Stats stats) {
-  printf("reviewns ca vamos nos\n");
+  /* printf("reviewns ca vamos nos\n"); */
   char *line;
   ReviewCollection collection = create_review_collection();
   // apagar
-  int i = 0;
+  /* int i = 0; */
   while ((line = read_line(fp))) {
     Review review = parse_review_line(line, stats);
     free(line);
@@ -149,9 +149,9 @@ ReviewCollection collect_reviews(FILE *fp, Stats stats) {
     add_review(collection, review);
     // free da review
     free(review);
-    printf("Review :%d\n", i++);
+    /* printf("Review :%d\n", i++); */
   }
-  printf("review check\n");
+  /* printf("review check\n"); */
   return collection;
 }
 
@@ -169,7 +169,7 @@ BusinessCollection collect_businesses(FILE *fp, Stats stats) {
     free_business(business);
   }
   // apagar
-  printf("business check\n");
+  /* printf("business check\n"); */
   return collection;
 }
 
@@ -186,6 +186,6 @@ UserCollection collect_users(FILE *fp, Stats stats) {
     free_user(user);
   }
   // apagar
-  printf("users check\n");
+  /* printf("users check\n"); */
   return collection;
 }
