@@ -4,12 +4,10 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "../model/auxiliary.h"
-#include "../model/leitura.h"
+#include "model/auxiliary.h"
+#include "model/leitura.h"
 #include "model/table.h"
 #include "view/colors.h"
-
-typedef enum { LT = -1, EQ, GT } OPERATOR;
 
 void cmd_quit(GArray* args) {
     printf("Goodbye!\n");

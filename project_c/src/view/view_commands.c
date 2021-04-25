@@ -14,11 +14,13 @@ Variable quit(Variable* args) {
     exit(0);
     return NULL;
 }
+
 Variable show(Variable* args) {
     fprintf_table(stdout, get_var_value(args[0]).table, " | ", " | ");
 
     return void_var();
 }
+
 Variable cmd_from_csv(Variable* args) {
     VariableValue val;
     val.table =
@@ -33,3 +35,4 @@ Variable cmd_to_csv(Variable* args) {
         get_var_value(args[2]).string);
     return void_var();
 }
+

@@ -79,9 +79,12 @@ Variable execute(STATE state, AST* ast) {
         case AST_INDEX:
             {
                 Variable expr = execute(state, ast->value.index->expression);
-                if (get_var_type(expr) != VAR_ARRAY) {
+                if (expr == NULL) {
+                  return NULL;
+                }
+                if (get_var_type(expr) != VAR_ARRAY && get_var_type(expr) != VAR_TABLE) {
                     free_if_possible(state, expr);
-                    fprintf(stderr, BOLD FG_RED "Error: " RESET_ALL "can only index tables.\n");
+                    fprintf(stderr, BOLD FG_RED "Error: " RESET_ALL "can only index tables and arrays.\n");
                     return NULL;
                 }
 
@@ -93,16 +96,38 @@ Variable execute(STATE state, AST* ast) {
                     return NULL;
                 }
 
-                GPtrArray *arr =get_var_value(expr).array;
+                int i = get_var_value(index).number;
+                free_if_possible(state, index);
 
-                if (get_var_value(index).number >= arr->len) {
+                if (get_var_type(expr) == VAR_TABLE) {
+                  // Temos de converter num array
+                  TABLE table = get_var_value(expr).table;
+                  if (i >= get_number_lines_table(table)) {
                     free_if_possible(state, expr);
-                    free_if_possible(state, index);
+                    fprintf(stderr, BOLD FG_RED "Error: " RESET_ALL "table out of bounds.\n");
+                    return NULL;
+                  }
+
+                  int w = get_number_fields_table(table);
+                  GPtrArray* array = g_ptr_array_sized_new(w);
+                  VariableValue val;
+                  for (int j = 0; j < w; j++) {
+                    val.string = table_index(table, i, j);
+                    g_ptr_array_add(array, init_var(VAR_STRING, val, NULL));
+                  }
+                  val.array = array;
+                  ret = init_var(VAR_ARRAY, val, NULL);
+                } else  {
+                  GPtrArray *arr = get_var_value(expr).array;
+
+                  if (i >= arr->len) {
+                    free_if_possible(state, expr);
                     fprintf(stderr, BOLD FG_RED "Error: " RESET_ALL "array out of bounds.\n");
                     return NULL;
-                }
+                  }
 
-                ret = g_ptr_array_index(arr, get_var_value(index).number);
+                  ret = g_ptr_array_index(arr, i);
+                }
                 break;
             }
         case AST_FUNCTIONCALL: {
@@ -185,6 +210,9 @@ void print_var(Variable var) {
             break;
         case VAR_ARRAY:
             printf("Array: %d elements\n", get_var_value(var).array->len);
+            break;
+        case VAR_OPERATOR:
+            printf("Operator: %d\n", get_var_value(var).operator);
             break;
         case VAR_SGR:
             printf("SGR\n");

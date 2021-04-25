@@ -89,6 +89,8 @@ static void add_key_append_value_tree(GTree *tree, WordText *w, int index) {
     // create new node
     arr = g_ptr_array_new();
     g_tree_insert_node(tree, w, arr);
+  } else {
+    free(w);
   }
   g_ptr_array_add(arr, num);
 }
@@ -172,13 +174,6 @@ int get_review_cool(Review self) {
     return -1;
 }
 
-char *get_review_date(Review self) {
-  if (self)
-    return g_strdup(self->date);
-  else
-    return NULL;
-}
-
 static Review clone_review(Review self) {
   Review new_review = (Review)malloc(sizeof(struct review));
   *new_review = (struct review){.review_id = g_strdup(self->review_id),
@@ -189,7 +184,6 @@ static Review clone_review(Review self) {
                                 .funny = self->funny,
                                 .cool = self->cool,
                                 .date = g_strdup(self->date),
-                                // clone?
                                 .text = self->text};
   return new_review;
 }

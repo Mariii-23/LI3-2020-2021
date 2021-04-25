@@ -5,6 +5,8 @@
 
 #include "model/table.h"
 
+typedef enum { LT = -1, EQ = 0, GT = 1 } OPERATOR;
+
 void cmd_quit(GArray* args);
 void cmd_help(GArray* args);
 
