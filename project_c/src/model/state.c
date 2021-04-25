@@ -99,6 +99,8 @@ const char* type_name(VariableType type) {
             return "function";
         case VAR_VOID:
             return "void";
+        case VAR_ARRAY:
+            return "array";
         case VAR_ANY:
             return "any";
     }
