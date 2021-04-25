@@ -175,6 +175,8 @@ int get_review_cool(Review self) {
 }
 
 static Review clone_review(Review self) {
+  if (!self)
+    return NULL;
   Review new_review = (Review)malloc(sizeof(struct review));
   *new_review = (struct review){.review_id = g_strdup(self->review_id),
                                 .user_id = g_strdup(self->user_id),
@@ -193,11 +195,25 @@ static gpointer g_review_copy(gconstpointer src, gpointer data) {
 }
 
 void free_review(Review self) {
-  free(self->review_id);
-  free(self->user_id);
-  free(self->business_id);
-  free(self->date);
-  free(self->text);
+  if (!self)
+    return;
+
+  if (self->review_id)
+    free(self->review_id);
+
+  if (self->user_id)
+    free(self->user_id);
+
+  if (self->business_id)
+    free(self->business_id);
+
+  if (self->date)
+    free(self->date);
+  // TODO mudar
+
+  if (self->text)
+    free(self->text);
+
   free(self);
 }
 
@@ -219,8 +235,10 @@ void add_review(ReviewCollection collection, Review review) {
     return;
 
   Review new = clone_review(review);
-  g_hash_table_insert(collection->by_id, review->review_id, new);
+  if (!new)
+    return;
 
+  g_hash_table_insert(collection->by_id, review->review_id, new);
   append_to_value(collection->by_user_id, review->user_id, new);
   append_to_value(collection->by_business_id, review->business_id, new);
 }

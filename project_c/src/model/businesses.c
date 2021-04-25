@@ -35,7 +35,9 @@ Business create_business(char *business_id, char *name, char *city, char *state,
       .name = g_strdup(name),
       .city = g_strdup(city),
       .state = g_strdup(state),
-      .categories = g_ptr_array_copy(categories, strdup_copy, NULL)};
+      .categories = (categories && categories->len > 0)
+                        ? g_ptr_array_copy(categories, strdup_copy, NULL)
+                        : NULL};
   return new_business;
 }
 
@@ -70,13 +72,15 @@ char *get_business_state(Business self) {
 }
 
 GPtrArray *get_business_categories(Business self) {
-  if (self && self->categories)
+  if (self && self->categories && self->categories->len > 0)
     return g_ptr_array_copy(self->categories, strdup_copy, NULL);
   else
     return NULL;
 }
 
 static Business clone_business(Business self) {
+  if (!self)
+    return NULL;
 
   Business new_business = (Business)malloc(sizeof(struct business));
   *new_business =
@@ -100,6 +104,7 @@ void free_business(Business self) {
     free(self->name);
     free(self->city);
     free(self->state);
+    g_ptr_array_set_free_func(self->categories, free);
     g_ptr_array_free(self->categories, TRUE);
     free(self);
   }
@@ -141,6 +146,8 @@ void add_business(BusinessCollection collection, Business business) {
   if (!collection || !business)
     return;
   Business clone = clone_business(business);
+  if (!clone)
+    return;
   g_hash_table_insert(collection->by_id, business->business_id, clone);
   phf_add(collection->by_letter, business->name, clone);
   add_id_state_city(collection->by_state, clone);
