@@ -12,6 +12,7 @@ void cmd_help(GArray* args);
 
 TABLE from_csv(char* filename, char* delim);
 void to_csv(TABLE table, char* filename, char* delim);
-TABLE projection(TABLE table, GPtrArray* colunas);
+TABLE projection(TABLE table, GArray* colunas);
+TABLE filter(TABLE table, char* field_name, char* value, OPERATOR op);
 
 #endif

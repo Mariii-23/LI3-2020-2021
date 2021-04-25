@@ -78,6 +78,7 @@ ssize_t whereis_field(TABLE table, char* field_name) {
     }
     return -1;
 }
+
 TABLE filter(TABLE table, char* field_name, char* value, OPERATOR op) {
     GPtrArray* fields = g_ptr_array_sized_new(1);
     g_ptr_array_add(fields, field_name);
@@ -98,12 +99,14 @@ TABLE filter(TABLE table, char* field_name, char* value, OPERATOR op) {
     }
     return table_two;
 }
-TABLE projection(TABLE table, GPtrArray* colunas) {
+
+TABLE projection(TABLE table, GArray* colunas) {
     TABLE table_two = new_table_without_fields(colunas->len);
     size_t number_fields = get_number_fields_table(table);
     for (int i = 0; i < get_number_lines_table(table); i++) {
         for (int j = 0; j < colunas->len; j++) {
-            size_t col = *((size_t*) g_ptr_array_index(colunas, j));
+            size_t col = g_array_index(colunas, size_t, j);
+
             if (col >= number_fields)
                 continue;  // ignorar numeros de colunas que nao existem
             add_field(table_two, table_index(table, i, col));

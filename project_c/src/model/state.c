@@ -97,6 +97,8 @@ const char* type_name(VariableType type) {
             return "string";
         case VAR_FUNCTION:
             return "function";
+        case VAR_OPERATOR:
+            return "operator";
         case VAR_VOID:
             return "void";
         case VAR_ARRAY:

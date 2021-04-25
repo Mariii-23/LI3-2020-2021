@@ -1,5 +1,6 @@
 #include "view_commands.h"
 
+#include "view/colors.h"
 #include "controller/commands.h"
 #include "controller/exec.h"
 #include "model/sgr.h"
@@ -108,4 +109,30 @@ Variable cmd_reviews_with_word(Variable *args) {
   val.table = reviews_with_word(get_var_value(args[0]).sgr,
                                 get_var_value(args[1]).string);
   return init_var(VAR_TABLE, val, NULL);
+}
+
+Variable cmd_projection(Variable* args) {
+    VariableValue val;
+    GPtrArray* col_array = get_var_value(args[1]).array;
+    GArray *columns = g_array_sized_new(FALSE, FALSE, sizeof(size_t), col_array->len);
+    
+    for (int i = 0; i < col_array->len; i++) {
+        if (get_var_type(g_ptr_array_index(col_array, i)) != VAR_NUMBER) {
+            fprintf(stderr, BOLD FG_RED "Error: " RESET_ALL "expected an array of numbers.\n");
+            g_array_free(columns, TRUE);
+            return NULL;
+        }
+
+        size_t col = get_var_value(g_ptr_array_index(col_array, i)).number;
+        g_array_append_val(columns, col);
+    }
+
+    val.table = projection(get_var_value(args[0]).table, columns);
+    return init_var(VAR_TABLE, val, NULL);
+}
+
+Variable cmd_filter(Variable* args) {
+    VariableValue val;
+    val.table = filter(get_var_value(args[0]).table, get_var_value(args[1]).string, get_var_value(args[2]).string, get_var_value(args[3]).operator);
+    return init_var(VAR_TABLE, val, NULL);
 }
