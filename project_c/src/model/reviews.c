@@ -1,13 +1,22 @@
 #include "reviews.h"
 
+#include <ctype.h>
 #include <glib.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 
 #include "auxiliary.h"
 #include "businesses.h"
+#include "table.h"
 #include "users.h"
+
+typedef struct word_text {
+  char *palavra;
+  size_t len;
+} WordText;
 
 struct review {
   char *review_id;
@@ -20,7 +29,7 @@ struct review {
   int cool;
 
   char *date;
-  char *text;
+  GTree *text; // nodo(WordText *word_text, GPtrArray* indices);
 };
 
 struct review_collection {
@@ -29,6 +38,73 @@ struct review_collection {
   GHashTable *by_business_id;
 };
 
+bool word_in_text_review(Review review, char *word) {
+  return (bool)g_tree_lookup(review->text, word);
+}
+
+void review_id_with_word_in_text(ReviewCollection collection, char *word,
+                                 TABLE table) {
+  GHashTableIter iter;
+  gpointer id = NULL;
+  gpointer review = NULL;
+  g_hash_table_iter_init(&iter, collection->by_id);
+  while (g_hash_table_iter_next(&iter, &id, &review)) {
+    if (word_in_text_review(review, word)) {
+      add_field(table, id);
+    }
+  }
+}
+
+static gint compare_text(gconstpointer a, gconstpointer b) {
+  // dar true se tiver pontuacao no fim
+  size_t len_a = ((WordText *)a)->len;
+  size_t len_b = ((WordText *)b)->len;
+  char *max_word;
+  size_t max_len, min_len;
+  if (len_a > len_b) {
+    max_word = ((WordText *)a)->palavra;
+    max_len = len_a;
+    min_len = len_b;
+  } else {
+    max_word = ((WordText *)b)->palavra;
+    max_len = len_b;
+    min_len = len_a;
+  }
+
+  if (max_len - min_len > 1 ||
+      (max_len != min_len && !ispunct(max_word[max_len - 1])))
+    return false;
+  else {
+    return !strncasecmp(((WordText *)a)->palavra, ((WordText *)b)->palavra,
+                        min_len);
+  }
+}
+
+// determinar a lista de ids de reviews que referem a dada palavra no campo text
+static void add_key_append_value_tree(GTree *tree, WordText *w, int index) {
+  GPtrArray *arr = g_tree_search(tree, compare_text, NULL);
+  int *num = malloc(sizeof(int));
+  *num = index;
+  if (!arr) {
+    // create new node
+    arr = g_ptr_array_new();
+    g_tree_insert_node(tree, w, arr);
+  }
+  g_ptr_array_add(arr, num);
+}
+
+static GTree *create_tree_text(char *text) {
+  GTree *tree = g_tree_new(compare_text);
+  char *token = strtok(text, " ");
+  for (int i = 0; token; i++) {
+    WordText *w = malloc(sizeof(struct word_text));
+    *w = (WordText){.palavra = token, .len = strlen(token)};
+    add_key_append_value_tree(tree, w, i);
+    token = strtok(NULL, " ");
+  }
+
+  return tree;
+}
 /* Review: builder */
 Review create_review(char *review_id, char *user_id, char *business_id,
                      float stars, int useful, int funny, int cool, char *date,
@@ -42,7 +118,7 @@ Review create_review(char *review_id, char *user_id, char *business_id,
                                 .funny = funny,
                                 .cool = cool,
                                 .date = g_strdup(date),
-                                .text = g_strdup(text)};
+                                .text = create_tree_text(text)};
   return new_review;
 }
 
@@ -103,13 +179,6 @@ char *get_review_date(Review self) {
     return NULL;
 }
 
-char *get_review_text(Review self) {
-  if (self) {
-    return g_strdup(self->text);
-  } else
-    return NULL;
-}
-
 static Review clone_review(Review self) {
   Review new_review = (Review)malloc(sizeof(struct review));
   *new_review = (struct review){.review_id = g_strdup(self->review_id),
@@ -120,7 +189,8 @@ static Review clone_review(Review self) {
                                 .funny = self->funny,
                                 .cool = self->cool,
                                 .date = g_strdup(self->date),
-                                .text = g_strdup(self->text)};
+                                // clone?
+                                .text = self->text};
   return new_review;
 }
 
@@ -159,7 +229,6 @@ void add_review(ReviewCollection collection, Review review) {
 
   append_to_value(collection->by_user_id, review->user_id, new);
   append_to_value(collection->by_business_id, review->business_id, new);
-  /* g_ptr_array_add(collection->reviews, new); */
 }
 
 Review get_reviewCollection_review_by_id(ReviewCollection self, char *id) {
