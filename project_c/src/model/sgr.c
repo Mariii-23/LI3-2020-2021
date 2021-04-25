@@ -1,5 +1,7 @@
 #include "sgr.h"
 
+#include "time.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -106,6 +108,10 @@ static void build_category_hash_table(SGR sgr) {
 
 // Query 1
 SGR load_sgr(char *users, char *businesses, char *reviews) {
+
+  /* clock_t time_[2]; */
+  /* time_[0] = clock(); */
+
   FILE *fp_users = fopen(users, "r");
   FILE *fp_businesses = fopen(businesses, "r");
   FILE *fp_reviews = fopen(reviews, "r");
@@ -121,11 +127,18 @@ SGR load_sgr(char *users, char *businesses, char *reviews) {
   fclose(fp_users);
   fclose(fp_businesses);
   fclose(fp_reviews);
+
+  /* time_[1] = clock(); */
+  /* printf("\nTime: %ld s\n", (time_[1] - time_[0]) / CLOCKS_PER_SEC); */
+
   return sgr;
 }
 
 // Query 2
 TABLE businesses_started_by_letter(SGR sgr, char letter) {
+
+  /* clock_t time_[2]; */
+  /* time_[0] = clock(); */
 
   char *fields[] = {"Name"};
   TABLE table = new_table(build_ptr_array(fields, QUERY_TWO_FIELDS_N));
@@ -150,6 +163,10 @@ TABLE businesses_started_by_letter(SGR sgr, char letter) {
   // verificar free da list
   g_ptr_array_set_free_func(list, free);
   g_ptr_array_free(list, TRUE);
+
+  /* time_[1] = clock(); */
+  /* printf("\nTime: %ld\n", (time_[1] - time_[0])); */
+
   return table;
 }
 
