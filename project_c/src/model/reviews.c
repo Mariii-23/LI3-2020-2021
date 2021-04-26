@@ -29,7 +29,7 @@ struct review {
     int cool;
 
     char* date;
-    GTree* text;  // nodo(WordText *word_text, GPtrArray* indices);
+    char* text;
 };
 
 struct review_collection {
@@ -38,76 +38,46 @@ struct review_collection {
     GHashTable* by_business_id;
 };
 
-bool word_in_text_review(Review review, char* word) {
-    return (bool) g_tree_lookup(review->text, word);
+static bool are_equal(char* token, char* query_word) {
+    // o que pode ter pontuacao é a token, a query_word nao
+    // case sensitive ou nao?
+    char a = token[0];
+    char b = query_word[0];
+    int i = 0;
+    for (; a && b; i++) {
+        a = token[i];
+        b = query_word[i];
+        // se a token acabar antes entao nunca podera dar true
+        // porque se a query tiver mais nao é pontuacao
+        if (b && tolower(a) != tolower(b)) return false;
+    }
+    // Oi!We came
+    return !a || ispunct(a);
+}
+
+bool find_word(char* text, char* word) {
+    char* token = strtok(text, " ");
+    while (token) {
+        if (are_equal(token, word)) {
+            return true;
+        }
+        token = strtok(NULL, " ");
+    }
+    return false;
 }
 
 void review_id_with_word_in_text(
     ReviewCollection collection, char* word, TABLE table) {
     GHashTableIter iter;
-    gpointer id = NULL;
-    gpointer review = NULL;
+    char* id = NULL;
+    Review review = NULL;
     g_hash_table_iter_init(&iter, collection->by_id);
-    while (g_hash_table_iter_next(&iter, &id, &review)) {
-        if (word_in_text_review(review, word)) {
+    while (
+        g_hash_table_iter_next(&iter, (gpointer*) &id, (gpointer*) &review)) {
+        if (find_word(review->text, word)) {
             add_field(table, id);
         }
     }
-}
-
-static gint compare_text(gconstpointer a, gconstpointer b) {
-    // dar true se tiver pontuacao no fim
-    size_t len_a = ((WordText*) a)->len;
-    size_t len_b = ((WordText*) b)->len;
-    char* max_word;
-    size_t max_len, min_len;
-    if (len_a > len_b) {
-        max_word = ((WordText*) a)->palavra;
-        max_len = len_a;
-        min_len = len_b;
-    }
-    else {
-        max_word = ((WordText*) b)->palavra;
-        max_len = len_b;
-        min_len = len_a;
-    }
-
-    if (max_len - min_len > 1 ||
-        (max_len != min_len && !ispunct(max_word[max_len - 1])))
-        return false;
-    else {
-        return !strncasecmp(
-            ((WordText*) a)->palavra, ((WordText*) b)->palavra, min_len);
-    }
-}
-
-// determinar a lista de ids de reviews que referem a dada palavra no campo text
-static void add_key_append_value_tree(GTree* tree, WordText* w, int index) {
-    GPtrArray* arr = g_tree_search(tree, compare_text, w);
-    int* num = malloc(sizeof(int));
-    *num = index;
-    if (!arr) {
-        // create new node
-        arr = g_ptr_array_new();
-        g_tree_insert_node(tree, w, arr);
-    }
-    else {
-        free(w);
-    }
-    g_ptr_array_add(arr, num);
-}
-
-static GTree* create_tree_text(char* text) {
-    GTree* tree = g_tree_new(compare_text);
-    char* token = strtok(text, " ");
-    for (int i = 0; token; i++) {
-        WordText* w = malloc(sizeof(struct word_text));
-        *w = (WordText){.palavra = token, .len = strlen(token)};
-        add_key_append_value_tree(tree, w, i);
-        token = strtok(NULL, " ");
-    }
-
-    return tree;
 }
 /* Review: builder */
 Review create_review(
@@ -130,7 +100,7 @@ Review create_review(
         .funny = funny,
         .cool = cool,
         .date = g_strdup(date),
-        .text = create_tree_text(text)};
+        .text = g_strdup(text)};
     return new_review;
 }
 
