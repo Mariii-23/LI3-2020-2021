@@ -20,9 +20,6 @@ struct business {
 struct business_collection {
   GHashTable *by_id;
   PerfectHash by_letter;
-
-  GHashTable *by_state; // Hash* Id-> Hash* State
-                        // ->GPtrArray* City
 };
 
 /* Business: builder */
@@ -44,28 +41,28 @@ Business create_business(char *business_id, char *name, char *city, char *state,
 /* Business: getters and setters */
 
 char *get_business_id(Business self) {
-  if (self)
+  if (self && self->business_id)
     return g_strdup(self->business_id);
   else
     return NULL;
 }
 
 char *get_business_name(Business self) {
-  if (self)
+  if (self && self->name)
     return g_strdup(self->name);
   else
     return NULL;
 }
 
 char *get_business_city(Business self) {
-  if (self)
+  if (self && self->city)
     return g_strdup(self->city);
   else
     return NULL;
 }
 
 char *get_business_state(Business self) {
-  if (self)
+  if (self && self->state)
     return g_strdup(self->state);
   else
     return NULL;
@@ -119,30 +116,8 @@ BusinessCollection create_business_collection() {
       (BusinessCollection)malloc(sizeof(struct business_collection));
   *new_business_collection = (struct business_collection){
       .by_id = g_hash_table_new(g_str_hash, g_str_equal),
-      .by_letter = phf_new(),
-      .by_state = g_hash_table_new(g_str_hash, g_str_equal)};
+      .by_letter = phf_new()};
   return new_business_collection;
-}
-
-static void add_id_state_city(GHashTable *hash_map, Business business) {
-  if (!hash_map)
-    return;
-
-  char *id = business->business_id;
-  char *state = business->state;
-  char *city = business->city;
-
-  GHashTable *hash_state = g_hash_table_lookup(hash_map, id);
-
-  if (!hash_state) {
-    GHashTable *new_hash_state = g_hash_table_new(g_str_hash, g_str_equal);
-    append_to_value(new_hash_state, state, city);
-
-    g_hash_table_insert(hash_map, id, new_hash_state);
-    return;
-  }
-
-  append_to_value(hash_state, state, city);
 }
 
 void add_business(BusinessCollection collection, Business business) {
@@ -151,9 +126,8 @@ void add_business(BusinessCollection collection, Business business) {
   Business clone = clone_business(business);
   if (!clone)
     return;
-  g_hash_table_insert(collection->by_id, business->business_id, clone);
-  phf_add(collection->by_letter, business->name, clone);
-  add_id_state_city(collection->by_state, clone);
+  g_hash_table_insert(collection->by_id, clone->business_id, clone);
+  phf_add(collection->by_letter, clone->name, clone);
 }
 
 Business get_businessCollection_business_by_id(BusinessCollection self,
@@ -182,22 +156,16 @@ GPtrArray *get_businessCollection_business_by_letter(BusinessCollection self,
   return new;
 }
 
-GSList *business_id_more_than_one_state(BusinessCollection self) {
-  if (!self)
+char *get_state_by_business_id(BusinessCollection business_collection,
+                               char *business_id) {
+  if (!business_collection || !business_id)
     return NULL;
 
-  GSList *new_list = g_slist_alloc();
-
-  GHashTableIter iter;
-  gpointer key, value;
-
-  g_hash_table_iter_init(&iter, self->by_state);
-  while (g_hash_table_iter_next(&iter, &key, &value)) {
-    if (g_hash_table_size((GHashTable *)value) > 1)
-      new_list = g_slist_prepend(new_list, g_strdup((char *)key));
-  }
-
-  return new_list;
+  Business aux = g_hash_table_lookup(business_collection->by_id, business_id);
+  if (!aux)
+    return NULL;
+  char *state = get_business_state(aux);
+  return state;
 }
 
 /* BusinessCollection: free */
@@ -207,8 +175,6 @@ void free_businessCollection(BusinessCollection self) {
     g_hash_table_foreach(self->by_id, free_key, NULL);
     phf_free(self->by_letter);
     g_hash_table_destroy(self->by_id);
-    // verificar
-    g_hash_table_destroy(self->by_state);
     free(self);
   }
 }

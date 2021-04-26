@@ -135,8 +135,6 @@ ReviewCollection collect_reviews(FILE *fp, Stats stats) {
   /* printf("reviewns ca vamos nos\n"); */
   char *line;
   ReviewCollection collection = create_review_collection();
-  // apagar
-  /* int i = 0; */
   // read header
   read_line(fp);
   while ((line = read_line(fp))) {
@@ -151,9 +149,7 @@ ReviewCollection collect_reviews(FILE *fp, Stats stats) {
     add_review(collection, review);
     // free da review
     free(review);
-    /* printf("Review :%d\n", i++); */
   }
-  /* printf("review check\n"); */
   return collection;
 }
 
@@ -173,8 +169,6 @@ BusinessCollection collect_businesses(FILE *fp, Stats stats) {
     // free do business
     free_business(business);
   }
-  // apagar
-  /* printf("business check\n"); */
   return collection;
 }
 
@@ -192,7 +186,5 @@ UserCollection collect_users(FILE *fp, Stats stats) {
     // dar free do user
     free_user(user);
   }
-  // apagar
-  /* printf("users check\n"); */
   return collection;
 }

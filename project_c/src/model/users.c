@@ -97,7 +97,7 @@ void free_user_collection(UserCollection user_collection) {
 void add_user(UserCollection user_collection, User user) {
   if (user_collection && user) {
     User new = clone_user(user);
-    g_hash_table_insert(user_collection->by_id, user->user_id, new);
+    g_hash_table_insert(user_collection->by_id, new->user_id, new);
   }
 }
 

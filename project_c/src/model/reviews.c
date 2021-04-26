@@ -238,9 +238,9 @@ void add_review(ReviewCollection collection, Review review) {
   if (!new)
     return;
 
-  g_hash_table_insert(collection->by_id, review->review_id, new);
-  append_to_value(collection->by_user_id, review->user_id, new);
-  append_to_value(collection->by_business_id, review->business_id, new);
+  g_hash_table_insert(collection->by_id, new->review_id, new);
+  append_to_value(collection->by_user_id, new->user_id, new);
+  append_to_value(collection->by_business_id, new->business_id, new);
 }
 
 Review get_reviewCollection_review_by_id(ReviewCollection self, char *id) {
@@ -295,4 +295,73 @@ void free_reviewCollection(ReviewCollection self) {
     g_hash_table_destroy(self->by_business_id);
     free(self);
   }
+}
+
+static int g_array_contain(GPtrArray *array, char *string) {
+  int fail = 0;
+  if (!array)
+    return fail;
+  int size = array->len;
+  for (int i = 0; i < size && !fail; i++)
+    fail = strcmp((char *)g_ptr_array_index(array, i), string);
+  return fail;
+}
+
+void aux_international_user(ReviewCollection review_collection,
+                            BusinessCollection business_collection,
+                            TABLE table) {
+  if (!review_collection || !business_collection || !table)
+    return;
+
+  int count = 0;
+
+  GHashTableIter iter;
+  gpointer key, value;
+
+  g_hash_table_iter_init(&iter, review_collection->by_user_id);
+  while (g_hash_table_iter_next(&iter, &key, &value)) {
+
+    GPtrArray *array = (GPtrArray *)value;
+    int size = array->len, count_states = 1;
+    if (size <= 1)
+      continue;
+
+    GPtrArray *states = g_ptr_array_new();
+
+    Review review = (Review)g_ptr_array_index(array, 0);
+    if (!review)
+      continue;
+    char *business_id = review->business_id;
+
+    char *current_state =
+        get_state_by_business_id(business_collection, business_id);
+
+    g_ptr_array_add(states, g_strdup(current_state));
+    free(current_state);
+
+    for (int i = 1; i < size && count_states < 2; i++) {
+      review = (Review)g_ptr_array_index(array, i);
+      business_id = review->business_id;
+
+      current_state =
+          get_state_by_business_id(business_collection, business_id);
+
+      if (g_array_contain(states, current_state)) {
+        count_states++;
+      } else
+        g_ptr_array_add(states, current_state);
+      free(current_state);
+    }
+    // dar free do states
+    g_ptr_array_free(states, TRUE);
+
+    if (count_states >= 2) {
+      count++;
+      add_field(table, (char *)key);
+    }
+  }
+
+  char *size_str = g_strdup_printf("%d", count);
+  add_field(table, size_str);
+  free(size_str);
 }
