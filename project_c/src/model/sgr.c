@@ -178,6 +178,8 @@ TABLE business_info(SGR sgr, char *business_id) {
       new_table(build_ptr_array(query_three_fields, QUERY_THREE_FIELDS_N));
   Business business = get_businessCollection_business_by_id(
       sgr->catalogo_businesses, business_id);
+  if (!business)
+    return table;
   char *numero_stars = g_strdup_printf(
       "%f", get_average_number_stars(sgr->estatisticas, business_id));
   char *numero_reviews = g_strdup_printf(
@@ -222,6 +224,10 @@ TABLE businesses_reviewed(SGR sgr, char *id) {
     free(business_name);
     free_business(business);
   }
+
+  char *size_str = g_strdup_printf("%d", size);
+  add_field(table, size_str);
+  free(size_str);
 
   g_ptr_array_set_free_func(reviews_array, (void *)free_review);
   g_ptr_array_free(reviews_array, TRUE);
