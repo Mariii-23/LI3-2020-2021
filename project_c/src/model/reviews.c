@@ -14,354 +14,380 @@
 #include "users.h"
 
 typedef struct word_text {
-  char *palavra;
-  size_t len;
+    char* palavra;
+    size_t len;
 } WordText;
 
 struct review {
-  char *review_id;
-  char *user_id;
-  char *business_id;
+    char* review_id;
+    char* user_id;
+    char* business_id;
 
-  float stars;
-  int useful;
-  int funny;
-  int cool;
+    float stars;
+    int useful;
+    int funny;
+    int cool;
 
-  char *date;
-  GTree *text; // nodo(WordText *word_text, GPtrArray* indices);
+    char* date;
+    char* text;
 };
 
 struct review_collection {
-  GHashTable *by_id;
-  GHashTable *by_user_id;
-  GHashTable *by_business_id;
+    GHashTable* by_id;
+    GHashTable* by_user_id;
+    GHashTable* by_business_id;
 };
 
-bool word_in_text_review(Review review, char *word) {
-  return (bool)g_tree_lookup(review->text, word);
+static bool are_equal(char* token, char* query_word) {
+    // o que pode ter pontuacao é a token, a query_word nao
+    // case sensitive ou nao?
+    char a = token[0];
+    char b = query_word[0];
+    int i = 0;
+    for (; a && b; i++) {
+        a = token[i];
+        b = query_word[i];
+        // se a token acabar antes entao nunca podera dar true
+        // porque se a query tiver mais nao é pontuacao
+        if (b && tolower(a) != tolower(b)) return false;
+    }
+    // Oi!We came
+    return !a || ispunct(a);
 }
 
-void review_id_with_word_in_text(ReviewCollection collection, char *word,
-                                 TABLE table) {
-  GHashTableIter iter;
-  gpointer id = NULL;
-  gpointer review = NULL;
-  g_hash_table_iter_init(&iter, collection->by_id);
-  while (g_hash_table_iter_next(&iter, &id, &review)) {
-    if (word_in_text_review(review, word)) {
-      add_field(table, id);
+bool find_word(char* text, char* word) {
+    char* token = strtok(text, " ");
+    while (token) {
+        if (are_equal(token, word)) {
+            return true;
+        }
+        token = strtok(NULL, " ");
     }
-  }
+    return false;
+}
+
+void review_id_with_word_in_text(
+    ReviewCollection collection, char* word, TABLE table) {
+    GHashTableIter iter;
+    char* id = NULL;
+    Review review = NULL;
+    g_hash_table_iter_init(&iter, collection->by_id);
+    while (
+        g_hash_table_iter_next(&iter, (gpointer*) &id, (gpointer*) &review)) {
+        if (find_word(review->text, word)) {
+            add_field(table, id);
+        }
+    }
 }
 
 static gint compare_text(gconstpointer a, gconstpointer b) {
-  // dar true se tiver pontuacao no fim
-  size_t len_a = ((WordText *)a)->len;
-  size_t len_b = ((WordText *)b)->len;
-  char *max_word;
-  size_t max_len, min_len;
-  if (len_a > len_b) {
-    max_word = ((WordText *)a)->palavra;
-    max_len = len_a;
-    min_len = len_b;
-  } else {
-    max_word = ((WordText *)b)->palavra;
-    max_len = len_b;
-    min_len = len_a;
-  }
+    // dar true se tiver pontuacao no fim
+    size_t len_a = ((WordText*) a)->len;
+    size_t len_b = ((WordText*) b)->len;
+    char* max_word;
+    size_t max_len, min_len;
+    if (len_a > len_b) {
+        max_word = ((WordText*) a)->palavra;
+        max_len = len_a;
+        min_len = len_b;
+    }
+    else {
+        max_word = ((WordText*) b)->palavra;
+        max_len = len_b;
+        min_len = len_a;
+    }
 
-  if (max_len - min_len > 1 ||
-      (max_len != min_len && !ispunct(max_word[max_len - 1])))
-    return false;
-  else {
-    return !strncasecmp(((WordText *)a)->palavra, ((WordText *)b)->palavra,
-                        min_len);
-  }
+    if (max_len - min_len > 1 ||
+        (max_len != min_len && !ispunct(max_word[max_len - 1])))
+        return false;
+    else {
+        return !strncasecmp(
+            ((WordText*) a)->palavra, ((WordText*) b)->palavra, min_len);
+    }
 }
 
 // determinar a lista de ids de reviews que referem a dada palavra no campo text
-static void add_key_append_value_tree(GTree *tree, WordText *w, int index) {
-  GPtrArray *arr = g_tree_search(tree, compare_text, w);
-  int *num = malloc(sizeof(int));
-  *num = index;
-  if (!arr) {
-    // create new node
-    arr = g_ptr_array_new();
-    g_tree_insert_node(tree, w, arr);
-  } else {
-    free(w);
-  }
-  g_ptr_array_add(arr, num);
+static void add_key_append_value_tree(GTree* tree, WordText* w, int index) {
+    GPtrArray* arr = g_tree_search(tree, compare_text, w);
+    int* num = malloc(sizeof(int));
+    *num = index;
+    if (!arr) {
+        // create new node
+        arr = g_ptr_array_new();
+        g_tree_insert_node(tree, w, arr);
+    }
+    else {
+        free(w);
+    }
+    g_ptr_array_add(arr, num);
 }
 
-static GTree *create_tree_text(char *text) {
-  GTree *tree = g_tree_new(compare_text);
-  char *token = strtok(text, " ");
-  for (int i = 0; token; i++) {
-    WordText *w = malloc(sizeof(struct word_text));
-    *w = (WordText){.palavra = token, .len = strlen(token)};
-    add_key_append_value_tree(tree, w, i);
-    token = strtok(NULL, " ");
-  }
+static GTree* create_tree_text(char* text) {
+    GTree* tree = g_tree_new(compare_text);
+    char* token = strtok(text, " ");
+    for (int i = 0; token; i++) {
+        WordText* w = malloc(sizeof(struct word_text));
+        *w = (WordText){.palavra = token, .len = strlen(token)};
+        add_key_append_value_tree(tree, w, i);
+        token = strtok(NULL, " ");
+    }
 
-  return tree;
+    return tree;
 }
 /* Review: builder */
-Review create_review(char *review_id, char *user_id, char *business_id,
-                     float stars, int useful, int funny, int cool, char *date,
-                     char *text) {
-  Review new_review = (Review)malloc(sizeof(struct review));
-  *new_review = (struct review){.review_id = g_strdup(review_id),
-                                .user_id = g_strdup(user_id),
-                                .business_id = g_strdup(business_id),
-                                .stars = stars,
-                                .useful = useful,
-                                .funny = funny,
-                                .cool = cool,
-                                .date = g_strdup(date),
-                                .text = create_tree_text(text)};
-  return new_review;
+Review create_review(
+    char* review_id,
+    char* user_id,
+    char* business_id,
+    float stars,
+    int useful,
+    int funny,
+    int cool,
+    char* date,
+    char* text) {
+    Review new_review = (Review) malloc(sizeof(struct review));
+    *new_review = (struct review){
+        .review_id = g_strdup(review_id),
+        .user_id = g_strdup(user_id),
+        .business_id = g_strdup(business_id),
+        .stars = stars,
+        .useful = useful,
+        .funny = funny,
+        .cool = cool,
+        .date = g_strdup(date),
+        .text = g_strdup(text)};
+    return new_review;
 }
 
 /* Review: getters and setters */
-char *get_review_id(Review self) {
-  if (self) {
-    return g_strdup(self->review_id);
-  } else
-    return NULL;
+char* get_review_id(Review self) {
+    if (self) {
+        return g_strdup(self->review_id);
+    }
+    else
+        return NULL;
 }
 
-char *get_review_user_id(Review self) {
-  if (self) {
-    return g_strdup(self->user_id);
-  } else
-    return NULL;
+char* get_review_user_id(Review self) {
+    if (self) {
+        return g_strdup(self->user_id);
+    }
+    else
+        return NULL;
 }
 
-char *get_review_business_id(Review self) {
-  if (self) {
-    return g_strdup(self->business_id);
-  } else
-    return NULL;
+char* get_review_business_id(Review self) {
+    if (self) {
+        return g_strdup(self->business_id);
+    }
+    else
+        return NULL;
 }
 
 float get_review_stars(Review self) {
-  if (self) {
-    return self->stars;
-  } else
-    return -1;
+    if (self) {
+        return self->stars;
+    }
+    else
+        return -1;
 }
 
 int get_review_useful(Review self) {
-  if (self) {
-    return self->useful;
-  } else
-    return -1;
+    if (self) {
+        return self->useful;
+    }
+    else
+        return -1;
 }
 
 int get_review_funny(Review self) {
-  if (self) {
-    return self->funny;
-  } else
-    return (-1);
+    if (self) {
+        return self->funny;
+    }
+    else
+        return (-1);
 }
 
 int get_review_cool(Review self) {
-  if (self) {
-    return self->cool;
-  } else
-    return -1;
+    if (self) {
+        return self->cool;
+    }
+    else
+        return -1;
 }
 
 static Review clone_review(Review self) {
-  if (!self)
-    return NULL;
-  Review new_review = (Review)malloc(sizeof(struct review));
-  *new_review = (struct review){.review_id = g_strdup(self->review_id),
-                                .user_id = g_strdup(self->user_id),
-                                .business_id = g_strdup(self->business_id),
-                                .stars = self->stars,
-                                .useful = self->useful,
-                                .funny = self->funny,
-                                .cool = self->cool,
-                                .date = g_strdup(self->date),
-                                .text = self->text};
-  return new_review;
+    if (!self) return NULL;
+    Review new_review = (Review) malloc(sizeof(struct review));
+    *new_review = (struct review){
+        .review_id = g_strdup(self->review_id),
+        .user_id = g_strdup(self->user_id),
+        .business_id = g_strdup(self->business_id),
+        .stars = self->stars,
+        .useful = self->useful,
+        .funny = self->funny,
+        .cool = self->cool,
+        .date = g_strdup(self->date),
+        .text = self->text};
+    return new_review;
 }
 
 static gpointer g_review_copy(gconstpointer src, gpointer data) {
-  return clone_review((Review)src);
+    return clone_review((Review) src);
 }
 
 void free_review(Review self) {
-  if (!self)
-    return;
+    if (!self) return;
 
-  if (self->review_id)
-    free(self->review_id);
+    if (self->review_id) free(self->review_id);
 
-  if (self->user_id)
-    free(self->user_id);
+    if (self->user_id) free(self->user_id);
 
-  if (self->business_id)
-    free(self->business_id);
+    if (self->business_id) free(self->business_id);
 
-  if (self->date)
-    free(self->date);
+    if (self->date) free(self->date);
 
-  // TODO mudar
-  /* if (self->text) */
-  /*   free(self->text); */
+    // TODO mudar
+    /* if (self->text) */
+    /*   free(self->text); */
 
-  free(self);
+    free(self);
 }
 
 /* Review Collection */
 /* Review Collection: Builder */
 
 ReviewCollection create_review_collection() {
-  ReviewCollection new_review_collection =
-      (ReviewCollection)malloc(sizeof(struct review_collection));
-  *new_review_collection = (struct review_collection){
-      .by_id = g_hash_table_new(g_str_hash, g_str_equal),
-      .by_user_id = g_hash_table_new(g_str_hash, g_str_equal),
-      .by_business_id = g_hash_table_new(g_str_hash, g_str_equal)};
-  return new_review_collection;
+    ReviewCollection new_review_collection =
+        (ReviewCollection) malloc(sizeof(struct review_collection));
+    *new_review_collection = (struct review_collection){
+        .by_id = g_hash_table_new(g_str_hash, g_str_equal),
+        .by_user_id = g_hash_table_new(g_str_hash, g_str_equal),
+        .by_business_id = g_hash_table_new(g_str_hash, g_str_equal)};
+    return new_review_collection;
 }
 
 void add_review(ReviewCollection collection, Review review) {
-  if (!collection || !review)
-    return;
+    if (!collection || !review) return;
 
-  Review new = clone_review(review);
-  if (!new)
-    return;
+    Review new = clone_review(review);
+    if (!new) return;
 
-  g_hash_table_insert(collection->by_id, new->review_id, new);
-  append_to_value(collection->by_user_id, new->user_id, new);
-  append_to_value(collection->by_business_id, new->business_id, new);
+    g_hash_table_insert(collection->by_id, new->review_id, new);
+    append_to_value(collection->by_user_id, new->user_id, new);
+    append_to_value(collection->by_business_id, new->business_id, new);
 }
 
-Review get_reviewCollection_review_by_id(ReviewCollection self, char *id) {
-  Review new = NULL;
-  if (!self || !id)
+Review get_reviewCollection_review_by_id(ReviewCollection self, char* id) {
+    Review new = NULL;
+    if (!self || !id) return new;
+
+    Review aux = g_hash_table_lookup(self->by_id, id);
+    if (aux) new = clone_review(aux);
+
     return new;
-
-  Review aux = g_hash_table_lookup(self->by_id, id);
-  if (aux)
-    new = clone_review(aux);
-
-  return new;
 }
 
-int get_number_reviews_by_business(ReviewCollection self, char *business_id) {
-  if (!self || !business_id)
-    return 0;
-  return get_reviewCollection_review_by_business_id(self, business_id)->len;
+int get_number_reviews_by_business(ReviewCollection self, char* business_id) {
+    if (!self || !business_id) return 0;
+    return get_reviewCollection_review_by_business_id(self, business_id)->len;
 }
 
-GPtrArray *get_reviewCollection_review_by_user_id(ReviewCollection self,
-                                                  char *id) {
-  GPtrArray *new = NULL;
-  if (!self || !id)
+GPtrArray* get_reviewCollection_review_by_user_id(
+    ReviewCollection self, char* id) {
+    GPtrArray* new = NULL;
+    if (!self || !id) return new;
+
+    GPtrArray* aux = g_hash_table_lookup(self->by_user_id, id);
+    if (aux) new = g_ptr_array_copy(aux, g_review_copy, NULL);
     return new;
-
-  GPtrArray *aux = g_hash_table_lookup(self->by_user_id, id);
-  if (aux)
-    new = g_ptr_array_copy(aux, g_review_copy, NULL);
-  return new;
 }
 
-GPtrArray *get_reviewCollection_review_by_business_id(ReviewCollection self,
-                                                      char *id) {
-  GPtrArray *new = NULL;
-  if (!self || !id)
-    return new;
+GPtrArray* get_reviewCollection_review_by_business_id(
+    ReviewCollection self, char* id) {
+    GPtrArray* new = NULL;
+    if (!self || !id) return new;
 
-  GPtrArray *aux = g_hash_table_lookup(self->by_business_id, id);
-  if (aux)
-    new = g_ptr_array_copy(aux, g_review_copy, NULL);
-  return new;
+    GPtrArray* aux = g_hash_table_lookup(self->by_business_id, id);
+    if (aux) new = g_ptr_array_copy(aux, g_review_copy, NULL);
+    return new;
 }
 
 void free_reviewCollection(ReviewCollection self) {
-  if (self) {
-    g_hash_table_foreach(self->by_id, free_key, NULL);
-    g_hash_table_foreach(self->by_user_id, free_key, NULL);
-    g_hash_table_foreach(self->by_business_id, free_key, NULL);
-    g_hash_table_destroy(self->by_id);
-    g_hash_table_destroy(self->by_user_id);
-    g_hash_table_destroy(self->by_business_id);
-    free(self);
-  }
+    if (self) {
+        g_hash_table_foreach(self->by_id, free_key, NULL);
+        g_hash_table_foreach(self->by_user_id, free_key, NULL);
+        g_hash_table_foreach(self->by_business_id, free_key, NULL);
+        g_hash_table_destroy(self->by_id);
+        g_hash_table_destroy(self->by_user_id);
+        g_hash_table_destroy(self->by_business_id);
+        free(self);
+    }
 }
 
-static int g_array_contain(GPtrArray *array, char *string) {
-  int fail = 0;
-  if (!array)
+static int g_array_contain(GPtrArray* array, char* string) {
+    int fail = 0;
+    if (!array) return fail;
+    int size = array->len;
+    for (int i = 0; i < size && !fail; i++)
+        fail = strcmp((char*) g_ptr_array_index(array, i), string);
     return fail;
-  int size = array->len;
-  for (int i = 0; i < size && !fail; i++)
-    fail = strcmp((char *)g_ptr_array_index(array, i), string);
-  return fail;
 }
 
-void aux_international_user(ReviewCollection review_collection,
-                            BusinessCollection business_collection,
-                            TABLE table) {
-  if (!review_collection || !business_collection || !table)
-    return;
+void aux_international_user(
+    ReviewCollection review_collection,
+    BusinessCollection business_collection,
+    TABLE table) {
+    if (!review_collection || !business_collection || !table) return;
 
-  int count = 0;
+    int count = 0;
 
-  GHashTableIter iter;
-  gpointer key, value;
+    GHashTableIter iter;
+    gpointer key, value;
 
-  g_hash_table_iter_init(&iter, review_collection->by_user_id);
-  while (g_hash_table_iter_next(&iter, &key, &value)) {
+    g_hash_table_iter_init(&iter, review_collection->by_user_id);
+    while (g_hash_table_iter_next(&iter, &key, &value)) {
 
-    GPtrArray *array = (GPtrArray *)value;
-    int size = array->len, count_states = 1;
-    if (size <= 1)
-      continue;
+        GPtrArray* array = (GPtrArray*) value;
+        int size = array->len, count_states = 1;
+        if (size <= 1) continue;
 
-    GPtrArray *states = g_ptr_array_new();
+        GPtrArray* states = g_ptr_array_new();
 
-    Review review = (Review)g_ptr_array_index(array, 0);
-    if (!review)
-      continue;
-    char *business_id = review->business_id;
+        Review review = (Review) g_ptr_array_index(array, 0);
+        if (!review) continue;
+        char* business_id = review->business_id;
 
-    char *current_state =
-        get_state_by_business_id(business_collection, business_id);
+        char* current_state =
+            get_state_by_business_id(business_collection, business_id);
 
-    g_ptr_array_add(states, g_strdup(current_state));
-    free(current_state);
+        g_ptr_array_add(states, g_strdup(current_state));
+        free(current_state);
 
-    for (int i = 1; i < size && count_states < 2; i++) {
-      review = (Review)g_ptr_array_index(array, i);
-      business_id = review->business_id;
+        for (int i = 1; i < size && count_states < 2; i++) {
+            review = (Review) g_ptr_array_index(array, i);
+            business_id = review->business_id;
 
-      current_state =
-          get_state_by_business_id(business_collection, business_id);
+            current_state =
+                get_state_by_business_id(business_collection, business_id);
 
-      if (g_array_contain(states, current_state)) {
-        count_states++;
-      } else
-        g_ptr_array_add(states, current_state);
-      free(current_state);
+            if (g_array_contain(states, current_state)) {
+                count_states++;
+            }
+            else
+                g_ptr_array_add(states, current_state);
+            free(current_state);
+        }
+        // dar free do states
+        g_ptr_array_free(states, TRUE);
+
+        if (count_states >= 2) {
+            count++;
+            add_field(table, (char*) key);
+        }
     }
-    // dar free do states
-    g_ptr_array_free(states, TRUE);
 
-    if (count_states >= 2) {
-      count++;
-      add_field(table, (char *)key);
-    }
-  }
-
-  char *size_str = g_strdup_printf("%d", count);
-  add_field(table, size_str);
-  free(size_str);
+    char* size_str = g_strdup_printf("%d", count);
+    add_field(table, size_str);
+    free(size_str);
 }
