@@ -131,7 +131,6 @@ SGR load_sgr(char *users, char *businesses, char *reviews) {
   time_[1] = clock();
   printf("\nTime: %ld\nSec: %ld\n", (time_[1] - time_[0]),
          (time_[1] - time_[0]) / CLOCKS_PER_SEC);
-
   return sgr;
 }
 

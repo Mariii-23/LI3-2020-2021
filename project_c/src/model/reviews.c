@@ -41,19 +41,31 @@ struct review_collection {
 static bool are_equal(char *token, char *query_word) {
   // o que pode ter pontuacao é a token, a query_word nao
   // case sensitive ou nao?
+  bool can_be_equal = true;
   char a = token[0];
   char b = query_word[0];
-  int i = 0;
-  for (; a && b; i++) {
+  int i = 0, j = 0;
+
+  for (; a; i++) {
     a = token[i];
-    b = query_word[i];
-    // se a token acabar antes entao nunca podera dar true
-    // porque se a query tiver mais nao é pontuacao
-    if (b && tolower(a) != tolower(b))
+    b = query_word[j];
+    // so pode ser true quando !b
+    if (!b && can_be_equal && (!a || ispunct(a)))
+      return true;
+    else if (!a) {
       return false;
+    }
+
+    if (!ispunct(a) && tolower(a) != tolower(b)) {
+      can_be_equal = false;
+    } else if (ispunct(a)) {
+      j = 0;
+      can_be_equal = true;
+    } else {
+      j++;
+    }
   }
-  // Oi!We came
-  return !a || ispunct(a);
+  return can_be_equal && !b;
 }
 
 bool find_word(char *text, char *word) {
