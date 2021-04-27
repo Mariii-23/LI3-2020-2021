@@ -110,6 +110,8 @@ void free_business(Business self) {
   }
 }
 
+void g_free_business(gpointer data) { free_business((Business)data); }
+
 /* BusinessCollection: builder */
 BusinessCollection create_business_collection() {
   BusinessCollection new_business_collection =

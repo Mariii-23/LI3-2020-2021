@@ -23,6 +23,7 @@ char *get_business_state(Business self);
 GPtrArray *get_business_categories(Business self);
 
 void free_business(Business self);
+void g_free_business(gpointer data);
 
 void add_business(BusinessCollection self, Business elem);
 

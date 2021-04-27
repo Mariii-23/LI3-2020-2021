@@ -69,6 +69,9 @@ bool find_word(char *text, char *word) {
 
 void review_id_with_word_in_text(ReviewCollection collection, char *word,
                                  TABLE table) {
+  // apagar counter
+  int counter = 0;
+
   GHashTableIter iter;
   char *id = NULL;
   Review review = NULL;
@@ -78,8 +81,15 @@ void review_id_with_word_in_text(ReviewCollection collection, char *word,
     if (find_word(to_search, word)) {
       add_field(table, id);
       free(to_search);
+      // apagar
+      counter++;
     }
   }
+
+  // apagar counter
+  char *size_str = g_strdup_printf("%d", counter);
+  add_field(table, size_str);
+  free(size_str);
 }
 
 static gint compare_text(gconstpointer a, gconstpointer b) {
@@ -358,8 +368,8 @@ void aux_international_user(ReviewCollection review_collection,
     Review review = (Review)g_ptr_array_index(array, 0);
     if (!review)
       continue;
-    char *business_id = review->business_id;
 
+    char *business_id = review->business_id;
     char *current_state =
         get_state_by_business_id(business_collection, business_id);
 
@@ -380,6 +390,7 @@ void aux_international_user(ReviewCollection review_collection,
       free(current_state);
     }
     // dar free do states
+    g_ptr_array_set_free_func(states, free);
     g_ptr_array_free(states, TRUE);
 
     if (count_states >= 2) {
