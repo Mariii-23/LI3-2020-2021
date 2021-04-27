@@ -76,7 +76,6 @@ static void build_category_hash_table(SGR sgr) {
 
   if (!sgr || is_empty_stats(sgr->estatisticas) ||
       is_empty_business_id_to_stars(sgr->estatisticas)) {
-    printf("grhhhhhh\n");
     return;
   }
 
@@ -121,6 +120,10 @@ SGR load_sgr(char *users, char *businesses, char *reviews) {
   FILE *fp_users = fopen(users, "r");
   FILE *fp_businesses = fopen(businesses, "r");
   FILE *fp_reviews = fopen(reviews, "r");
+  if (!fp_users || !fp_businesses || !fp_reviews) {
+    printf("Invalid file\n");
+    return NULL;
+  }
   SGR sgr = malloc(sizeof(struct sgr));
   Stats stats = start_statistics();
   *sgr = (struct sgr){.catalogo_users = collect_users(fp_users, stats),
