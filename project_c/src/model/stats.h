@@ -3,13 +3,14 @@
 
 #include "glib.h"
 #include "table.h"
+#include <stdbool.h>
 typedef struct stats *Stats;
 Stats start_statistics();
 float get_average_number_stars(Stats stats, char *business_id);
 void update_average_stars(Stats stats, char *business_id, float new_star);
 
-int is_empty_business_id_to_stars(Stats stats);
-int is_empty_stats(Stats stats);
+bool is_empty_business_id_to_stars(Stats stats);
+bool is_empty_stats(Stats stats);
 
 void start_table_iter_init_business_id_hash_table(GHashTableIter *iter,
                                                   Stats stats);

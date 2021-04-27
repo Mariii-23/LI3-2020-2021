@@ -40,7 +40,8 @@ GPtrArray *build_head(char *fields[], int N) {
 
 static void build_city_hash_table(SGR sgr) {
 
-  printf("%d\n", is_empty_business_id_to_stars(sgr->estatisticas));
+  /* printf("%d\n", is_empty_business_id_to_stars(sgr->estatisticas)); */
+
   if (!sgr || is_empty_stats(sgr->estatisticas) ||
       is_empty_business_id_to_stars(sgr->estatisticas))
     return;
@@ -73,9 +74,11 @@ static void build_city_hash_table(SGR sgr) {
 
 static void build_category_hash_table(SGR sgr) {
 
-  if (!sgr || !is_empty_stats(sgr->estatisticas) ||
-      !is_empty_business_id_to_stars(sgr->estatisticas))
+  if (!sgr || is_empty_stats(sgr->estatisticas) ||
+      is_empty_business_id_to_stars(sgr->estatisticas)) {
+    printf("grhhhhhh\n");
     return;
+  }
 
   init_category_to_business_by_star(sgr->estatisticas);
 
@@ -92,10 +95,12 @@ static void build_category_hash_table(SGR sgr) {
         get_business_categories(get_businessCollection_business_by_id(
             sgr->catalogo_businesses, business_id));
 
-    char *name = get_business_name(get_businessCollection_business_by_id(
-        sgr->catalogo_businesses, business_id));
+    Business business = get_businessCollection_business_by_id(
+        sgr->catalogo_businesses, business_id);
 
-    gint size = categories->len;
+    char *name = get_business_name(business);
+
+    int size = categories ? categories->len : 0;
     for (int i = 0; i < size; i++)
       add_category_to_business_by_star(sgr->estatisticas,
                                        g_ptr_array_index(categories, i),
@@ -103,6 +108,7 @@ static void build_category_hash_table(SGR sgr) {
 
     // free categories
     free(name);
+    free_business(business);
   }
 }
 
@@ -262,19 +268,35 @@ TABLE businesses_reviewed(SGR sgr, char *id) {
 
 // Query 5
 TABLE businesses_with_stars_and_city(SGR sgr, float stars, char *city) {
+
+  clock_t time_[2];
+  time_[0] = clock();
+
   char *fields[] = {"id", "name"};
   TABLE table = new_table(build_ptr_array(fields, QUERY_FIVE_FIELDS_N));
 
   n_larger_city_star(sgr->estatisticas, city, stars, table, 1);
+
+  time_[1] = clock();
+  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
+         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
   return table;
 }
 
 // Query 6
 TABLE top_businesses_by_city(SGR sgr, int top) {
+
+  clock_t time_[2];
+  time_[0] = clock();
+
   char *fields[] = {"id", "name", "stars"};
   TABLE table = new_table(build_ptr_array(fields, QUERY_SIX_FIELDS_N));
 
   all_n_larger_than_city_star(sgr->estatisticas, top, table);
+
+  time_[1] = clock();
+  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
+         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
   return table;
 }
 
@@ -299,10 +321,18 @@ TABLE international_users(SGR sgr) {
 
 // Query 8
 TABLE top_businesses_with_category(SGR sgr, int top, char *category) {
+
+  clock_t time_[2];
+  time_[0] = clock();
+
   char *fields[] = {"id", "name", "stars"};
   TABLE table = new_table(build_ptr_array(fields, QUERY_EIGHT_FIELDS_N));
 
   n_larger_category_star(sgr->estatisticas, category, top, table);
+
+  time_[1] = clock();
+  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
+         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
   return table;
 }
 

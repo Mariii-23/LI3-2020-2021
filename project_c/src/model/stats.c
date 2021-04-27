@@ -1,5 +1,6 @@
 #include "stats.h"
 
+#include <stdbool.h>
 #include <string.h>
 
 #include "auxiliary.h"
@@ -51,7 +52,8 @@ void update_average_stars(Stats stats, char *business_id, float new_star) {
     tuplo->current_average = new_star;
   } else {
     tuplo->current_average =
-        ((tuplo->current_average * tuplo->number_reviews) + new_star) /
+        ((double)((tuplo->current_average * tuplo->number_reviews) +
+                  new_star)) /
         (tuplo->number_reviews + 1);
     tuplo->number_reviews++;
   }
@@ -63,17 +65,17 @@ float get_average_number_stars(Stats stats, char *business_id) {
       ->current_average;
 }
 
-int is_empty_stats(Stats stats) {
-  int empty = 1;
+bool is_empty_stats(Stats stats) {
+  int empty = true;
   if (stats)
-    empty = 0;
+    empty = false;
   return empty;
 }
 
-int is_empty_business_id_to_stars(Stats stats) {
-  int empty = 1;
+bool is_empty_business_id_to_stars(Stats stats) {
+  int empty = true;
   if (stats && stats->business_id_to_stars)
-    empty = 0;
+    empty = false;
   return empty;
 }
 
@@ -131,7 +133,7 @@ void free_city_tuple(CityTuple self) {
 void free_g_city_tuple(gpointer data) { free_city_tuple((CityTuple)data); }
 
 gint compare_stars(gconstpointer key1, gconstpointer key2, gpointer user_data) {
-  return ((CityTuple)key1)->stars - ((CityTuple)key2)->stars;
+  return ((CityTuple)key2)->stars - ((CityTuple)key1)->stars;
 }
 
 void init_city_to_business_by_star(Stats stats) {
@@ -173,8 +175,9 @@ void add_city_to_business_by_star(Stats stats, char *city, char *business_id,
 void add_category_to_business_by_star(Stats stats, char *category,
                                       char *business_id, float stars,
                                       char *name) {
-  if (!stats || !stats->business_id_to_stars)
+  if (!stats || !stats->business_id_to_stars) {
     return;
+  }
 
   if (!stats->category_to_business_by_star)
     stats->category_to_business_by_star =
@@ -185,22 +188,14 @@ void add_category_to_business_by_star(Stats stats, char *category,
   GSList *aux =
       g_hash_table_lookup(stats->category_to_business_by_star, category);
 
-  if (!aux) {
-    GSList *list = g_slist_alloc();
-    list = g_slist_append(list, value);
-    g_hash_table_insert(stats->category_to_business_by_star, g_strdup(category),
-                        list);
-    return;
-  }
+  aux = g_slist_insert_sorted_with_data(aux, value, compare_stars, NULL);
 
-  GSList *new_list =
-      g_slist_insert_sorted_with_data(aux, value, compare_stars, NULL);
   g_hash_table_insert(stats->category_to_business_by_star, g_strdup(category),
-                      new_list);
+                      aux);
 }
 
 static GSList *n_larger_gs_list(int N, GSList *gs_list) {
-  GSList *new = g_slist_alloc();
+  GSList *new = NULL;
   int size = g_slist_length(gs_list);
 
   for (int i = 0; i < size && i < N; i++)
@@ -210,7 +205,7 @@ static GSList *n_larger_gs_list(int N, GSList *gs_list) {
 }
 
 static GSList *n_larger_than_gs_list(int N, GSList *gs_list) {
-  GSList *new = g_slist_alloc();
+  GSList *new = NULL;
   int stop = 0;
   int size = g_slist_length(gs_list);
 
@@ -229,7 +224,6 @@ static GSList *n_larger_than_gs_list(int N, GSList *gs_list) {
 void n_larger_city_star(Stats stats, char *city, int N, TABLE table,
                         int larger_than) {
   if (!stats || !stats->city_to_business_by_star) {
-    /* printf("NAO TENHO NADA\n"); */
     return;
   }
 
@@ -239,16 +233,15 @@ void n_larger_city_star(Stats stats, char *city, int N, TABLE table,
                 N, g_hash_table_lookup(stats->city_to_business_by_star, city))
           : n_larger_gs_list(
                 N, g_hash_table_lookup(stats->city_to_business_by_star, city));
-
-  if (!list) {
-    /* printf("OPAAA a lista ta vazia sabe se la porque\n"); */
+  /* print_list(list); */
+  if (!list)
     return;
-  }
 
   CityTuple value;
-  int i = 0;
+  int size = g_slist_length(list);
 
-  while ((value = g_slist_nth_data(list, i)) != NULL) {
+  for (int i = 0; i < size; i++) {
+    value = (CityTuple)g_slist_nth_data(list, i);
     char *id = g_strdup(value->business_id);
     char *name = value->name;
     char *stars = g_strdup_printf("%f", value->stars);
@@ -257,8 +250,6 @@ void n_larger_city_star(Stats stats, char *city, int N, TABLE table,
     add_field(table, name);
     if (larger_than == 0)
       add_field(table, stars);
-    /* free(id); */
-    /* free(stars); */
     i++;
   }
   // free do list
@@ -268,9 +259,7 @@ void n_larger_city_star(Stats stats, char *city, int N, TABLE table,
 }
 
 void all_n_larger_than_city_star(Stats stats, int N, TABLE table) {
-  printf("ola\n");
   if (!stats || !stats->city_to_business_by_star) {
-    /* printf("NAO TENHO NADA\n"); */
     return;
   }
 
@@ -291,18 +280,13 @@ void all_n_larger_than_city_star(Stats stats, int N, TABLE table) {
 
 void n_larger_category_star(Stats stats, char *category, int N, TABLE table) {
   if (!stats || !stats->city_to_business_by_star) {
-    /* printf("NAO TENHO NADA\n"); */
     return;
   }
 
-  /* GSList *list = n_larger_gs_list( */
-  /*     N, g_hash_table_lookup(stats->category_to_business_by_star, category));
-   */
   GSList *list =
       g_hash_table_lookup(stats->category_to_business_by_star, category);
 
-  if (!list || g_slist_length(list) >= 1) {
-    /* printf("OPAAA a lista ta vazia sabe se la porque\n"); */
+  if (!list || g_slist_length(list) < 1) {
     return;
   }
 
