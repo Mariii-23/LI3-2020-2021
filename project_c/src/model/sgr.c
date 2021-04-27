@@ -40,8 +40,9 @@ GPtrArray *build_head(char *fields[], int N) {
 
 static void build_city_hash_table(SGR sgr) {
 
-  if (!sgr || !is_empty_stats(sgr->estatisticas) ||
-      !is_empty_business_id_to_stars(sgr->estatisticas))
+  printf("%d\n", is_empty_business_id_to_stars(sgr->estatisticas));
+  if (!sgr || is_empty_stats(sgr->estatisticas) ||
+      is_empty_business_id_to_stars(sgr->estatisticas))
     return;
 
   init_city_to_business_by_star(sgr->estatisticas);
@@ -55,7 +56,6 @@ static void build_city_hash_table(SGR sgr) {
 
   while (iter_next_table_business_id_to_stars(&iter, &current_average,
                                               &business_id)) {
-
     Business business = get_businessCollection_business_by_id(
         sgr->catalogo_businesses, business_id);
 
@@ -124,6 +124,8 @@ SGR load_sgr(char *users, char *businesses, char *reviews) {
                       .estatisticas = stats};
   build_category_hash_table(sgr);
   build_city_hash_table(sgr);
+  // TABLE table = top_businesses_by_city(sgr, 2);
+  // fprintf_table(stdout, table, " | ", " | ");
   fclose(fp_users);
   fclose(fp_businesses);
   fclose(fp_reviews);
