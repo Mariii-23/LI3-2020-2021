@@ -52,7 +52,7 @@ static void build_city_hash_table(SGR sgr) {
 
   start_table_iter_init_business_id_hash_table(&iter, sgr->estatisticas);
 
-  int current_average;
+  float current_average;
   char *business_id;
 
   while (iter_next_table_business_id_to_stars(&iter, &current_average,
@@ -85,7 +85,7 @@ static void build_category_hash_table(SGR sgr) {
   GHashTableIter iter;
   start_table_iter_init_business_id_hash_table(&iter, sgr->estatisticas);
 
-  int current_average;
+  float current_average;
   char *business_id;
 
   while (iter_next_table_business_id_to_stars(&iter, &current_average,

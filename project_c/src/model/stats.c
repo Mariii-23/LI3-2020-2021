@@ -52,8 +52,7 @@ void update_average_stars(Stats stats, char *business_id, float new_star) {
     tuplo->current_average = new_star;
   } else {
     tuplo->current_average =
-        ((double)((tuplo->current_average * tuplo->number_reviews) +
-                  new_star)) /
+        ((float)((tuplo->current_average * tuplo->number_reviews) + new_star)) /
         (tuplo->number_reviews + 1);
     tuplo->number_reviews++;
   }
@@ -87,7 +86,7 @@ void start_table_iter_init_business_id_hash_table(GHashTableIter *iter,
 }
 
 // se der 0 deu null, 1 deu valor
-int iter_next_table_business_id_to_stars(GHashTableIter *iter, int *stars,
+int iter_next_table_business_id_to_stars(GHashTableIter *iter, float *stars,
                                          char **business_id) {
   int empty = 0;
   char *key = NULL;
@@ -132,8 +131,9 @@ void free_city_tuple(CityTuple self) {
 
 void free_g_city_tuple(gpointer data) { free_city_tuple((CityTuple)data); }
 
+// ver melhor
 gint compare_stars(gconstpointer key1, gconstpointer key2, gpointer user_data) {
-  return ((CityTuple)key2)->stars - ((CityTuple)key1)->stars;
+  return (((CityTuple)key2)->stars - ((CityTuple)key1)->stars) * 100;
 }
 
 void init_city_to_business_by_star(Stats stats) {

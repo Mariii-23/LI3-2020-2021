@@ -15,10 +15,8 @@ bool is_empty_stats(Stats stats);
 void start_table_iter_init_business_id_hash_table(GHashTableIter *iter,
                                                   Stats stats);
 
-int iter_next_table_business_id_to_stars(GHashTableIter *iter, int *stars,
-                                         char **business_id);
 /* GList *get_glist_by_city(Stats stats, char *city); */
-int iter_next_table_business_id_to_stars(GHashTableIter *iter, int *stars,
+int iter_next_table_business_id_to_stars(GHashTableIter *iter, float *stars,
                                          char **business_id);
 void init_city_to_business_by_star(Stats stats);
 void init_category_to_business_by_star(Stats stats);
