@@ -92,8 +92,9 @@ static User parse_user_line(char *str, Stats stats) {
   char *name = strtok(NULL, ";");
   if (!name)
     return NULL;
-  GPtrArray *users = read_to_ptr_array(strtok(NULL, ";"), ",");
-  return create_user(user_id, name, users);
+  /* GPtrArray *users = read_to_ptr_array(strtok(NULL, ";"), ","); */
+  char *friends = strtok(NULL, ";");
+  return create_user(user_id, name, friends);
 }
 
 static Review parse_review_line(char *str, Stats stats) {
@@ -132,7 +133,6 @@ bool validate_review(Review review) {
 }
 
 ReviewCollection collect_reviews(FILE *fp, Stats stats) {
-  /* printf("reviewns ca vamos nos\n"); */
   char *line;
   ReviewCollection collection = create_review_collection();
   // read header

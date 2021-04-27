@@ -402,7 +402,7 @@ void aux_international_user(ReviewCollection review_collection,
       free(current_state);
     }
     // dar free do states
-    g_ptr_array_set_free_func(states, free);
+    /* g_ptr_array_set_free_func(states, free); */
     g_ptr_array_free(states, TRUE);
 
     if (count_states >= 2) {

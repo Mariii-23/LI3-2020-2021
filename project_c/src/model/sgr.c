@@ -129,8 +129,9 @@ SGR load_sgr(char *users, char *businesses, char *reviews) {
   fclose(fp_reviews);
 
   time_[1] = clock();
-  printf("\nTime: %ld\nSec: %ld\n", (time_[1] - time_[0]),
-         (time_[1] - time_[0]) / CLOCKS_PER_SEC);
+  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
+         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
+
   return sgr;
 }
 
@@ -165,8 +166,8 @@ TABLE businesses_started_by_letter(SGR sgr, char letter) {
   g_ptr_array_free(list, TRUE);
 
   time_[1] = clock();
-  printf("\nTime: %ld\nSec: %ld\n", (time_[1] - time_[0]),
-         (time_[1] - time_[0]) / CLOCKS_PER_SEC);
+  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
+         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
 
   return table;
 }
@@ -207,8 +208,8 @@ TABLE business_info(SGR sgr, char *business_id) {
   free_business(business);
 
   time_[1] = clock();
-  printf("\nTime: %ld\nSec: %ld\n", (time_[1] - time_[0]),
-         (time_[1] - time_[0]) / CLOCKS_PER_SEC);
+  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
+         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
   return table;
 }
 
@@ -251,8 +252,8 @@ TABLE businesses_reviewed(SGR sgr, char *id) {
   g_ptr_array_free(reviews_array, TRUE);
 
   time_[1] = clock();
-  printf("\nTime: %ld\nSec: %ld\n", (time_[1] - time_[0]),
-         (time_[1] - time_[0]) / CLOCKS_PER_SEC);
+  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
+         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
 
   return table;
 }
@@ -288,8 +289,8 @@ TABLE international_users(SGR sgr) {
                          table);
 
   time_[1] = clock();
-  printf("\nTime: %ld\nSec: %ld\n", (time_[1] - time_[0]),
-         (time_[1] - time_[0]) / CLOCKS_PER_SEC);
+  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
+         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
 
   return table;
 }
@@ -314,7 +315,7 @@ TABLE reviews_with_word(SGR sgr, char *word) {
   review_id_with_word_in_text(sgr->catalogo_reviews, word, table);
 
   time_[1] = clock();
-  printf("\nTime: %ld\nSec: %ld\n", (time_[1] - time_[0]),
-         (time_[1] - time_[0]) / CLOCKS_PER_SEC);
+  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
+         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
   return table;
 }

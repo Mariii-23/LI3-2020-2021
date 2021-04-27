@@ -8,21 +8,19 @@
 struct user {
   char *user_id;
   char *name;
-  GPtrArray *friends; // char* user_id []
+  /* GPtrArray *friends; // char* user_id [] */
+  char *friends;
 };
 
 struct user_collection {
   GHashTable *by_id; // <char* user_id,User user>
 };
 
-User create_user(char *user_id, char *name, GPtrArray *friends) {
+User create_user(char *user_id, char *name, char *friends) {
   User new_user = malloc(sizeof(struct user));
-  *new_user = (struct user){
-      .user_id = g_strdup(user_id),
-      .name = g_strdup(name),
-      .friends = (friends && friends->len > 0)
-                     ? g_ptr_array_copy(friends, strdup_copy, NULL)
-                     : NULL};
+  *new_user = (struct user){.user_id = g_strdup(user_id),
+                            .name = g_strdup(name),
+                            .friends = friends ? g_strdup(friends) : NULL};
   return new_user;
 }
 
@@ -41,10 +39,10 @@ char *get_user_name(User user) {
   return NULL;
 }
 
-GPtrArray *get_user_friends(User user) {
-  if (!user || !user->friends || user->friends->len >= 0)
+char *get_user_friends(User user) {
+  if (!user || !user->friends)
     return NULL;
-  return g_ptr_array_copy(user->friends, strdup_copy, NULL);
+  return g_strdup(user->friends);
 }
 
 static User clone_user(User user) {
@@ -75,11 +73,8 @@ void free_user(User user) {
   if (user->name)
     free(user->name);
 
-  if (user->friends) {
-    if (user->friends->len > 1)
-      g_ptr_array_set_free_func(user->friends, free);
-    g_ptr_array_free(user->friends, TRUE);
-  }
+  if (user->friends)
+    free(user->friends);
   free(user);
 }
 void free_map_user(gpointer key, gpointer value, gpointer user_data) {
@@ -98,12 +93,6 @@ void add_user(UserCollection user_collection, User user) {
   if (user_collection && user) {
     User new = clone_user(user);
     g_hash_table_insert(user_collection->by_id, new->user_id, new);
-  }
-}
-
-void add_friend(User user, char *user_id) {
-  if (user && user_id) {
-    g_ptr_array_add(user->friends, g_strdup(user_id));
   }
 }
 
