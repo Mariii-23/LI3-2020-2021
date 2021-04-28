@@ -254,7 +254,7 @@ TABLE businesses_reviewed(SGR sgr, char *id) {
   }
 
   char *size_str = g_strdup_printf("%d", size);
-  add_field(table, size_str);
+  add_footer(table, "Numero total de businesses:", size_str);
   free(size_str);
 
   g_ptr_array_set_free_func(reviews_array, (void *)free_review);

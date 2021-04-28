@@ -113,7 +113,10 @@ TABLE projection(TABLE table, GArray *colunas) {
   char **header = malloc(sizeof(char *) * n_col);
   for (int i = 0; i < n_col; i++) {
     // encapsulamento
-    header[i] = field_index(table, g_array_index(colunas, size_t, i));
+    int coluna_to_display = g_array_index(colunas, size_t, i);
+    if (coluna_to_display < get_number_fields_table(table)) {
+      header[i] = field_index(table, coluna_to_display);
+    }
   }
   TABLE table_two = new_table(header, n_col);
   for (int i = 0; i < get_number_lines_table(table); i++) {

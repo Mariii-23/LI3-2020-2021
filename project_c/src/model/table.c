@@ -30,9 +30,18 @@ TABLE new_table_ptr_array(GPtrArray *header) {
   // free_ptr_array_deep(fields);
   return table;
 }
+char **copy_char_array(char **array, size_t n_fields) {
+  char **x = malloc(sizeof(char *) * n_fields);
+  for (int i = 0; i < n_fields; i++) {
+    x[i] = g_strdup(array[i]);
+  }
+  return x;
+}
+
 TABLE new_table(char **header, size_t number_fields) {
   TABLE table = malloc(sizeof(struct table));
-  table->header = header; // breaks encapsulamento
+  table->header =
+      copy_char_array(header, number_fields); // breaks encapsulamento
   table->lines = g_ptr_array_sized_new(number_fields);
   table->number_fields = number_fields;
   table->footer = NULL;
