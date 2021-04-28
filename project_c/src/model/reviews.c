@@ -412,6 +412,6 @@ void aux_international_user(ReviewCollection review_collection,
   }
 
   char *size_str = g_strdup_printf("%d", count);
-  add_field(table, size_str);
+  add_footer(table, "Numero Total de de utilizadores:", size_str);
   free(size_str);
 }

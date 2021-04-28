@@ -153,7 +153,7 @@ TABLE businesses_started_by_letter(SGR sgr, char letter) {
   time_[0] = clock();
 
   char *fields[] = {"Name"};
-  TABLE table = new_table(build_ptr_array(fields, QUERY_TWO_FIELDS_N));
+  TABLE table = new_table(fields, QUERY_TWO_FIELDS_N);
   char new_str[2];
   new_str[0] = letter;
   new_str[1] = 0;
@@ -191,8 +191,7 @@ TABLE business_info(SGR sgr, char *business_id) {
 
   char *query_three_fields[] = {"nome", "cidade", "estado", "stars",
                                 "numero_reviews"};
-  TABLE table =
-      new_table(build_ptr_array(query_three_fields, QUERY_THREE_FIELDS_N));
+  TABLE table = new_table(query_three_fields, QUERY_THREE_FIELDS_N);
 
   Business business = get_businessCollection_business_by_id(
       sgr->catalogo_businesses, business_id);
@@ -202,7 +201,6 @@ TABLE business_info(SGR sgr, char *business_id) {
       "%f", get_average_number_stars(sgr->estatisticas, business_id));
   char *numero_reviews = g_strdup_printf(
       "%d", get_number_reviews_by_business(sgr->catalogo_reviews, business_id));
-  // new_line(table);
   char *business_name = get_business_name(business);
   char *business_city = get_business_city(business);
   char *business_state = get_business_state(business);
@@ -231,7 +229,7 @@ TABLE businesses_reviewed(SGR sgr, char *id) {
   time_[0] = clock();
 
   char *fields[] = {"id", "nome"};
-  TABLE table = new_table(build_ptr_array(fields, QUERY_FOUR_FIELDS_N));
+  TABLE table = new_table(fields, QUERY_FOUR_FIELDS_N);
 
   GPtrArray *reviews_array =
       get_reviewCollection_review_by_user_id(sgr->catalogo_reviews, id);
@@ -276,7 +274,7 @@ TABLE businesses_with_stars_and_city(SGR sgr, float stars, char *city) {
   time_[0] = clock();
 
   char *fields[] = {"id", "name"};
-  TABLE table = new_table(build_ptr_array(fields, QUERY_FIVE_FIELDS_N));
+  TABLE table = new_table(fields, QUERY_FIVE_FIELDS_N);
 
   n_larger_city_star(sgr->estatisticas, city, stars, table, 1);
 
@@ -293,7 +291,7 @@ TABLE top_businesses_by_city(SGR sgr, int top) {
   time_[0] = clock();
 
   char *fields[] = {"id", "name", "stars"};
-  TABLE table = new_table(build_ptr_array(fields, QUERY_SIX_FIELDS_N));
+  TABLE table = new_table(fields, QUERY_SIX_FIELDS_N);
 
   all_n_larger_than_city_star(sgr->estatisticas, top, table);
 
@@ -309,8 +307,8 @@ TABLE international_users(SGR sgr) {
   clock_t time_[2];
   time_[0] = clock();
 
-  char *fields[] = {"id", "name", "stars"};
-  TABLE table = new_table(build_ptr_array(fields, QUERY_SEVEN_FIELDS_N));
+  char *fields[] = {"id"};
+  TABLE table = new_table(fields, QUERY_SEVEN_FIELDS_N);
 
   aux_international_user(sgr->catalogo_reviews, sgr->catalogo_businesses,
                          table);
@@ -329,7 +327,7 @@ TABLE top_businesses_with_category(SGR sgr, int top, char *category) {
   time_[0] = clock();
 
   char *fields[] = {"id", "name", "stars"};
-  TABLE table = new_table(build_ptr_array(fields, QUERY_EIGHT_FIELDS_N));
+  TABLE table = new_table(fields, QUERY_EIGHT_FIELDS_N);
 
   n_larger_category_star(sgr->estatisticas, category, top, table);
 
@@ -346,7 +344,7 @@ TABLE reviews_with_word(SGR sgr, char *word) {
   time_[0] = clock();
 
   char *fields[] = {"id"};
-  TABLE table = new_table(build_ptr_array(fields, QUERY_NINE_FIELDS_N));
+  TABLE table = new_table(fields, QUERY_NINE_FIELDS_N);
   review_id_with_word_in_text(sgr->catalogo_reviews, word, table);
 
   time_[1] = clock();

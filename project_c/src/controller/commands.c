@@ -1,14 +1,12 @@
 #include "commands.h"
 
-#include <glib.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <string.h>
 
-#include "model/auxiliary.h"
 #include "model/leitura.h"
 #include "model/table.h"
 #include "view/colors.h"
+#include <gmodule.h>
 
 void cmd_quit(GArray *args) {
   printf("Goodbye!\n");
@@ -33,9 +31,10 @@ TABLE from_csv(char *filename, char *delim) {
   char *header = read_line(fp);
   GPtrArray *fields = read_to_ptr_array(header, delim);
   free(header);
-  TABLE table = new_table(fields);
-  char *line;
   size_t n_fields = fields->len;
+  // it free ptr_array
+  TABLE table = new_table_ptr_array(fields);
+  char *line;
   while ((line = read_line(fp))) {
     char **line_in_array = read_to_array(line, delim, n_fields);
     free(line);
@@ -81,7 +80,7 @@ TABLE filter(TABLE table, char *field_name, char *value, OPERATOR op) {
   GPtrArray *fields = g_ptr_array_sized_new(number_fields);
   ssize_t col_index = -1;
   for (int i = 0; i < number_fields; i++) {
-    char *curr_field = table_index(table, 0, i);
+    char *curr_field = field_index(table, i);
     g_ptr_array_add(fields, curr_field);
     if (col_index == -1 && !strcmp(field_name, curr_field))
       col_index = i;
@@ -94,9 +93,9 @@ TABLE filter(TABLE table, char *field_name, char *value, OPERATOR op) {
     // more to free?
     return NULL;
   }
-  TABLE table_two = new_table(fields);
+  TABLE table_two = new_table_ptr_array(fields);
   size_t number_lines = get_number_lines_table(table);
-  for (int i = 1; i < number_lines; i++) {
+  for (int i = 0; i < number_lines; i++) {
     char *elem = table_index(table, i, col_index);
     if (matches_by_operator(elem, value, op)) {
       for (int j = 0; j < number_fields; j++) {
@@ -109,20 +108,22 @@ TABLE filter(TABLE table, char *field_name, char *value, OPERATOR op) {
 }
 
 TABLE projection(TABLE table, GArray *colunas) {
-  TABLE table_two = new_table_without_fields(colunas->len);
+  size_t n_col = colunas->len;
   size_t number_fields = get_number_fields_table(table);
+  char **header = malloc(sizeof(char *) * n_col);
+  for (int i = 0; i < n_col; i++) {
+    // encapsulamento
+    header[i] = field_index(table, g_array_index(colunas, size_t, i));
+  }
+  TABLE table_two = new_table(header, n_col);
   for (int i = 0; i < get_number_lines_table(table); i++) {
     for (int j = 0; j < colunas->len; j++) {
-      size_t col = g_array_index(colunas, size_t, j);
-
-      if (col >= number_fields)
+      if (j >= number_fields)
         continue; // ignorar numeros de colunas que nao existem
-      add_field(table_two, table_index(table, i, col));
+      add_field(table_two,
+                table_index(table, i, g_array_index(colunas, size_t, j)));
     }
   }
   return table_two;
 }
 
-char *indexation(TABLE table, char *line, char *col) {
-  return table_index(table, atoi(line), atoi(col));
-}
