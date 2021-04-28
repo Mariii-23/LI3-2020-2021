@@ -6,6 +6,7 @@
 #include "model/sgr.h"
 #include "model/state.h"
 #include "model/table.h"
+#include "paginacao.h"
 
 Variable print(Variable *args) {
   print_var(*args);
@@ -18,7 +19,8 @@ Variable quit(Variable *args) {
 }
 
 Variable show(Variable *args) {
-  fprintf_table(stdout, get_var_value(args[0]).table, " | ", " | ");
+  /* fprintf_table(stdout, get_var_value(args[0]).table, " | ", " | "); */
+  show_table(get_var_value(args[0]).table);
 
   return void_var();
 }
