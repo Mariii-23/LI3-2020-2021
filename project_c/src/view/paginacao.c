@@ -101,6 +101,22 @@ void show_table(TABLE t) {
   move_cursor_to_x(start_x);
   
   draw_hborder(-1, cols, widths);
+  for (int j = 0, start_col = start_x; j < cols; j++) {
+    move_cursor_to_x(start_col);
+    printf("│ ");
+    printf(BOLD FG_CYAN "%s" RESET_ALL, table_index(t, 0, j));
+    move_cursor_to_x(start_col);
+    start_col += widths[j] + 3;
+
+    if (j == cols - 1) {
+      move_cursor_to_x(start_col);
+      printf("│\n");
+    }
+  }
+
+  move_cursor_to_x(start_x);
+  draw_hborder(0, cols, widths);
+
   for (int i = start; i < lines_to_show + start; i++) {
     int start_col = start_x;
     for (int j = 0; j < cols; j++) {
