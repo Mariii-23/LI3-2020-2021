@@ -8,19 +8,16 @@
 struct user {
   char *user_id;
   char *name;
-  /* GPtrArray *friends; // char* user_id [] */
-  char *friends;
 };
 
 struct user_collection {
   GHashTable *by_id; // <char* user_id,User user>
 };
 
-User create_user(char *user_id, char *name, char *friends) {
+User create_user(char *user_id, char *name) {
   User new_user = malloc(sizeof(struct user));
-  *new_user = (struct user){.user_id = g_strdup(user_id),
-                            .name = g_strdup(name),
-                            .friends = friends ? g_strdup(friends) : NULL};
+  *new_user =
+      (struct user){.user_id = g_strdup(user_id), .name = g_strdup(name)};
   return new_user;
 }
 
@@ -39,19 +36,12 @@ char *get_user_name(User user) {
   return NULL;
 }
 
-char *get_user_friends(User user) {
-  if (!user || !user->friends)
-    return NULL;
-  return g_strdup(user->friends);
-}
-
 static User clone_user(User user) {
   if (!user)
     return NULL;
   User new_user = malloc(sizeof(struct user));
-  *new_user = (struct user){.user_id = get_user_id(user),
-                            .name = get_user_name(user),
-                            .friends = get_user_friends(user)};
+  *new_user =
+      (struct user){.user_id = get_user_id(user), .name = get_user_name(user)};
   return new_user;
 }
 
@@ -73,8 +63,6 @@ void free_user(User user) {
   if (user->name)
     free(user->name);
 
-  if (user->friends)
-    free(user->friends);
   free(user);
 }
 void free_map_user(gpointer key, gpointer value, gpointer user_data) {

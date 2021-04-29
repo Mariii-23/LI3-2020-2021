@@ -144,18 +144,18 @@ static void add_key_append_value_tree(GTree *tree, WordText *w, int index) {
   g_ptr_array_add(arr, num);
 }
 
-static GTree *create_tree_text(char *text) {
-  GTree *tree = g_tree_new(compare_text);
-  char *token = strtok(text, " ");
-  for (int i = 0; token; i++) {
-    WordText *w = malloc(sizeof(struct word_text));
-    *w = (WordText){.palavra = token, .len = strlen(token)};
-    add_key_append_value_tree(tree, w, i);
-    token = strtok(NULL, " ");
-  }
-
-  return tree;
-}
+// static GTree *create_tree_text(char *text) {
+//  GTree *tree = g_tree_new(compare_text);
+//  char *token = strtok(text, " ");
+//  for (int i = 0; token; i++) {
+//    WordText *w = malloc(sizeof(struct word_text));
+//    *w = (WordText){.palavra = token, .len = strlen(token)};
+//    add_key_append_value_tree(tree, w, i);
+//    token = strtok(NULL, " ");
+//  }
+//
+//  return tree;
+//}
 /* Review: builder */
 Review create_review(char *review_id, char *user_id, char *business_id,
                      float stars, int useful, int funny, int cool, char *date,

@@ -6,7 +6,7 @@
 typedef struct user *User;
 typedef struct user_collection *UserCollection;
 
-User create_user(char *user_id, char *name, char *friends);
+User create_user(char *user_id, char *name);
 UserCollection create_user_collection();
 void free_user(User user);
 void free_user_collection(UserCollection user_collection);

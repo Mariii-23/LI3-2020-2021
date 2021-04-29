@@ -93,8 +93,7 @@ static User parse_user_line(char *str, Stats stats) {
   if (!name)
     return NULL;
   /* GPtrArray *users = read_to_ptr_array(strtok(NULL, ";"), ","); */
-  char *friends = strtok(NULL, ";");
-  return create_user(user_id, name, friends);
+  return create_user(user_id, name);
 }
 
 static Review parse_review_line(char *str, Stats stats) {
