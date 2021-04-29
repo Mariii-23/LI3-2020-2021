@@ -38,28 +38,25 @@ struct review_collection {
   GHashTable *by_business_id;
 };
 
-static bool are_equal(char *token, char *query_word) {
+bool find_word(char *text, char *query_word) {
   // o que pode ter pontuacao é a token, a query_word nao
   // case sensitive ou nao?
   bool can_be_equal = true;
-  char a = token[0];
+  char a = text[0];
   char b = query_word[0];
   int i = 0, j = 0;
-
   for (; a; i++) {
-    a = token[i];
+    a = text[i];
     b = query_word[j];
     // so pode ser true quando !b
-    if (!b && can_be_equal && (!a || ispunct(a) || a < 0))
+    if (!b && can_be_equal && (!a || ispunct(a) || isspace(a) || a < 0))
       return true;
     else if (!a) {
       return false;
     }
-
-    // utf-8 cenas
-    if (!ispunct(a) && a > 0 && tolower(a) != tolower(b)) {
+    if ((!ispunct(a) && !isspace(a) && a > 0) && tolower(a) != tolower(b)) {
       can_be_equal = false;
-    } else if (ispunct(a) || a < 0) {
+    } else if (ispunct(a) || isspace(a)) {
       j = 0;
       can_be_equal = true;
     } else {
@@ -67,17 +64,6 @@ static bool are_equal(char *token, char *query_word) {
     }
   }
   return can_be_equal && !b;
-}
-
-bool find_word(char *text, char *word) {
-  char *token = strtok(text, " ");
-  while (token) {
-    if (are_equal(token, word)) {
-      return true;
-    }
-    token = strtok(NULL, " ");
-  }
-  return false;
 }
 
 void review_id_with_word_in_text(ReviewCollection collection, char *word,
@@ -90,10 +76,8 @@ void review_id_with_word_in_text(ReviewCollection collection, char *word,
   Review review = NULL;
   g_hash_table_iter_init(&iter, collection->by_id);
   while (g_hash_table_iter_next(&iter, (gpointer *)&id, (gpointer *)&review)) {
-    char *to_search = g_strdup(review->text);
-    if (find_word(to_search, word)) {
+    if (find_word(review->text, word)) {
       add_field(table, id);
-      free(to_search);
       // apagar
       counter++;
     }
