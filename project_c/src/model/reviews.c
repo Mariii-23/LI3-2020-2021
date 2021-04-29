@@ -50,15 +50,16 @@ static bool are_equal(char *token, char *query_word) {
     a = token[i];
     b = query_word[j];
     // so pode ser true quando !b
-    if (!b && can_be_equal && (!a || ispunct(a)))
+    if (!b && can_be_equal && (!a || ispunct(a) || a < 0))
       return true;
     else if (!a) {
       return false;
     }
 
-    if (!ispunct(a) && tolower(a) != tolower(b)) {
+    // utf-8 cenas
+    if (!ispunct(a) && a > 0 && tolower(a) != tolower(b)) {
       can_be_equal = false;
-    } else if (ispunct(a)) {
+    } else if (ispunct(a) || a < 0) {
       j = 0;
       can_be_equal = true;
     } else {
