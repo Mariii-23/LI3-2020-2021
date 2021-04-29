@@ -108,23 +108,28 @@ TABLE filter(TABLE table, char *field_name, char *value, OPERATOR op) {
 }
 
 TABLE projection(TABLE table, GArray *colunas) {
+  // se der valor negativo colunas?
   size_t n_col = colunas->len;
   size_t number_fields = get_number_fields_table(table);
   char **header = malloc(sizeof(char *) * n_col);
-  for (int i = 0; i < n_col; i++) {
+  int a = 0;
+  for (int i = 0; a < n_col; i++) {
     // encapsulamento
-    int coluna_to_display = g_array_index(colunas, size_t, i);
-    if (coluna_to_display < get_number_fields_table(table)) {
-      header[i] = field_index(table, coluna_to_display);
+    int coluna_to_display = g_array_index(colunas, size_t, a);
+    if (coluna_to_display < number_fields) {
+      header[a++] = field_index(table, coluna_to_display);
+    } else {
+      g_array_remove_index(colunas, a);
+      n_col--;
     }
   }
-  TABLE table_two = new_table(header, n_col);
+  TABLE table_two = new_table(header, colunas->len);
   for (int i = 0; i < get_number_lines_table(table); i++) {
     for (int j = 0; j < colunas->len; j++) {
-      if (j >= number_fields)
+      size_t col = g_array_index(colunas, size_t, j);
+      if (col >= number_fields)
         continue; // ignorar numeros de colunas que nao existem
-      add_field(table_two,
-                table_index(table, i, g_array_index(colunas, size_t, j)));
+      add_field(table_two, table_index(table, i, col));
     }
   }
   return table_two;
