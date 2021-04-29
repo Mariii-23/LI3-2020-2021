@@ -35,4 +35,6 @@ void n_larger_city_star(Stats stats, char *city, int N, TABLE table,
 
 void all_n_larger_than_city_star(Stats stats, int N, TABLE table);
 void n_larger_category_star(Stats stats, char *category, int N, TABLE table);
+
+void free_stats(Stats stats);
 #endif

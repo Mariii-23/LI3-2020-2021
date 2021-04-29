@@ -306,8 +306,12 @@ Review get_reviewCollection_review_by_id(ReviewCollection self, char *id) {
 
 int get_number_reviews_by_business(ReviewCollection self, char *business_id) {
   if (!self || !business_id)
-    return 0;
-  return get_reviewCollection_review_by_business_id(self, business_id)->len;
+    return -1;
+  GPtrArray *array =
+      get_reviewCollection_review_by_business_id(self, business_id);
+  if (!array)
+    return (-1);
+  return array->len;
 }
 
 GPtrArray *get_reviewCollection_review_by_user_id(ReviewCollection self,

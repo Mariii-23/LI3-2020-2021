@@ -30,6 +30,15 @@ struct sgr {
   Stats estatisticas;
 };
 
+void free_sgr(SGR sgr) {
+  if (!sgr)
+    return;
+  free_businessCollection(sgr->catalogo_businesses);
+  free_reviewCollection(sgr->catalogo_reviews);
+  free_user_collection(sgr->catalogo_users);
+  free_stats(sgr->estatisticas);
+}
+
 GPtrArray *build_head(char *fields[], int N) {
   GPtrArray *field_names = g_ptr_array_sized_new(N);
   for (size_t i = 0; i < N; i++) {
@@ -133,8 +142,6 @@ SGR load_sgr(char *users, char *businesses, char *reviews) {
                       .estatisticas = stats};
   build_category_hash_table(sgr);
   build_city_hash_table(sgr);
-  // TABLE table = top_businesses_by_city(sgr, 2);
-  // fprintf_table(stdout, table, " | ", " | ");
   fclose(fp_users);
   fclose(fp_businesses);
   fclose(fp_reviews);
