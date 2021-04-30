@@ -30,13 +30,14 @@ struct sgr {
   Stats estatisticas;
 };
 
+// ainda nao funciona
 void free_sgr(SGR sgr) {
   if (!sgr)
     return;
   free_businessCollection(sgr->catalogo_businesses);
   free_reviewCollection(sgr->catalogo_reviews);
   free_user_collection(sgr->catalogo_users);
-  free_stats(sgr->estatisticas);
+  /* free_stats(sgr->estatisticas); */
 }
 
 GPtrArray *build_head(char *fields[], int N) {
@@ -45,79 +46,6 @@ GPtrArray *build_head(char *fields[], int N) {
     g_ptr_array_add(field_names, fields[i]); // literals
   }
   return field_names;
-}
-
-static void build_city_hash_table(SGR sgr) {
-
-  /* printf("%d\n", is_empty_business_id_to_stars(sgr->estatisticas)); */
-
-  if (!sgr || is_empty_stats(sgr->estatisticas) ||
-      is_empty_business_id_to_stars(sgr->estatisticas))
-    return;
-
-  init_city_to_business_by_star(sgr->estatisticas);
-
-  GHashTableIter iter;
-
-  start_table_iter_init_business_id_hash_table(&iter, sgr->estatisticas);
-
-  float current_average;
-  char *business_id;
-
-  while (iter_next_table_business_id_to_stars(&iter, &current_average,
-                                              &business_id)) {
-    Business business = get_businessCollection_business_by_id(
-        sgr->catalogo_businesses, business_id);
-
-    char *city = get_business_city(business);
-
-    char *name = get_business_name(business);
-
-    add_city_to_business_by_star(sgr->estatisticas, city, business_id,
-                                 current_average, name);
-    free(city);
-    free(name);
-    free_business(business);
-  }
-}
-
-static void build_category_hash_table(SGR sgr) {
-
-  if (!sgr || is_empty_stats(sgr->estatisticas) ||
-      is_empty_business_id_to_stars(sgr->estatisticas)) {
-    return;
-  }
-
-  init_category_to_business_by_star(sgr->estatisticas);
-
-  GHashTableIter iter;
-  start_table_iter_init_business_id_hash_table(&iter, sgr->estatisticas);
-
-  float current_average;
-  char *business_id;
-
-  while (iter_next_table_business_id_to_stars(&iter, &current_average,
-                                              &business_id)) {
-
-    GPtrArray *categories =
-        get_business_categories(get_businessCollection_business_by_id(
-            sgr->catalogo_businesses, business_id));
-
-    Business business = get_businessCollection_business_by_id(
-        sgr->catalogo_businesses, business_id);
-
-    char *name = get_business_name(business);
-
-    int size = categories ? categories->len : 0;
-    for (int i = 0; i < size; i++)
-      add_category_to_business_by_star(sgr->estatisticas,
-                                       g_ptr_array_index(categories, i),
-                                       business_id, current_average, name);
-
-    // free categories
-    free(name);
-    free_business(business);
-  }
 }
 
 // Query 1
@@ -140,8 +68,8 @@ SGR load_sgr(char *users, char *businesses, char *reviews) {
                           collect_businesses(fp_businesses, stats),
                       .catalogo_reviews = collect_reviews(fp_reviews, stats),
                       .estatisticas = stats};
-  build_category_hash_table(sgr);
-  build_city_hash_table(sgr);
+  build_city_and_category_hash_table(sgr->catalogo_businesses,
+                                     sgr->estatisticas);
   fclose(fp_users);
   fclose(fp_businesses);
   fclose(fp_reviews);
@@ -176,7 +104,7 @@ TABLE businesses_started_by_letter(SGR sgr, char letter) {
   }
   // falta apresentar o size
   char *size_str = g_strdup_printf("%d", size);
-  add_field(table, size_str);
+  add_footer(table, "Número total: ", size_str);
   free(size_str);
 
   // verificar free da list
@@ -262,6 +190,8 @@ TABLE businesses_reviewed(SGR sgr, char *id) {
 
   char *size_str = g_strdup_printf("%d", size);
   add_footer(table, "Numero total de businesses:", size_str);
+  // apagar
+  add_field(table, size_str);
   free(size_str);
 
   g_ptr_array_set_free_func(reviews_array, (void *)free_review);
