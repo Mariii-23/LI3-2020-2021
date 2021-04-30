@@ -56,7 +56,7 @@ bool find_word(char *text, char *query_word) {
     }
     if ((!ispunct(a) && !isspace(a) && a > 0) && tolower(a) != tolower(b)) {
       can_be_equal = false;
-    } else if (ispunct(a) || isspace(a)) {
+    } else if (ispunct(a) || isspace(a) || a < 0) {
       j = 0;
       can_be_equal = true;
     } else {
