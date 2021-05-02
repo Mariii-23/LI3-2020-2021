@@ -266,7 +266,7 @@ TABLE top_businesses_with_category(SGR sgr, int top, char *category) {
   char *fields[] = {"id", "name", "stars"};
   TABLE table = new_table(fields, QUERY_EIGHT_FIELDS_N);
 
-  n_larger_category_star(sgr->estatisticas, category, top, table);
+  n_larger_than_category_star(sgr->estatisticas, category, top, table);
 
   time_[1] = clock();
   printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),

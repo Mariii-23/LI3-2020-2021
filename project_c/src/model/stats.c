@@ -129,7 +129,6 @@ void free_stats(Stats stats) {
   g_hash_table_destroy(stats->category_to_business_by_star);
 }
 
-// ver melhor
 gint compare_stars(gconstpointer key1, gconstpointer key2, gpointer user_data) {
   return (((CityTuple)key2)->stars - ((CityTuple)key1)->stars) * 100000000;
 }
@@ -153,8 +152,9 @@ void print_node(gpointer data, gpointer user_data) {
 
 void print_list(GSList *list) { g_slist_foreach(list, print_node, NULL); }
 
-void add_city_to_business_by_star(Stats stats, char *city, char *business_id,
-                                  float stars, char *name) {
+static void add_city_to_business_by_star(Stats stats, char *city,
+                                         char *business_id, float stars,
+                                         char *name) {
   if (!stats || !stats->business_id_to_stars)
     return;
 
@@ -170,9 +170,9 @@ void add_city_to_business_by_star(Stats stats, char *city, char *business_id,
   g_hash_table_insert(stats->city_to_business_by_star, g_strdup(city), aux);
 }
 
-void add_category_to_business_by_star(Stats stats, char *category,
-                                      char *business_id, float stars,
-                                      char *name) {
+static void add_category_to_business_by_star(Stats stats, char *category,
+                                             char *business_id, float stars,
+                                             char *name) {
   if (!stats || !stats->business_id_to_stars) {
     return;
   }
@@ -194,8 +194,6 @@ void add_category_to_business_by_star(Stats stats, char *category,
 
 void build_city_and_category_hash_table(BusinessCollection const businesses,
                                         Stats stats) {
-
-  /* printf("%d\n", is_empty_business_id_to_stars(sgr->estatisticas)); */
 
   if (!businesses || !stats || !stats->business_id_to_stars)
     return;
@@ -244,34 +242,6 @@ void build_city_and_category_hash_table(BusinessCollection const businesses,
   }
 }
 
-/* static GSList *n_larger_gs_list(int N, GSList *gs_list) { */
-/*   GSList *new = NULL; */
-/*   int size = g_slist_length(gs_list); */
-
-/*   for (int i = 0; i < size && i < N; i++) */
-/*     new = g_slist_append(new, copy_city_tuple(g_slist_nth_data(gs_list, i)));
- */
-
-/*   return new; */
-/* } */
-
-/* static GSList *n_larger_than_gs_list(int N, GSList *gs_list) { */
-/*   GSList *new = NULL; */
-/*   int stop = 0; */
-/*   int size = g_slist_length(gs_list); */
-
-/*   for (int i = 0; !stop && i < size; i++) { */
-/*     CityTuple cont = g_slist_nth_data(gs_list, i); */
-
-/*     if (cont->stars < N) { */
-/*       stop = 1; */
-/*       continue; */
-/*     } */
-/*     new = g_slist_append(new, copy_city_tuple(cont)); */
-/*   } */
-/*   return new; */
-/* } */
-
 static void n_larger_than_city_star(Stats stats, char *city, int const N,
                                     TABLE table) {
   if (!stats || !stats->city_to_business_by_star) {
@@ -299,10 +269,7 @@ static void n_larger_than_city_star(Stats stats, char *city, int const N,
     add_field(table, stars);
 
     free(stars);
-    i++;
   }
-  /* if (list) */
-  /*   g_slist_free(list); */
 }
 
 void all_n_larger_city_star(Stats stats, int const N, TABLE table) {
@@ -321,14 +288,12 @@ void all_n_larger_city_star(Stats stats, int const N, TABLE table) {
     char *city = g_strdup(g_list_nth_data(all_keys, i));
     n_larger_than_city_star(stats, city, N, table);
     free(city);
-    // free all_key??
-    /* if (all_keys) */
-    /*   g_list_free(all_keys); */
   }
+  g_list_free(all_keys);
 }
 
-void n_larger_category_star(Stats stats, char *category, int const N,
-                            TABLE table) {
+void n_larger_than_category_star(Stats stats, char *category, int const N,
+                                 TABLE table) {
   if (!stats || !stats->city_to_business_by_star) {
     return;
   }
@@ -368,10 +333,6 @@ void n_larger_category_star(Stats stats, char *category, int const N,
   // apagar
   add_field(table, size_str);
   free(size_str);
-
-  // free do list
-  /* if (list) */
-  /*   g_slist_free(list); */
 }
 
 void n_larger_city_star(Stats stats, char *city, int const N, TABLE table) {
@@ -413,8 +374,4 @@ void n_larger_city_star(Stats stats, char *city, int const N, TABLE table) {
   // apagar
   add_field(table, size_str);
   free(size_str);
-
-  // free do list
-  /* if (list) */
-  /*   g_slist_free(list); */
 }

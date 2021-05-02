@@ -16,19 +16,12 @@ bool is_empty_stats(Stats stats);
 void init_city_to_business_by_star(Stats stats);
 void init_category_to_business_by_star(Stats stats);
 
-void add_city_to_business_by_star(Stats stats, char *city, char *business_id,
-                                  float stars, char *name);
-
-void add_category_to_business_by_star(Stats stats, char *category,
-                                      char *business_id, float stars,
-                                      char *name);
-
 void build_city_and_category_hash_table(BusinessCollection const businesses,
                                         Stats stats);
 
 void all_n_larger_city_star(Stats stats, int const N, TABLE table);
-void n_larger_category_star(Stats stats, char *category, int const N,
-                            TABLE table);
+void n_larger_than_category_star(Stats stats, char *category, int const N,
+                                 TABLE table);
 void n_larger_city_star(Stats stats, char *category, int const N, TABLE table);
 
 void free_stats(Stats stats);
