@@ -210,10 +210,10 @@ TABLE businesses_with_stars_and_city(SGR sgr, float stars, char *city) {
   clock_t time_[2];
   time_[0] = clock();
 
-  char *fields[] = {"id", "name"};
-  TABLE table = new_table(fields, QUERY_FIVE_FIELDS_N);
+  char *fields[] = {"id", "name", "stars"};
+  TABLE table = new_table(fields, QUERY_FIVE_FIELDS_N + 1);
 
-  n_larger_city_star(sgr->estatisticas, city, stars, table, 1);
+  n_larger_city_star(sgr->estatisticas, city, stars, table);
 
   time_[1] = clock();
   printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
@@ -226,11 +226,11 @@ TABLE top_businesses_by_city(SGR sgr, int top) {
 
   clock_t time_[2];
   time_[0] = clock();
+  // tirar a cidade
+  char *fields[] = {"city", "id", "name", "stars"};
+  TABLE table = new_table(fields, QUERY_SIX_FIELDS_N + 1);
 
-  char *fields[] = {"id", "name", "stars"};
-  TABLE table = new_table(fields, QUERY_SIX_FIELDS_N);
-
-  all_n_larger_than_city_star(sgr->estatisticas, top, table);
+  all_n_larger_city_star(sgr->estatisticas, top, table);
 
   time_[1] = clock();
   printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
