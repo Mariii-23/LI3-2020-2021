@@ -12,6 +12,7 @@
 #include "table.h"
 #include "users.h"
 #define LINESIZE 100
+#define NUMBER_REVIEW_PARAMS 9
 typedef enum { BUSINESS, REVIEW, USER } Type;
 
 char *read_line(FILE *fp) {
@@ -96,50 +97,44 @@ static User parse_user_line(char *str, Stats stats) {
   return create_user(user_id, name);
 }
 
-static Review parse_review_line(char *str, Stats stats) {
-  char *review_id = strtok(str, ";");
-  char *user_id = strtok(NULL, ";");
-  char *business_id = strtok(NULL, ";");
-  float stars = atof(strtok(NULL, ";"));
-  int useful = atoi(strtok(NULL, ";"));
-  int funny = atoi(strtok(NULL, ";"));
-  int cool = atoi(strtok(NULL, ";"));
-  char *date = strtok(NULL, ";");
-  char *text = strtok(NULL, ";");
-  if (!text)
-    return NULL;
+static Review parse_review_line(char *str, Stats stats, SGR sgr) {
+  // last field may contain ; so we have to change strategy
+  char *params[9] = {0};
+  int i = 0;
+  char *cursor = NULL;
+  for (cursor = str; i < 9 - 1; cursor++, i++) {
+    char *current = cursor;
+    cursor = strchr(cursor, ';');
+    if (!cursor)
+      return NULL;
+    *cursor = 0;
+    params[i] = current;
+  }
+  params[i] = cursor;
+
+  char *review_id = params[0];
+  char *user_id = params[1];
+  char *business_id = params[2];
+  float stars = atof(params[3]);
+  int useful = atoi(params[4]);
+  int funny = atoi(params[5]);
+  int cool = atoi(params[6]);
+  char *date = params[7];
+  char *text = params[8];
   update_average_stars(stats, business_id, stars);
   return create_review(review_id, user_id, business_id, stars, useful, funny,
                        cool, date, text);
 }
 
-bool validate_review(Review review) {
-  if (!review)
-    return false;
-  // ver se o business e o user da review exisitem
-  bool b = true;
-  char *bus_id = get_review_business_id(review);
-  char *user_id = get_review_user_id(review);
-  // ver se este getter verifica s existe ou nao
-  // Business bus = get_businessCollection_business_by_id( bus_collection,
-  // bus_id); User user = get_user_by_id(user_collection, char* user_id);
-
-  // free_business(bus);
-  // free_user(user);
-  free(bus_id);
-  free(user_id);
-  return b;
-}
-
-ReviewCollection collect_reviews(FILE *fp, Stats stats) {
+ReviewCollection collect_reviews(FILE *fp, Stats stats, SGR sgr) {
   char *line;
   ReviewCollection collection = create_review_collection();
   // read header
   read_line(fp);
   while ((line = read_line(fp))) {
-    Review review = parse_review_line(line, stats);
+    Review review = parse_review_line(line, stats, sgr);
     free(line);
-    if (!review || !validate_review(review)) {
+    if (!review || !validate_review(sgr, review)) {
       if (review) {
         free_review(review);
       }

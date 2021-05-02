@@ -30,13 +30,14 @@ struct sgr {
   Stats estatisticas;
 };
 
+// ainda nao funciona
 void free_sgr(SGR sgr) {
   if (!sgr)
     return;
   free_businessCollection(sgr->catalogo_businesses);
   free_reviewCollection(sgr->catalogo_reviews);
   free_user_collection(sgr->catalogo_users);
-  free_stats(sgr->estatisticas);
+  /* free_stats(sgr->estatisticas); */
 }
 
 GPtrArray *build_head(char *fields[], int N) {
@@ -46,78 +47,24 @@ GPtrArray *build_head(char *fields[], int N) {
   }
   return field_names;
 }
-
-static void build_city_hash_table(SGR sgr) {
-
-  /* printf("%d\n", is_empty_business_id_to_stars(sgr->estatisticas)); */
-
-  if (!sgr || is_empty_stats(sgr->estatisticas) ||
-      is_empty_business_id_to_stars(sgr->estatisticas))
-    return;
-
-  init_city_to_business_by_star(sgr->estatisticas);
-
-  GHashTableIter iter;
-
-  start_table_iter_init_business_id_hash_table(&iter, sgr->estatisticas);
-
-  float current_average;
-  char *business_id;
-
-  while (iter_next_table_business_id_to_stars(&iter, &current_average,
-                                              &business_id)) {
-    Business business = get_businessCollection_business_by_id(
-        sgr->catalogo_businesses, business_id);
-
-    char *city = get_business_city(business);
-
-    char *name = get_business_name(business);
-
-    add_city_to_business_by_star(sgr->estatisticas, city, business_id,
-                                 current_average, name);
-    free(city);
-    free(name);
-    free_business(business);
-  }
-}
-
-static void build_category_hash_table(SGR sgr) {
-
-  if (!sgr || is_empty_stats(sgr->estatisticas) ||
-      is_empty_business_id_to_stars(sgr->estatisticas)) {
-    return;
-  }
-
-  init_category_to_business_by_star(sgr->estatisticas);
-
-  GHashTableIter iter;
-  start_table_iter_init_business_id_hash_table(&iter, sgr->estatisticas);
-
-  float current_average;
-  char *business_id;
-
-  while (iter_next_table_business_id_to_stars(&iter, &current_average,
-                                              &business_id)) {
-
-    GPtrArray *categories =
-        get_business_categories(get_businessCollection_business_by_id(
-            sgr->catalogo_businesses, business_id));
-
-    Business business = get_businessCollection_business_by_id(
-        sgr->catalogo_businesses, business_id);
-
-    char *name = get_business_name(business);
-
-    int size = categories ? categories->len : 0;
-    for (int i = 0; i < size; i++)
-      add_category_to_business_by_star(sgr->estatisticas,
-                                       g_ptr_array_index(categories, i),
-                                       business_id, current_average, name);
-
-    // free categories
-    free(name);
-    free_business(business);
-  }
+bool validate_review(SGR sgr, Review review) {
+  if (!review)
+    return false;
+  // ver se o business e o user da review exisitem
+  bool b = true;
+  char *bus_id = get_review_business_id(review);
+  char *user_id = get_review_user_id(review);
+  // ver se este getter verifica s existe ou nao
+  Business bus =
+      get_businessCollection_business_by_id(sgr->catalogo_businesses, bus_id);
+  User user = get_user_by_id(sgr->catalogo_users, user_id);
+  if (!bus || !user)
+    b = false;
+  free_business(bus);
+  free_user(user);
+  free(bus_id);
+  free(user_id);
+  return b;
 }
 
 // Query 1
@@ -138,10 +85,11 @@ SGR load_sgr(char *users, char *businesses, char *reviews) {
   *sgr = (struct sgr){.catalogo_users = collect_users(fp_users, stats),
                       .catalogo_businesses =
                           collect_businesses(fp_businesses, stats),
-                      .catalogo_reviews = collect_reviews(fp_reviews, stats),
                       .estatisticas = stats};
-  build_category_hash_table(sgr);
-  build_city_hash_table(sgr);
+
+  sgr->catalogo_reviews = collect_reviews(fp_reviews, stats, sgr),
+  build_city_and_category_hash_table(sgr->catalogo_businesses,
+                                     sgr->estatisticas);
   fclose(fp_users);
   fclose(fp_businesses);
   fclose(fp_reviews);
@@ -176,7 +124,7 @@ TABLE businesses_started_by_letter(SGR sgr, char letter) {
   }
   // falta apresentar o size
   char *size_str = g_strdup_printf("%d", size);
-  add_field(table, size_str);
+  add_footer(table, "Número total: ", size_str);
   free(size_str);
 
   // verificar free da list
@@ -262,6 +210,8 @@ TABLE businesses_reviewed(SGR sgr, char *id) {
 
   char *size_str = g_strdup_printf("%d", size);
   add_footer(table, "Numero total de businesses:", size_str);
+  // apagar
+  add_field(table, size_str);
   free(size_str);
 
   g_ptr_array_set_free_func(reviews_array, (void *)free_review);
@@ -280,10 +230,10 @@ TABLE businesses_with_stars_and_city(SGR sgr, float stars, char *city) {
   clock_t time_[2];
   time_[0] = clock();
 
-  char *fields[] = {"id", "name"};
-  TABLE table = new_table(fields, QUERY_FIVE_FIELDS_N);
+  char *fields[] = {"id", "name", "stars"};
+  TABLE table = new_table(fields, QUERY_FIVE_FIELDS_N + 1);
 
-  n_larger_city_star(sgr->estatisticas, city, stars, table, 1);
+  n_larger_city_star(sgr->estatisticas, city, stars, table);
 
   time_[1] = clock();
   printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
@@ -296,11 +246,11 @@ TABLE top_businesses_by_city(SGR sgr, int top) {
 
   clock_t time_[2];
   time_[0] = clock();
+  // tirar a cidade
+  char *fields[] = {"city", "id", "name", "stars"};
+  TABLE table = new_table(fields, QUERY_SIX_FIELDS_N + 1);
 
-  char *fields[] = {"id", "name", "stars"};
-  TABLE table = new_table(fields, QUERY_SIX_FIELDS_N);
-
-  all_n_larger_than_city_star(sgr->estatisticas, top, table);
+  all_n_larger_city_star(sgr->estatisticas, top, table);
 
   time_[1] = clock();
   printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
@@ -336,7 +286,7 @@ TABLE top_businesses_with_category(SGR sgr, int top, char *category) {
   char *fields[] = {"id", "name", "stars"};
   TABLE table = new_table(fields, QUERY_EIGHT_FIELDS_N);
 
-  n_larger_category_star(sgr->estatisticas, category, top, table);
+  n_larger_than_category_star(sgr->estatisticas, category, top, table);
 
   time_[1] = clock();
   printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),

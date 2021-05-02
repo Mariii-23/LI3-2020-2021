@@ -85,12 +85,6 @@ void fprintf_table(FILE *stream, TABLE table, char *delim_header,
       fprintf(stream, "%s%s%s", table->header[i], d, new_line);
     }
     fprint_str_array(stream, table->lines, n_fields, delim_main);
-    if (stream != stdout && stream != stdin && stream != stderr) {
-      fclose(stream);
-    }
-    if (stream == stdout && table->footer) {
-      printf("%s :  %s\n", table->footer[0], table->footer[1]);
-    }
   }
 }
 char *table_index(TABLE table, size_t i, size_t j) {

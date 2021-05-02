@@ -1,5 +1,6 @@
 #include "commands.h"
 
+#include <ctype.h>
 #include <stdbool.h>
 #include <string.h>
 
@@ -59,8 +60,18 @@ void to_csv(TABLE table, char *filename, char *delim) {
   fprintf_table(fp, table, delim, delim);
 }
 
-bool matches_by_operator(char *the_value, char *current_value, OPERATOR op) {
-  int res = strcmp(the_value, current_value);
+bool matches_by_operator(char *the_value, char *current_value, OPERATOR op,
+                         bool is_number) {
+
+  if (!current_value || !the_value)
+    return false;
+  int res;
+  if (is_number) {
+    res = atoi(the_value) - atoi(current_value);
+
+  } else {
+    res = strcmp(the_value, current_value);
+  }
   return !res ? (op == EQ) : (res / abs(res)) == op;
 }
 
@@ -75,10 +86,20 @@ ssize_t whereis_field(TABLE table, char *field_name) {
   return -1;
 }
 
+bool is_number(char *value) {
+  char *aux = value;
+  for (; *aux; aux++) {
+    if (!isdigit(*aux))
+      return false;
+  }
+  return true;
+}
 TABLE filter(TABLE table, char *field_name, char *value, OPERATOR op) {
+  bool isnumber = false;
   size_t number_fields = get_number_fields_table(table);
   GPtrArray *fields = g_ptr_array_sized_new(number_fields);
   ssize_t col_index = -1;
+  // build header
   for (int i = 0; i < number_fields; i++) {
     char *curr_field = field_index(table, i);
     g_ptr_array_add(fields, curr_field);
@@ -93,14 +114,18 @@ TABLE filter(TABLE table, char *field_name, char *value, OPERATOR op) {
     // more to free?
     return NULL;
   }
+
+  if (is_number(value) && is_number(table_index(table, 0, col_index))) {
+    isnumber = true;
+  }
   TABLE table_two = new_table_ptr_array(fields);
   size_t number_lines = get_number_lines_table(table);
   for (int i = 0; i < number_lines; i++) {
     char *elem = table_index(table, i, col_index);
-    if (matches_by_operator(elem, value, op)) {
+    if (matches_by_operator(elem, value, op, isnumber)) {
       for (int j = 0; j < number_fields; j++) {
-        add_field(table_two, elem);
         elem = table_index(table, i, j);
+        add_field(table_two, elem);
       }
     }
   }
