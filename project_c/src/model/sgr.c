@@ -47,6 +47,25 @@ GPtrArray *build_head(char *fields[], int N) {
   }
   return field_names;
 }
+bool validate_review(SGR sgr, Review review) {
+  if (!review)
+    return false;
+  // ver se o business e o user da review exisitem
+  bool b = true;
+  char *bus_id = get_review_business_id(review);
+  char *user_id = get_review_user_id(review);
+  // ver se este getter verifica s existe ou nao
+  Business bus =
+      get_businessCollection_business_by_id(sgr->catalogo_businesses, bus_id);
+  User user = get_user_by_id(sgr->catalogo_users, user_id);
+  if (!bus || !user)
+    b = false;
+  free_business(bus);
+  free_user(user);
+  free(bus_id);
+  free(user_id);
+  return b;
+}
 
 // Query 1
 SGR load_sgr(char *users, char *businesses, char *reviews) {
@@ -66,8 +85,9 @@ SGR load_sgr(char *users, char *businesses, char *reviews) {
   *sgr = (struct sgr){.catalogo_users = collect_users(fp_users, stats),
                       .catalogo_businesses =
                           collect_businesses(fp_businesses, stats),
-                      .catalogo_reviews = collect_reviews(fp_reviews, stats),
                       .estatisticas = stats};
+
+  sgr->catalogo_reviews = collect_reviews(fp_reviews, stats, sgr),
   build_city_and_category_hash_table(sgr->catalogo_businesses,
                                      sgr->estatisticas);
   fclose(fp_users);
