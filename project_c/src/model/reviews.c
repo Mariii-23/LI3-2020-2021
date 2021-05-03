@@ -89,45 +89,45 @@ void review_id_with_word_in_text(ReviewCollection collection, char *word,
   free(size_str);
 }
 
-static gint compare_text(gconstpointer a, gconstpointer b) {
-  // dar true se tiver pontuacao no fim
-  size_t len_a = ((WordText *)a)->len;
-  size_t len_b = ((WordText *)b)->len;
-  char *max_word;
-  size_t max_len, min_len;
-  if (len_a > len_b) {
-    max_word = ((WordText *)a)->palavra;
-    max_len = len_a;
-    min_len = len_b;
-  } else {
-    max_word = ((WordText *)b)->palavra;
-    max_len = len_b;
-    min_len = len_a;
-  }
-
-  if (max_len - min_len > 1 ||
-      (max_len != min_len && !ispunct(max_word[max_len - 1])))
-    return false;
-  else {
-    return !strncasecmp(((WordText *)a)->palavra, ((WordText *)b)->palavra,
-                        min_len);
-  }
-}
+// static gint compare_text(gconstpointer a, gconstpointer b) {
+//  // dar true se tiver pontuacao no fim
+//  size_t len_a = ((WordText *)a)->len;
+//  size_t len_b = ((WordText *)b)->len;
+//  char *max_word;
+//  size_t max_len, min_len;
+//  if (len_a > len_b) {
+//    max_word = ((WordText *)a)->palavra;
+//    max_len = len_a;
+//    min_len = len_b;
+//  } else {
+//    max_word = ((WordText *)b)->palavra;
+//    max_len = len_b;
+//    min_len = len_a;
+//  }
+//
+//  if (max_len - min_len > 1 ||
+//      (max_len != min_len && !ispunct(max_word[max_len - 1])))
+//    return false;
+//  else {
+//    return !strncasecmp(((WordText *)a)->palavra, ((WordText *)b)->palavra,
+//                        min_len);
+//  }
+//}
 
 // determinar a lista de ids de reviews que referem a dada palavra no campo text
-static void add_key_append_value_tree(GTree *tree, WordText *w, int index) {
-  GPtrArray *arr = g_tree_search(tree, compare_text, w);
-  int *num = malloc(sizeof(int));
-  *num = index;
-  if (!arr) {
-    // create new node
-    arr = g_ptr_array_new();
-    g_tree_insert_node(tree, w, arr);
-  } else {
-    free(w);
-  }
-  g_ptr_array_add(arr, num);
-}
+// static void add_key_append_value_tree(GTree *tree, WordText *w, int index) {
+//  GPtrArray *arr = g_tree_search(tree, compare_text, w);
+//  int *num = malloc(sizeof(int));
+//  *num = index;
+//  if (!arr) {
+//    // create new node
+//    arr = g_ptr_array_new();
+//    g_tree_insert_node(tree, w, arr);
+//  } else {
+//    free(w);
+//  }
+//  g_ptr_array_add(arr, num);
+//}
 
 // static GTree *create_tree_text(char *text) {
 //  GTree *tree = g_tree_new(compare_text);
