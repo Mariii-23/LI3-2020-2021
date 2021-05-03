@@ -1,7 +1,5 @@
 #include "sgr.h"
 
-#include "time.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -51,9 +49,6 @@ GPtrArray *build_head(char *fields[], int N) {
 // Query 1
 SGR load_sgr(char *users, char *businesses, char *reviews) {
 
-  clock_t time_[2];
-  time_[0] = clock();
-
   FILE *fp_users = fopen(users, "r");
   FILE *fp_businesses = fopen(businesses, "r");
   FILE *fp_reviews = fopen(reviews, "r");
@@ -74,19 +69,11 @@ SGR load_sgr(char *users, char *businesses, char *reviews) {
   fclose(fp_businesses);
   fclose(fp_reviews);
 
-  time_[1] = clock();
-  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
-         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
-
   return sgr;
 }
 
 // Query 2
 TABLE businesses_started_by_letter(SGR sgr, char letter) {
-
-  clock_t time_[2];
-  time_[0] = clock();
-
   char *fields[] = {"Name"};
   TABLE table = new_table(fields, QUERY_TWO_FIELDS_N);
   char new_str[2];
@@ -110,20 +97,11 @@ TABLE businesses_started_by_letter(SGR sgr, char letter) {
   // verificar free da list
   g_ptr_array_set_free_func(list, g_free_business);
   g_ptr_array_free(list, TRUE);
-
-  time_[1] = clock();
-  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
-         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
-
   return table;
 }
 
 // Query 3
 TABLE business_info(SGR sgr, char *business_id) {
-
-  clock_t time_[2];
-  time_[0] = clock();
-
   char *query_three_fields[] = {"nome", "cidade", "estado", "stars",
                                 "numero_reviews"};
   TABLE table = new_table(query_three_fields, QUERY_THREE_FIELDS_N);
@@ -150,19 +128,11 @@ TABLE business_info(SGR sgr, char *business_id) {
   free(business_name);
   free(business_state);
   free_business(business);
-
-  time_[1] = clock();
-  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
-         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
   return table;
 }
 
 // Query 4
 TABLE businesses_reviewed(SGR sgr, char *id) {
-
-  clock_t time_[2];
-  time_[0] = clock();
-
   char *fields[] = {"id", "nome"};
   TABLE table = new_table(fields, QUERY_FOUR_FIELDS_N);
 
@@ -193,99 +163,49 @@ TABLE businesses_reviewed(SGR sgr, char *id) {
   // apagar
   add_field(table, size_str);
   free(size_str);
-
   g_ptr_array_set_free_func(reviews_array, (void *)free_review);
   g_ptr_array_free(reviews_array, TRUE);
-
-  time_[1] = clock();
-  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
-         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
-
   return table;
 }
 
 // Query 5
 TABLE businesses_with_stars_and_city(SGR sgr, float stars, char *city) {
-
-  clock_t time_[2];
-  time_[0] = clock();
-
   char *fields[] = {"id", "name", "stars"};
   TABLE table = new_table(fields, QUERY_FIVE_FIELDS_N + 1);
-
   n_larger_city_star(sgr->estatisticas, city, stars, table);
-
-  time_[1] = clock();
-  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
-         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
   return table;
 }
 
 // Query 6
 TABLE top_businesses_by_city(SGR sgr, int top) {
-
-  clock_t time_[2];
-  time_[0] = clock();
   // tirar a cidade
   char *fields[] = {"city", "id", "name", "stars"};
   TABLE table = new_table(fields, QUERY_SIX_FIELDS_N + 1);
-
   all_n_larger_city_star(sgr->estatisticas, top, table);
-
-  time_[1] = clock();
-  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
-         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
   return table;
 }
 
 // Query 7
 TABLE international_users(SGR sgr) {
-
-  clock_t time_[2];
-  time_[0] = clock();
-
   char *fields[] = {"id"};
   TABLE table = new_table(fields, QUERY_SEVEN_FIELDS_N);
-
   aux_international_user(sgr->catalogo_reviews, sgr->catalogo_businesses,
                          table);
-
-  time_[1] = clock();
-  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
-         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
-
   return table;
 }
 
 // Query 8
 TABLE top_businesses_with_category(SGR sgr, int top, char *category) {
-
-  clock_t time_[2];
-  time_[0] = clock();
-
   char *fields[] = {"id", "name", "stars"};
   TABLE table = new_table(fields, QUERY_EIGHT_FIELDS_N);
-
   n_larger_than_category_star(sgr->estatisticas, category, top, table);
-
-  time_[1] = clock();
-  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
-         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
   return table;
 }
 
 // Query 9
 TABLE reviews_with_word(SGR sgr, char *word) {
-
-  clock_t time_[2];
-  time_[0] = clock();
-
   char *fields[] = {"id"};
   TABLE table = new_table(fields, QUERY_NINE_FIELDS_N);
   review_id_with_word_in_text(sgr->catalogo_reviews, word, table);
-
-  time_[1] = clock();
-  printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]),
-         ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC);
   return table;
 }

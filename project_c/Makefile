@@ -6,7 +6,7 @@ LIBS := glib-2.0 readline
 
 READLINE = -I/usr/include/history -I/usr/include/readline
 LDFLAGS += $(shell pkg-config --libs $(LIBS))
-CFLAGS += -Wall -std=c99 -Isrc $(shell pkg-config --cflags $(LIBS)) $(READLINE) -g
+CFLAGS += -Wall -std=c99 -Ofast -flto -march=native -mtune=native -Isrc $(shell pkg-config --cflags $(LIBS)) $(READLINE) -g
 
 .PHONY: run clean
 
