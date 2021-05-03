@@ -29,10 +29,25 @@ struct stats {
                                             // ssorted decrescently by
                                             // category (city_tuple)
 };
+void free_city_tuple(CityTuple self) {
+  if (!self)
+    return;
+  free(self->business_id);
+  free(self->name);
+  free(self);
+}
+
+void free_g_city_tuple(gpointer data) { free_city_tuple((CityTuple)data); }
+
+void g_free_ll(gpointer pointer) {
+  GSList *ptr_list = (GSList *)pointer;
+  g_slist_free_full(ptr_list, free_g_city_tuple);
+}
 
 Stats start_statistics() {
   Stats stats = malloc(sizeof(struct stats));
-  stats->business_id_to_stars = g_hash_table_new(g_str_hash, g_str_equal);
+  stats->business_id_to_stars =
+      g_hash_table_new_full(g_str_hash, g_str_equal, NULL, free);
   stats->city_to_business_by_star = g_hash_table_new(g_str_hash, g_str_equal);
   stats->category_to_business_by_star =
       g_hash_table_new(g_str_hash, g_str_equal);
@@ -105,21 +120,6 @@ CityTuple copy_city_tuple(CityTuple self) {
   return tuplo;
 }
 
-void free_city_tuple(CityTuple self) {
-  if (!self)
-    return;
-  free(self->business_id);
-  free(self->name);
-  free(self);
-}
-
-void free_g_city_tuple(gpointer data) { free_city_tuple((CityTuple)data); }
-
-static void g_free_ll(gpointer pointer) {
-  GSList *ptr_list = (GSList *)pointer;
-  g_slist_free_full(ptr_list, free_g_city_tuple);
-}
-
 static void free_all_elems(gpointer key, gpointer value, gpointer user_data) {
   g_free_ll(value);
   free(key);
@@ -139,6 +139,7 @@ void free_stats(Stats stats) {
 
   /* free(stats->category_to_business_by_star); */
 }
+
 gint compare_stars(gconstpointer key1, gconstpointer key2, gpointer user_data) {
   return (((CityTuple)key2)->stars - ((CityTuple)key1)->stars) * 100000000;
 }
@@ -168,16 +169,15 @@ static void add_city_to_business_by_star(Stats stats, char *city,
   if (!stats || !stats->business_id_to_stars)
     return;
 
-  if (!stats->city_to_business_by_star)
-    stats->city_to_business_by_star = g_hash_table_new(g_str_hash, g_str_equal);
-
   CityTuple value = init_city_tuple(stars, business_id, name);
 
   GSList *aux = g_hash_table_lookup(stats->city_to_business_by_star, city);
 
+  char *key = aux ? city : g_strdup(city);
+
   // if aux is null,  , append will create
   aux = g_slist_insert_sorted_with_data(aux, value, compare_stars, NULL);
-  g_hash_table_insert(stats->city_to_business_by_star, g_strdup(city), aux);
+  g_hash_table_insert(stats->city_to_business_by_star, key, aux);
 }
 
 static void add_category_to_business_by_star(Stats stats, char *category,
@@ -187,19 +187,15 @@ static void add_category_to_business_by_star(Stats stats, char *category,
     return;
   }
 
-  if (!stats->category_to_business_by_star)
-    stats->category_to_business_by_star =
-        g_hash_table_new(g_str_hash, g_str_equal);
-
   CityTuple value = init_city_tuple(stars, business_id, name);
 
   GSList *aux =
       g_hash_table_lookup(stats->category_to_business_by_star, category);
 
+  char *key = aux ? category : g_strdup(category);
   aux = g_slist_insert_sorted_with_data(aux, value, compare_stars, NULL);
 
-  g_hash_table_insert(stats->category_to_business_by_star, g_strdup(category),
-                      aux);
+  g_hash_table_insert(stats->category_to_business_by_star, key, aux);
 }
 
 void build_city_and_category_hash_table(BusinessCollection const businesses,
@@ -226,15 +222,22 @@ void build_city_and_category_hash_table(BusinessCollection const businesses,
     Business business =
         get_businessCollection_business_by_id(businesses, business_id);
 
-    if (!business)
+    if (!business) {
+      free(business_id);
       continue;
+    }
 
     char *city = get_business_city(business);
 
     char *name = get_business_name(business);
 
-    if (!city || !name)
+    if (!city || !name) {
+      if (city)
+        free(city);
+      if (name)
+        free(name);
       continue;
+    }
 
     GPtrArray *categories = get_business_categories(business);
 
