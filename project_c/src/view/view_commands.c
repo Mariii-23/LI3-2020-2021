@@ -8,6 +8,12 @@
 #include "view/colors.h"
 
 #include "time.h"
+static double get_time_taken(struct timespec start, struct timespec end) {
+  double time_taken;
+  time_taken = (end.tv_sec - start.tv_sec) * 1e9;
+  time_taken = (time_taken + (end.tv_nsec - start.tv_nsec)) * 1e-9;
+  return time_taken;
+}
 
 Variable print(Variable *args) {
   print_var(*args);
@@ -40,133 +46,130 @@ Variable cmd_to_csv(Variable *args) {
 
 // Query 1
 Variable cmd_load_sgr(Variable *args) {
-  time_t time_[2];
-  time_[0] = time(NULL);
+  struct timespec start, end;
+  clock_gettime(CLOCK_MONOTONIC, &start);
 
   VariableValue val;
   val.sgr =
       load_sgr(get_var_value(args[0]).string, get_var_value(args[1]).string,
                get_var_value(args[2]).string);
 
-  time_[1] = time(NULL);
-  printf("\nTime: %f s\n", difftime(time_[1], time_[0]));
-
-  /* printf("\nTime: %ld\nSec: %f\n", (time_[1] - time_[0]), */
-  /*        ((double)(time_[1] - time_[0])) / CLOCKS_PER_SEC); */
+  clock_gettime(CLOCK_MONOTONIC, &end);
+  printf("\nTime: %f s\n", get_time_taken(start, end));
   return init_var(VAR_SGR, val, NULL);
 }
 
 // Query 2
 Variable cmd_businesses_started_by_letter(Variable *args) {
-  time_t time_[2];
-  time_[0] = time(NULL);
+  struct timespec start, end;
+  clock_gettime(CLOCK_MONOTONIC, &start);
 
   VariableValue val;
   val.table = businesses_started_by_letter(get_var_value(args[0]).sgr,
                                            // deveria ser char
                                            get_var_value(args[1]).string[0]);
 
-  time_[1] = time(NULL);
-  printf("\nTime: %f s\n", difftime(time_[1], time_[0]));
+  clock_gettime(CLOCK_MONOTONIC, &end);
+  printf("\nTime: %f s\n", get_time_taken(start, end));
   return init_var(VAR_TABLE, val, NULL);
 }
 
 // Query 3
 Variable cmd_business_info(Variable *args) {
-  time_t time_[2];
-  time_[0] = time(NULL);
+  struct timespec start, end;
+  clock_gettime(CLOCK_MONOTONIC, &start);
 
   VariableValue val;
   val.table =
       business_info(get_var_value(args[0]).sgr, get_var_value(args[1]).string);
 
-  time_[1] = time(NULL);
-  printf("\nTime: %f s\n", difftime(time_[1], time_[0]));
+  clock_gettime(CLOCK_MONOTONIC, &end);
+  printf("\nTime: %f s\n", get_time_taken(start, end));
   return init_var(VAR_TABLE, val, NULL);
 }
 
 // Query 4
 Variable cmd_businesses_reviewed(Variable *args) {
-  time_t time_[2];
-  time_[0] = time(NULL);
+  struct timespec start, end;
+  clock_gettime(CLOCK_MONOTONIC, &start);
 
   VariableValue val;
   val.table = businesses_reviewed(get_var_value(args[0]).sgr,
                                   get_var_value(args[1]).string);
 
-  time_[1] = time(NULL);
-  printf("\nTime: %f s\n", difftime(time_[1], time_[0]));
+  clock_gettime(CLOCK_MONOTONIC, &end);
+  printf("\nTime: %f s\n", get_time_taken(start, end));
   return init_var(VAR_TABLE, val, NULL);
 }
 
 // Query 5
 Variable cmd_businesses_with_stars_and_city(Variable *args) {
-  time_t time_[2];
-  time_[0] = time(NULL);
+  struct timespec start, end;
+  clock_gettime(CLOCK_MONOTONIC, &start);
 
   VariableValue val;
   val.table = businesses_with_stars_and_city(get_var_value(args[0]).sgr,
                                              get_var_value(args[1]).number,
                                              get_var_value(args[2]).string);
 
-  time_[1] = time(NULL);
-  printf("\nTime: %f s\n", difftime(time_[1], time_[0]));
+  clock_gettime(CLOCK_MONOTONIC, &end);
+  printf("\nTime: %f s\n", get_time_taken(start, end));
   return init_var(VAR_TABLE, val, NULL);
 }
 
 // Query 6
 Variable cmd_top_businesses_by_city(Variable *args) {
-  time_t time_[2];
-  time_[0] = time(NULL);
+  struct timespec start, end;
+  clock_gettime(CLOCK_MONOTONIC, &start);
 
   VariableValue val;
   val.table = top_businesses_by_city(get_var_value(args[0]).sgr,
                                      get_var_value(args[1]).number);
 
-  time_[1] = time(NULL);
-  printf("\nTime: %f s\n", difftime(time_[1], time_[0]));
+  clock_gettime(CLOCK_MONOTONIC, &end);
+  printf("\nTime: %f s\n", get_time_taken(start, end));
   return init_var(VAR_TABLE, val, NULL);
 }
 
 // Query 7
 Variable cmd_international_users(Variable *args) {
-  time_t time_[2];
-  time_[0] = time(NULL);
+  struct timespec start, end;
+  clock_gettime(CLOCK_MONOTONIC, &start);
 
   VariableValue val;
   val.table = international_users(get_var_value(args[0]).sgr);
 
-  time_[1] = time(NULL);
-  printf("\nTime: %f s\n", difftime(time_[1], time_[0]));
+  clock_gettime(CLOCK_MONOTONIC, &end);
+  printf("\nTime: %f s\n", get_time_taken(start, end));
   return init_var(VAR_TABLE, val, NULL);
 }
 
 // Query 8
 Variable cmd_top_businesses_with_category(Variable *args) {
-  time_t time_[2];
-  time_[0] = time(NULL);
+  struct timespec start, end;
+  clock_gettime(CLOCK_MONOTONIC, &start);
 
   VariableValue val;
   val.table = top_businesses_with_category(get_var_value(args[0]).sgr,
                                            get_var_value(args[1]).number,
                                            get_var_value(args[2]).string);
 
-  time_[1] = time(NULL);
-  printf("\nTime: %f s\n", difftime(time_[1], time_[0]));
+  clock_gettime(CLOCK_MONOTONIC, &end);
+  printf("\nTime: %f s\n", get_time_taken(start, end));
   return init_var(VAR_TABLE, val, NULL);
 }
 
 // Query 9
 Variable cmd_reviews_with_word(Variable *args) {
-  time_t time_[2];
-  time_[0] = time(NULL);
+  struct timespec start, end;
+  clock_gettime(CLOCK_MONOTONIC, &start);
 
   VariableValue val;
   val.table = reviews_with_word(get_var_value(args[0]).sgr,
                                 get_var_value(args[1]).string);
 
-  time_[1] = time(NULL);
-  printf("\nTime: %f s\n", difftime(time_[1], time_[0]));
+  clock_gettime(CLOCK_MONOTONIC, &end);
+  printf("\nTime: %f s\n", get_time_taken(start, end));
   return init_var(VAR_TABLE, val, NULL);
 }
 

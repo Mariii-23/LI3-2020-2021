@@ -97,7 +97,7 @@ static User parse_user_line(char *str, Stats stats) {
   return create_user(user_id, name);
 }
 
-static Review parse_review_line(char *str, Stats stats) {
+static Review parse_review_line(char *str, Stats stats, SGR sgr) {
   // last field may contain ; so we have to change strategy
   char *params[9] = {0};
   int i = 0;
@@ -126,33 +126,15 @@ static Review parse_review_line(char *str, Stats stats) {
                        cool, date, text);
 }
 
-bool validate_review(Review review) {
-  if (!review)
-    return false;
-  // ver se o business e o user da review exisitem
-  bool b = true;
-  char *bus_id = get_review_business_id(review);
-  char *user_id = get_review_user_id(review);
-  // ver se este getter verifica s existe ou nao
-  // Business bus = get_businessCollection_business_by_id( bus_collection,
-  // bus_id); User user = get_user_by_id(user_collection, char* user_id);
-
-  // free_business(bus);
-  // free_user(user);
-  free(bus_id);
-  free(user_id);
-  return b;
-}
-
-ReviewCollection collect_reviews(FILE *fp, Stats stats) {
+ReviewCollection collect_reviews(FILE *fp, Stats stats, SGR sgr) {
   char *line;
   ReviewCollection collection = create_review_collection();
   // read header
   read_line(fp);
   while ((line = read_line(fp))) {
-    Review review = parse_review_line(line, stats);
+    Review review = parse_review_line(line, stats, sgr);
     free(line);
-    if (!review || !validate_review(review)) {
+    if (!review || !validate_review(sgr, review)) {
       if (review) {
         free_review(review);
       }
