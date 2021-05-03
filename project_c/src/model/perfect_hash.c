@@ -15,7 +15,14 @@ PerfectHash phf_new() {
 }
 
 void phf_free(PerfectHash phf) {
-  for (int i = 0; i < NUMBER_LETTERS; i++) {
+  for (int i = 0; i <= NUMBER_LETTERS; i++) {
+    g_ptr_array_free(phf->phf[i], TRUE);
+  }
+  free(phf);
+}
+void phf_free_deep(PerfectHash phf, void (*free_fun)(void *)) {
+  for (int i = 0; i <= NUMBER_LETTERS; i++) {
+    g_ptr_array_set_free_func(phf->phf[i], free_fun);
     g_ptr_array_free(phf->phf[i], TRUE);
   }
   free(phf);

@@ -49,9 +49,11 @@ static gpointer g_user_copy(gconstpointer src, gpointer data) {
   return clone_user((User)src);
 }
 
+void g_free_user(gpointer data) { free_user((User)data); }
 UserCollection create_user_collection() {
   UserCollection new_collection = malloc(sizeof(struct user_collection));
-  new_collection->by_id = g_hash_table_new(g_str_hash, g_str_equal);
+  new_collection->by_id =
+      g_hash_table_new_full(g_str_hash, g_str_equal, NULL, g_free_user);
   return new_collection;
 }
 
@@ -72,8 +74,8 @@ void free_map_user(gpointer key, gpointer value, gpointer user_data) {
 
 void free_user_collection(UserCollection user_collection) {
   if (user_collection) {
-    g_hash_table_foreach(user_collection->by_id, free_map_user, NULL);
     g_hash_table_destroy(user_collection->by_id);
+    free(user_collection);
   }
 }
 
