@@ -13,10 +13,12 @@ void fprintf_table(FILE *stream, TABLE table, char *delim_header,
 void add_footer(TABLE table, char *footer_name, char *footer_value);
 char *table_index(TABLE table, size_t i, size_t j);
 char *field_index(TABLE table, size_t i);
+char *table_index_by_field(TABLE table, char *field_name, size_t line);
 size_t get_number_fields_table(TABLE table);
 size_t get_number_lines_table(TABLE table);
 GPtrArray *get_fields_table(TABLE table);
 GPtrArray *get_header_table(TABLE table);
+ssize_t whereis_field(TABLE table, char *field_name);
 TABLE new_table_without_fields(size_t number_fields);
 void free_table(TABLE table);
 

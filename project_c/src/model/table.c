@@ -91,6 +91,20 @@ char *table_index(TABLE table, size_t i, size_t j) {
   // encapsulamento
   return table->lines->pdata[i * table->number_fields + j];
 }
+ssize_t whereis_field(TABLE table, char *field_name) {
+  int j;
+  for (j = 0; j < get_number_fields_table(table); j++) {
+    if (!strcmp(table_index(table, 0, j), field_name)) {
+      return j;
+    }
+  }
+  return -1;
+}
+
+char *table_index_by_field(TABLE table, char *field_name, size_t line) {
+  int j = whereis_field(table, field_name);
+  return table_index(table, line, j);
+}
 char *field_index(TABLE table, size_t i) { return g_strdup(table->header[i]); }
 
 size_t get_number_lines_table(TABLE table) {

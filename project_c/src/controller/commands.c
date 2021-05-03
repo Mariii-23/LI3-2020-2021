@@ -76,17 +76,6 @@ bool matches_by_operator(char *the_value, char *current_value, OPERATOR op,
   return !res ? (op == EQ) : (res / abs(res)) == op;
 }
 
-// to change
-ssize_t whereis_field(TABLE table, char *field_name) {
-  int j;
-  for (j = 0; j < get_number_fields_table(table); j++) {
-    if (!strcmp(table_index(table, 0, j), field_name)) {
-      return j;
-    }
-  }
-  return -1;
-}
-
 bool is_number(char *value) {
   char *aux = value;
   for (; *aux; aux++) {
@@ -197,18 +186,28 @@ TABLE join(TABLE table_x, TABLE table_y) {
   free_ptr_array_deep(table_y_fields);
   return nova;
 }
-// returns a new table with table_x lines followed by table_y (must have same
-// fields)
-// TABLE append(TABLE table_x, TABLE table_y) {
-//  if (!same_fields(table_x, table_y)) {
-//    return NULL;
-//  }
-//}
 //// count ??
 //
-// TABLE max(TABLE table, char *field_name) {}
+// TABLE max(TABLE table, char *field_name) {
+//  if (is_number(field_name)) {
+//  }
+//}
 //
 // TABLE min(TABLE table, char *field_name) {}
 //
-// size_t avg(TABLE table, char *field_name) {}
+size_t avg(TABLE table, char *field_name) {
+  size_t sum = 0;
+  size_t column = whereis_field(table, field_name);
+  char *first_value = table_index(table, 0, column);
+  size_t number_lines = get_number_lines_table(table);
+  if (!is_number(first_value) || number_lines <= 0) {
+    printf("Please provide a colum with numbers\n");
+    return 0;
+  }
+  for (int i = 0; i < number_lines; i++) {
+    char *curr = table_index(table, i, column);
+    sum += atoi(curr);
+  }
+  return sum / number_lines;
+}
 
