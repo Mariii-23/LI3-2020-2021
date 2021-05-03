@@ -1,6 +1,7 @@
 #include <sys/ioctl.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <termios.h>
 #include "paginacao.h"
 #include "colors.h"
 #include "model/table.h"
@@ -26,6 +27,22 @@ int max(int a, int b) {
 void move_cursor_to_x(int x) {
   /* https://en.wikipedia.org/wiki/ANSI_escape_code */
   printf("\e[%dG", x);
+}
+
+void get_cursor(int *x, int *y) {
+  // https://www2.ccs.neu.edu/research/gpc/MSim/vona/terminal/vtansi.htm
+  // Código para receber a posição atual
+  printf("\e[6n");
+  scanf("\e[%d;%dR", x, y);
+}
+
+void set_cursor(int x, int y) {
+  printf("\e[%d;%df", x, y);
+}
+
+void cursor_up(int x) {
+  if (x != 0)
+    printf("\e[%dA", x);
 }
 
 void draw_hborder(int type, int cols, int *widths) {
@@ -85,54 +102,107 @@ void show_table(TABLE t) {
   int widths[cols];
 
   for (int i = 0; i < cols; i++) {
-    widths[i] = strlen(table_index(t, 0, i));
+    widths[i] = strlen(field_index(t, i));
   }
 
-  int start = 1;
-  for (int i = start; i < lines_to_show + start; i++) {
-    for (int j = 0; j < cols; j++) {
-      widths[j] = max(widths[j], strlen(table_index(t, i, j)));
-    }
-  }
+  // Por defeito, o stdin é buffered até encontrar um EOF ou um
+  // newline. Nós não queremos isso para ler setas, por isso vamos
+  // temporariamente alterar as definições do terminal para que não
+  // faça buffering.
+  struct termios oldt, newt;
+  int c = 0;
+  tcgetattr(STDIN_FILENO, &oldt);
+  newt = oldt;
 
-  // TODO calcular
+  // Desativamos a visualização do que foi escrito e o line buffering.
+  newt.c_lflag = ~(ICANON | ECHO);
+
+  tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+
+  int start = 0;
   int start_x = 5;
-  // Vamos desenhar a caixa
-  move_cursor_to_x(start_x);
-  
-  draw_hborder(-1, cols, widths);
-  for (int j = 0, start_col = start_x; j < cols; j++) {
-    move_cursor_to_x(start_col);
-    printf("│ ");
-    printf(BOLD FG_CYAN "%s" RESET_ALL, table_index(t, 0, j));
-    move_cursor_to_x(start_col);
-    start_col += widths[j] + 3;
 
-    if (j == cols - 1) {
-      move_cursor_to_x(start_col);
-      printf("│\n");
+  // Vamos usar escape codes para configurar certas coisas no terminal,
+  // nomeadamente, queremos esconder o cursor e desativar wrapping
+  // https://github.com/dylanaraps/writing-a-tui-in-bash
+  printf("\e[?7l\e[?25l");
+
+  int lines = 0;
+
+  do {
+    // Agora restauramos a posição sempre que vamos desenhar a tabela!
+    cursor_up(lines);
+    printf("\e[J"); // Limpar o ecrã
+
+    // Somehow desliguei ctrl+c para matar o programa...
+    if (c == '\e') {
+      if (getchar() == '[') {
+        c = getchar();
+        switch (c)  {
+          case 'A':
+            start = max(0, start - 1);
+            break;
+          case 'B':
+            start = min(table_lines - lines_to_show, start + 1);
+            break;
+        }
+      }
     }
-  }
 
-  move_cursor_to_x(start_x);
-  draw_hborder(0, cols, widths);
+    for (int i = start; i < lines_to_show + start; i++) {
+      for (int j = 0; j < cols; j++) {
+        widths[j] = max(widths[j], strlen(table_index(t, i, j)));
+      }
+    }
 
-  for (int i = start; i < lines_to_show + start; i++) {
-    int start_col = start_x;
-    for (int j = 0; j < cols; j++) {
+    // Vamos desenhar a caixa
+    move_cursor_to_x(start_x);
+
+    draw_hborder(-1, cols, widths);
+    for (int j = 0, start_col = start_x; j < cols; j++) {
       move_cursor_to_x(start_col);
       printf("│ ");
-      printf("%s", table_index(t, i, j));
+      printf(BOLD FG_CYAN "%s" RESET_ALL, field_index(t, j));
+      move_cursor_to_x(start_col);
       start_col += widths[j] + 3;
+
+      if (j == cols - 1) {
+        move_cursor_to_x(start_col);
+        printf("│\n");
+      }
     }
 
-    move_cursor_to_x(start_col);
-    printf("│\n");
-    if (i != lines_to_show + start - 1) {
-      move_cursor_to_x(start_x);
-      draw_hborder(0, cols, widths);
+    move_cursor_to_x(start_x);
+    draw_hborder(0, cols, widths);
+
+    for (int i = start; i < lines_to_show + start; i++) {
+      int start_col = start_x;
+      for (int j = 0; j < cols; j++) {
+        move_cursor_to_x(start_col);
+        printf("│ ");
+        printf("%s", table_index(t, i, j));
+        start_col += widths[j] + 3;
+      }
+
+      move_cursor_to_x(start_col);
+      printf("│\n");
+      if (i != lines_to_show + start - 1) {
+        move_cursor_to_x(start_x);
+        draw_hborder(0, cols, widths);
+      }
     }
-  }
-  move_cursor_to_x(start_x);
-  draw_hborder(1, cols, widths);
+    move_cursor_to_x(start_x);
+    draw_hborder(1, cols, widths);
+
+    if (lines_to_show < table_lines) {
+      move_cursor_to_x(start_x);
+      printf(BOLD BG_WHITE FG_BLACK "%d-%d/%d" RESET_ALL "\n", start + 1, start + lines_to_show + 1, table_lines);
+    }
+
+    lines = lines_to_show * 2 + 4;
+  } while (lines_to_show < table_lines && (c = getchar()) != 'q');
+
+  // Vamos desfazer todas as configurações que fizemos no início
+  tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+  printf("\e[?25h\e[7h");
 }
