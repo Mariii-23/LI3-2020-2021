@@ -21,7 +21,8 @@ Variable cmd_top_businesses_with_category(Variable *args);
 Variable cmd_reviews_with_word(Variable *args);
 
 Variable show(Variable *args);
-Variable cmd_projection(Variable* args);
-Variable cmd_filter(Variable* args);
+Variable cmd_projection(Variable *args);
+Variable cmd_filter(Variable *args);
+Variable cmd_join(Variable *args);
 
 #endif

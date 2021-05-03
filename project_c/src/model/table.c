@@ -106,6 +106,9 @@ GPtrArray *get_fields_table(TABLE table) {
   }
   return fields;
 }
+GPtrArray *get_header_table(TABLE table) {
+  return build_ptr_array(table->header, table->number_fields);
+}
 
 void free_table(TABLE table) {
   free_ptr_array_deep(table->lines);

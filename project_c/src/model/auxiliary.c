@@ -52,7 +52,7 @@ gpointer strdup_copy(gconstpointer src, gpointer data) { return g_strdup(src); }
 GPtrArray *build_ptr_array(char *ptr_array[], int N) {
   GPtrArray *new_array = g_ptr_array_sized_new(N);
   for (size_t i = 0; i < N; i++) {
-    g_ptr_array_add(new_array, ptr_array[i]);
+    g_ptr_array_add(new_array, g_strdup(ptr_array[i]));
   }
   return new_array;
 }

@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "model/auxiliary.h"
 #include "model/leitura.h"
 #include "model/table.h"
 #include "view/colors.h"
@@ -159,4 +160,55 @@ TABLE projection(TABLE table, GArray *colunas) {
   }
   return table_two;
 }
+
+// join two tables with same fields
+TABLE join(TABLE table_x, TABLE table_y) {
+  if ((!table_x && table_y) || (!table_y && table_x))
+    return NULL;
+  if (!table_y && !table_x)
+    return NULL;
+  GPtrArray *table_x_fields = get_header_table(table_x);
+  GPtrArray *table_y_fields = get_header_table(table_y);
+  size_t fields_x = get_number_fields_table(table_x);
+  int i;
+  for (i = 0; i < fields_x; i++) {
+    if (strcmp(g_ptr_array_index(table_x_fields, i),
+               g_ptr_array_index(table_y_fields, i)))
+      break;
+  }
+  TABLE nova;
+  if (i == fields_x) {
+    nova = new_table_ptr_array(table_x_fields);
+    for (int i = 0; i < get_number_lines_table(table_x); i++) {
+      for (int j = 0; j < fields_x; j++) {
+        char *c = table_index(table_x, i, j);
+        add_field(nova, c);
+      }
+    }
+    for (int i = 0; i < get_number_lines_table(table_y); i++) {
+      for (int j = 0; j < fields_x; j++) {
+        add_field(nova, table_index(table_y, i, j));
+      }
+    }
+  } else {
+    nova = NULL;
+  }
+  free_ptr_array_deep(table_x_fields);
+  free_ptr_array_deep(table_y_fields);
+  return nova;
+}
+// returns a new table with table_x lines followed by table_y (must have same
+// fields)
+// TABLE append(TABLE table_x, TABLE table_y) {
+//  if (!same_fields(table_x, table_y)) {
+//    return NULL;
+//  }
+//}
+//// count ??
+//
+// TABLE max(TABLE table, char *field_name) {}
+//
+// TABLE min(TABLE table, char *field_name) {}
+//
+// size_t avg(TABLE table, char *field_name) {}
 

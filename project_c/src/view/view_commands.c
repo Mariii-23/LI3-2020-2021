@@ -208,3 +208,8 @@ Variable cmd_filter(Variable *args) {
              get_var_value(args[2]).string, get_var_value(args[3]).operator);
   return init_var(VAR_TABLE, val, NULL);
 }
+Variable cmd_join(Variable *args) {
+  VariableValue val;
+  val.table = join(get_var_value(args[0]).table, get_var_value(args[1]).table);
+  return init_var(VAR_TABLE, val, NULL);
+}

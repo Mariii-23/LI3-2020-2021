@@ -115,6 +115,8 @@ void repl() {
                   "Project a table", VAR_TABLE, VAR_ARRAY);
   define_function(state, "filter", cmd_filter, VAR_TABLE, 4, "Filter a table",
                   VAR_TABLE, VAR_STRING, VAR_STRING, VAR_OPERATOR);
+  define_function(state, "join", cmd_join, VAR_TABLE, 2, "Join two tables",
+                  VAR_TABLE, VAR_TABLE);
 
   // O readline devolve NULL quando chega ao EOF
   while ((line = readline(BOLD FG_CYAN "> " RESET_ALL))) {
