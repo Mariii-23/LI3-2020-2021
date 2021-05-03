@@ -1,4 +1,6 @@
-#include <time.h>
+// Necessário para que clock_gettime exista
+#define _POSIX_C_SOURCE 199309L
+
 #include "view_commands.h"
 
 #include "controller/commands.h"
@@ -8,6 +10,8 @@
 #include "model/table.h"
 #include "view/colors.h"
 #include "paginacao.h"
+
+#include <time.h>
 
 static double get_time_taken(struct timespec start, struct timespec end) {
   double time_taken;
