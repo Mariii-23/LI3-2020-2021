@@ -1,3 +1,4 @@
+#include <time.h>
 #include "view_commands.h"
 
 #include "controller/commands.h"
@@ -6,8 +7,8 @@
 #include "model/state.h"
 #include "model/table.h"
 #include "view/colors.h"
+#include "paginacao.h"
 
-#include "time.h"
 static double get_time_taken(struct timespec start, struct timespec end) {
   double time_taken;
   time_taken = (end.tv_sec - start.tv_sec) * 1e9;
@@ -26,7 +27,8 @@ Variable quit(Variable *args) {
 }
 
 Variable show(Variable *args) {
-  fprintf_table(stdout, get_var_value(args[0]).table, " | ", " | ");
+  /* fprintf_table(stdout, get_var_value(args[0]).table, " | ", " | "); */
+  show_table(get_var_value(args[0]).table);
 
   return void_var();
 }
