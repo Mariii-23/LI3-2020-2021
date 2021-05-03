@@ -1,12 +1,12 @@
-#include <sys/ioctl.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <termios.h>
-#include "paginacao.h"
-#include "colors.h"
+#include "view/paginacao.h"
 #include "model/table.h"
+#include "view/colors.h"
+#include <stdio.h>
+#include <sys/ioctl.h>
+#include <termios.h>
+#include <unistd.h>
 
-void get_terminal_size(int* width, int* height) {
+void get_terminal_size(int *width, int *height) {
   struct winsize w;
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 
@@ -15,12 +15,14 @@ void get_terminal_size(int* width, int* height) {
 }
 
 int min(int a, int b) {
-  if (a < b) return a;
+  if (a < b)
+    return a;
   return b;
 }
 
 int max(int a, int b) {
-  if (a > b) return a;
+  if (a > b)
+    return a;
   return b;
 }
 
@@ -36,9 +38,7 @@ void get_cursor(int *x, int *y) {
   scanf("\e[%d;%dR", x, y);
 }
 
-void set_cursor(int x, int y) {
-  printf("\e[%d;%df", x, y);
-}
+void set_cursor(int x, int y) { printf("\e[%d;%df", x, y); }
 
 void cursor_up(int x) {
   if (x != 0)
@@ -46,7 +46,8 @@ void cursor_up(int x) {
 }
 
 void draw_hborder(int type, int cols, int *widths) {
-  // type pode ser -1 para a primeira linha, 0 para uma do meio e 1 para a última
+  // type pode ser -1 para a primeira linha, 0 para uma do meio e 1 para a
+  // última
   if (type == -1) {
     printf("┌");
   } else if (type == 1) {
@@ -87,17 +88,20 @@ void show_table(TABLE t) {
   int width, height;
   get_terminal_size(&width, &height);
 
-  // 1. Calcular quantas linhas podemos mostrar, em principio max(5, min(20, lines)) + 1, ou algo parecido. Depende do tamanho do terminal.
+  // 1. Calcular quantas linhas podemos mostrar, em principio max(5, min(20,
+  // lines)) + 1, ou algo parecido. Depende do tamanho do terminal.
   // 2. Calcular o tamanho dessas linhas
   // Utilizar a maior para desenhar a caixa
   // Fazer padding com espaços
   // Usar os caracteres de desenho de caixa em vez de |, +, etc
   // Colorizar as coisas, provavelmente usar o ciano para o header tambem
-  // Fazer um loop, enquanto não se carregar no 'q' ou não acabar a tabela, esperamos por uma seta para os lados! Mostramos tbm essa indicação
+  // Fazer um loop, enquanto não se carregar no 'q' ou não acabar a tabela,
+  // esperamos por uma seta para os lados! Mostramos tbm essa indicação
   int table_lines = get_number_lines_table(t);
 
   // TODO lógica de wrapping.... :/
-  int lines_to_show = min(table_lines, max(5, min(height / 2 - 4, table_lines)));
+  int lines_to_show =
+      min(table_lines, max(5, min(height / 2 - 4, table_lines)));
   int cols = get_number_fields_table(t);
   int widths[cols];
 
@@ -138,13 +142,13 @@ void show_table(TABLE t) {
     if (c == '\e') {
       if (getchar() == '[') {
         c = getchar();
-        switch (c)  {
-          case 'A':
-            start = max(0, start - 1);
-            break;
-          case 'B':
-            start = min(table_lines - lines_to_show, start + 1);
-            break;
+        switch (c) {
+        case 'A':
+          start = max(0, start - 1);
+          break;
+        case 'B':
+          start = min(table_lines - lines_to_show, start + 1);
+          break;
         }
       }
     }
@@ -196,7 +200,8 @@ void show_table(TABLE t) {
 
     if (lines_to_show < table_lines) {
       move_cursor_to_x(start_x);
-      printf(BOLD BG_WHITE FG_BLACK "%d-%d/%d" RESET_ALL "\n", start + 1, start + lines_to_show + 1, table_lines);
+      printf(BOLD BG_WHITE FG_BLACK "%d-%d/%d" RESET_ALL "\n", start + 1,
+             start + lines_to_show + 1, table_lines);
     }
 
     lines = lines_to_show * 2 + 4;

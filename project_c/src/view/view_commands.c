@@ -1,7 +1,7 @@
 // Necessário para que clock_gettime exista
 #define _POSIX_C_SOURCE 199309L
 
-#include "view_commands.h"
+#include "view/view_commands.h"
 
 #include "controller/commands.h"
 #include "controller/exec.h"
@@ -9,7 +9,7 @@
 #include "model/state.h"
 #include "model/table.h"
 #include "view/colors.h"
-#include "paginacao.h"
+#include "view/paginacao.h"
 
 #include <time.h>
 

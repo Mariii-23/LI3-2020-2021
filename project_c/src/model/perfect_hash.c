@@ -1,4 +1,4 @@
-#include "perfect_hash.h"
+#include "model/perfect_hash.h"
 
 #include <glib.h>
 #include <stdbool.h>

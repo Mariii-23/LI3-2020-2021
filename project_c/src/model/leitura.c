@@ -4,13 +4,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "auxiliary.h"
-#include "businesses.h"
-#include "reviews.h"
-#include "sgr.h"
-#include "stats.h"
-#include "table.h"
-#include "users.h"
+#include "model/auxiliary.h"
+#include "model/businesses.h"
+#include "model/reviews.h"
+#include "model/sgr.h"
+#include "model/stats.h"
+#include "model/table.h"
+#include "model/users.h"
 #define LINESIZE 100
 #define NUMBER_REVIEW_PARAMS 9
 typedef enum { BUSINESS, REVIEW, USER } Type;

@@ -1,4 +1,4 @@
-#include "commands.h"
+#include "controller/commands.h"
 
 #include <ctype.h>
 #include <stdbool.h>

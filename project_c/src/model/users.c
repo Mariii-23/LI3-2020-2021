@@ -1,9 +1,9 @@
-#include "users.h"
+#include "model/users.h"
 
 #include <glib.h>
 #include <string.h>
 
-#include "auxiliary.h"
+#include "model/auxiliary.h"
 
 struct user {
   char *user_id;

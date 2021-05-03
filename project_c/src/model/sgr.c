@@ -1,15 +1,15 @@
-#include "sgr.h"
+#include "model/sgr.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "auxiliary.h"
-#include "businesses.h"
-#include "leitura.h"
-#include "reviews.h"
-#include "stats.h"
-#include "table.h"
-#include "users.h"
+#include "model/auxiliary.h"
+#include "model/businesses.h"
+#include "model/leitura.h"
+#include "model/reviews.h"
+#include "model/stats.h"
+#include "model/table.h"
+#include "model/users.h"
 
 #define QUERY_TWO_FIELDS_N 1
 #define QUERY_THREE_FIELDS_N 5

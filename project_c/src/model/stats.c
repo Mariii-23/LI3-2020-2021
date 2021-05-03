@@ -1,11 +1,11 @@
-#include "stats.h"
+#include "model/stats.h"
 
 #include <stdbool.h>
 #include <string.h>
 
-#include "auxiliary.h"
 #include "glib.h"
-#include "table.h"
+#include "model/auxiliary.h"
+#include "model/table.h"
 
 typedef struct stars_tuple {
   float current_average; // current start average

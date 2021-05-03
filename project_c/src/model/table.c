@@ -1,10 +1,10 @@
-#include "table.h"
+#include "model/table.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "auxiliary.h"
 #include "glib.h"
+#include "model/auxiliary.h"
 
 struct table {
   size_t number_fields;

@@ -4,9 +4,9 @@ OBJFILES = $(SRCFILES:src/%.c=$(BUILDDIR)%.o)
 
 LIBS := glib-2.0 readline
 
-READLINE = -I/usr/include/history -I/usr/include/readline
+INCLUDE = -I/usr/include/history -I/usr/include/readline -Iinclude/
 LDFLAGS += $(shell pkg-config --libs $(LIBS)) -lrt
-CFLAGS += -Wall -std=c99 -Ofast -flto -march=native -mtune=native -Isrc $(shell pkg-config --cflags $(LIBS)) $(READLINE) -g
+CFLAGS += -Wall -std=c99 -Ofast -flto -march=native -mtune=native -Isrc $(shell pkg-config --cflags $(LIBS)) $(INCLUDE) -g
 
 .PHONY: run clean
 

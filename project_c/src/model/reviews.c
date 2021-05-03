@@ -1,4 +1,4 @@
-#include "reviews.h"
+#include "model/reviews.h"
 
 #include <ctype.h>
 #include <glib.h>
@@ -8,10 +8,10 @@
 #include <string.h>
 #include <strings.h>
 
-#include "auxiliary.h"
-#include "businesses.h"
-#include "table.h"
-#include "users.h"
+#include "model/auxiliary.h"
+#include "model/businesses.h"
+#include "model/table.h"
+#include "model/users.h"
 
 typedef struct word_text {
   char *palavra;

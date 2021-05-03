@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "reviews.h"
+#include "model/reviews.h"
 
 void *assert_return(void *ptr) {
   assert(ptr);

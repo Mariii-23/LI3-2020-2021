@@ -1,13 +1,13 @@
-#include "businesses.h"
+#include "model/businesses.h"
 
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "auxiliary.h"
-#include "perfect_hash.h"
-#include "users.h"
+#include "model/auxiliary.h"
+#include "model/perfect_hash.h"
+#include "model/users.h"
 
 struct business {
   char *business_id;

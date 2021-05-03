@@ -1,14 +1,14 @@
-#include "cli.h"
+#include "view/cli.h"
 
 #include <glib.h>
 #include <gmodule.h>
 
-#include "colors.h"
 #include "controller/exec.h"
 #include "controller/parsing.h"
 #include "model/state.h"
-#include "readline.h"
-#include "view_commands.h"
+#include "view/colors.h"
+#include "view/readline.h"
+#include "view/view_commands.h"
 
 char **command_complete(const char *text, int start, int end) {
   /* GTreeNode* lower_bound = g_tree_lower_bound(g_commands, rl_line_buffer); */
