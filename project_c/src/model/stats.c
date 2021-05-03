@@ -115,20 +115,30 @@ void free_city_tuple(CityTuple self) {
 
 void free_g_city_tuple(gpointer data) { free_city_tuple((CityTuple)data); }
 
+static void g_free_ll(gpointer pointer) {
+  GSList *ptr_list = (GSList *)pointer;
+  g_slist_free_full(ptr_list, free_g_city_tuple);
+}
+
+static void free_all_elems(gpointer key, gpointer value, gpointer user_data) {
+  g_free_ll(value);
+  free(key);
+}
+
 void free_stats(Stats stats) {
   if (!stats)
     return;
-
-  g_hash_table_foreach(stats->business_id_to_stars, (void *)free, NULL);
+  // calls function passed when created
   g_hash_table_destroy(stats->business_id_to_stars);
-  g_hash_table_foreach(stats->city_to_business_by_star,
-                       (void *)free_g_city_tuple, NULL);
-  g_hash_table_destroy(stats->city_to_business_by_star);
-  g_hash_table_foreach(stats->category_to_business_by_star,
-                       (void *)free_g_city_tuple, NULL);
-  g_hash_table_destroy(stats->category_to_business_by_star);
-}
 
+  g_hash_table_foreach(stats->city_to_business_by_star, free_all_elems, NULL);
+  /* free(stats->city_to_business_by_star); */
+
+  g_hash_table_foreach(stats->category_to_business_by_star, free_all_elems,
+                       NULL);
+
+  /* free(stats->category_to_business_by_star); */
+}
 gint compare_stars(gconstpointer key1, gconstpointer key2, gpointer user_data) {
   return (((CityTuple)key2)->stars - ((CityTuple)key1)->stars) * 100000000;
 }
