@@ -117,7 +117,8 @@ BusinessCollection create_business_collection() {
   BusinessCollection new_business_collection =
       (BusinessCollection)malloc(sizeof(struct business_collection));
   *new_business_collection = (struct business_collection){
-      .by_id = g_hash_table_new(g_str_hash, g_str_equal),
+      .by_id =
+          g_hash_table_new_full(g_str_hash, g_str_equal, NULL, g_free_business),
       .by_letter = phf_new()};
   return new_business_collection;
 }

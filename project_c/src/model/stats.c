@@ -254,7 +254,6 @@ void build_city_and_category_hash_table(BusinessCollection const businesses,
     free_business(business);
   }
 }
-
 static void n_larger_than_city_star(Stats stats, char *city, int const N,
                                     TABLE table) {
   if (!stats || !stats->city_to_business_by_star) {

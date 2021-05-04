@@ -254,11 +254,13 @@ void free_review(Review self) {
 /* Review Collection */
 /* Review Collection: Builder */
 
+void g_free_review(gpointer data) { free_review((Review)data); }
 ReviewCollection create_review_collection() {
   ReviewCollection new_review_collection =
       (ReviewCollection)malloc(sizeof(struct review_collection));
   *new_review_collection = (struct review_collection){
-      .by_id = g_hash_table_new(g_str_hash, g_str_equal),
+      .by_id =
+          g_hash_table_new_full(g_str_hash, g_str_equal, NULL, g_free_review),
       .by_user_id = g_hash_table_new(g_str_hash, g_str_equal),
       .by_business_id = g_hash_table_new(g_str_hash, g_str_equal)};
   return new_review_collection;
