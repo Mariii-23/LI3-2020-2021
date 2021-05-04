@@ -9,6 +9,8 @@ typedef struct sgr *SGR;
 SGR init_sgr();
 void free_sgr(SGR sgr);
 bool validate_review(SGR sgr, Review review);
+void call_update_average_stars(SGR sgr, char *business_id, float stars);
+
 // Query 1
 SGR load_sgr(char *users, char *businesses, char *reviews);
 // Query 2

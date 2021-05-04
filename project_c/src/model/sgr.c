@@ -76,12 +76,11 @@ SGR load_sgr(char *users, char *businesses, char *reviews) {
   }
   SGR sgr = malloc(sizeof(struct sgr));
   Stats stats = start_statistics();
-  *sgr = (struct sgr){.catalogo_users = collect_users(fp_users, stats),
-                      .catalogo_businesses =
-                          collect_businesses(fp_businesses, stats),
+  *sgr = (struct sgr){.catalogo_users = collect_users(fp_users),
+                      .catalogo_businesses = collect_businesses(fp_businesses),
                       .estatisticas = stats};
 
-  sgr->catalogo_reviews = collect_reviews(fp_reviews, stats, sgr),
+  sgr->catalogo_reviews = collect_reviews(fp_reviews, sgr),
   build_city_and_category_hash_table(sgr->catalogo_businesses,
                                      sgr->estatisticas);
   fclose(fp_users);
@@ -91,6 +90,9 @@ SGR load_sgr(char *users, char *businesses, char *reviews) {
   return sgr;
 }
 
+void call_update_average_stars(SGR sgr, char *business_id, float stars) {
+  update_average_stars(sgr->estatisticas, business_id, stars);
+}
 // Query 2
 TABLE businesses_started_by_letter(SGR sgr, char letter) {
   char *fields[] = {"Name"};

@@ -12,9 +12,9 @@
 GPtrArray *read_to_ptr_array(char *line, char *delim);
 char **read_to_array(char *line, char *delim, size_t number_fields);
 char *read_line(FILE *fp);
-UserCollection collect_users(FILE *fp, Stats stats);
-BusinessCollection collect_businesses(FILE *fp, Stats stats);
-ReviewCollection collect_reviews(FILE *fp, Stats stats, SGR sgr);
+UserCollection collect_users(FILE *fp);
+BusinessCollection collect_businesses(FILE *fp);
+ReviewCollection collect_reviews(FILE *fp, SGR sgr);
 
 #endif
 

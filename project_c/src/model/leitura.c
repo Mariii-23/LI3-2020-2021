@@ -70,7 +70,7 @@ GPtrArray *read_to_ptr_array(char *line, char *delim) {
   return arr;
 }
 // read from csv generically
-static Business parse_business_line(char *str, Stats stats) {
+static Business parse_business_line(char *str) {
   char *business_id = strtok(str, ";");
   char *name = strtok(NULL, ";");
   char *city = strtok(NULL, ";");
@@ -88,7 +88,7 @@ static Business parse_business_line(char *str, Stats stats) {
   return create_business(business_id, name, city, state, categories);
 }
 
-static User parse_user_line(char *str, Stats stats) {
+static User parse_user_line(char *str) {
   char *user_id = strtok(str, ";");
   char *name = strtok(NULL, ";");
   if (!name)
@@ -97,7 +97,7 @@ static User parse_user_line(char *str, Stats stats) {
   return create_user(user_id, name);
 }
 
-static Review parse_review_line(char *str, Stats stats, SGR sgr) {
+static Review parse_review_line(char *str, SGR sgr) {
   // last field may contain ; so we have to change strategy
   char *params[9] = {0};
   int i = 0;
@@ -121,18 +121,18 @@ static Review parse_review_line(char *str, Stats stats, SGR sgr) {
   int cool = atoi(params[6]);
   char *date = params[7];
   char *text = params[8];
-  update_average_stars(stats, business_id, stars);
+  call_update_average_stars(sgr, business_id, stars);
   return create_review(review_id, user_id, business_id, stars, useful, funny,
                        cool, date, text);
 }
 
-ReviewCollection collect_reviews(FILE *fp, Stats stats, SGR sgr) {
+ReviewCollection collect_reviews(FILE *fp, SGR sgr) {
   char *line;
   ReviewCollection collection = create_review_collection();
   // read header
   read_line(fp);
   while ((line = read_line(fp))) {
-    Review review = parse_review_line(line, stats, sgr);
+    Review review = parse_review_line(line, sgr);
     free(line);
     if (!review || !validate_review(sgr, review)) {
       if (review) {
@@ -147,7 +147,7 @@ ReviewCollection collect_reviews(FILE *fp, Stats stats, SGR sgr) {
   return collection;
 }
 
-BusinessCollection collect_businesses(FILE *fp, Stats stats) {
+BusinessCollection collect_businesses(FILE *fp) {
   char *line;
   BusinessCollection collection = create_business_collection();
 
@@ -155,7 +155,7 @@ BusinessCollection collect_businesses(FILE *fp, Stats stats) {
   read_line(fp);
 
   while ((line = read_line(fp))) {
-    Business business = parse_business_line(line, stats);
+    Business business = parse_business_line(line);
     free(line);
     if (!business)
       continue;
@@ -166,13 +166,13 @@ BusinessCollection collect_businesses(FILE *fp, Stats stats) {
   return collection;
 }
 
-UserCollection collect_users(FILE *fp, Stats stats) {
+UserCollection collect_users(FILE *fp) {
   char *line;
   UserCollection collection = create_user_collection();
   // read header
   read_line(fp);
   while ((line = read_line(fp))) {
-    User user = parse_user_line(line, stats);
+    User user = parse_user_line(line);
     free(line);
     if (!user)
       continue;
