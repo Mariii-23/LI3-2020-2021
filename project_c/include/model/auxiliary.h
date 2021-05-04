@@ -19,4 +19,8 @@ void fprint_str_array(FILE *stream, GPtrArray *arr, size_t n_fields,
                       char *delim);
 
 void free_ptr_array_deep(GPtrArray *arr);
+char *my_strsep(char **str, const char *delim);
+bool is_number(char *value);
+int my_atoi(char *str);
+float my_atof(char *str);
 #endif

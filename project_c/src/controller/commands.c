@@ -76,14 +76,6 @@ bool matches_by_operator(char *the_value, char *current_value, OPERATOR op,
   return !res ? (op == EQ) : (res / abs(res)) == op;
 }
 
-bool is_number(char *value) {
-  char *aux = value;
-  for (; *aux; aux++) {
-    if (!isdigit(*aux))
-      return false;
-  }
-  return true;
-}
 TABLE filter(TABLE table, char *field_name, char *value, OPERATOR op) {
   bool isnumber = false;
   size_t number_fields = get_number_fields_table(table);

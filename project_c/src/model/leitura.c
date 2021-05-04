@@ -71,27 +71,29 @@ GPtrArray *read_to_ptr_array(char *line, char *delim) {
 }
 // read from csv generically
 static Business parse_business_line(char *str) {
-  char *business_id = strtok(str, ";");
-  char *name = strtok(NULL, ";");
-  char *city = strtok(NULL, ";");
-  char *state = strtok(NULL, ";");
-  if (!state) {
+  char *business_id = my_strsep(&str, ";");
+  char *name = my_strsep(&str, ";");
+  char *city = my_strsep(&str, ";");
+  char *state = my_strsep(&str, ";");
+  char *categories = my_strsep(&str, ";");
+  if (!categories) {
     // nao tem campos suficientes
     return NULL;
   }
-  GPtrArray *categories = NULL;
+  // GPtrArray *categories_array = NULL;
   // char* resto = ;
   // if (strchr(resto, ';')) return NULL;
   // set tiver ainda mais parametros ou o nome tiver ; ?
-  categories =
+  GPtrArray *categories_array =
       read_to_ptr_array(strtok(NULL, ";"), ","); // passar o resto da linha
-  return create_business(business_id, name, city, state, categories);
+  return create_business(business_id, name, city, state, categories_array);
 }
 
 static User parse_user_line(char *str) {
   char *user_id = strtok(str, ";");
   char *name = strtok(NULL, ";");
-  if (!name)
+
+  if (!strtok(NULL, ";")) // terceiro field, amigos
     return NULL;
   /* GPtrArray *users = read_to_ptr_array(strtok(NULL, ";"), ","); */
   return create_user(user_id, name);
@@ -99,10 +101,10 @@ static User parse_user_line(char *str) {
 
 static Review parse_review_line(char *str, SGR sgr) {
   // last field may contain ; so we have to change strategy
-  char *params[9] = {0};
+  char *params[NUMBER_REVIEW_PARAMS] = {0};
   int i = 0;
   char *cursor = NULL;
-  for (cursor = str; i < 9 - 1; cursor++, i++) {
+  for (cursor = str; i < NUMBER_REVIEW_PARAMS - 1; cursor++, i++) {
     char *current = cursor;
     cursor = strchr(cursor, ';');
     if (!cursor)
@@ -115,12 +117,15 @@ static Review parse_review_line(char *str, SGR sgr) {
   char *review_id = params[0];
   char *user_id = params[1];
   char *business_id = params[2];
-  float stars = atof(params[3]);
-  int useful = atoi(params[4]);
-  int funny = atoi(params[5]);
-  int cool = atoi(params[6]);
+  float stars = my_atof(params[3]);
+  int useful = my_atoi(params[4]);
+  int funny = my_atoi(params[5]);
+  int cool = my_atoi(params[6]);
   char *date = params[7];
   char *text = params[8];
+  if (stars == -1 || useful == -1 || funny == -1 || cool == -1) {
+    return NULL;
+  }
   call_update_average_stars(sgr, business_id, stars);
   return create_review(review_id, user_id, business_id, stars, useful, funny,
                        cool, date, text);

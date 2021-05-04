@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <ctype.h>
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -75,5 +76,47 @@ void fprint_str_array(FILE *stream, GPtrArray *arr, size_t n_fields,
 void free_ptr_array_deep(GPtrArray *arr) {
   g_ptr_array_set_free_func(arr, free);
   g_ptr_array_free(arr, TRUE);
+}
+
+char *my_strsep(char **str, const char *delim) {
+  char *begin, *end;
+  begin = *str;
+  if (begin == NULL)
+    return NULL;
+  end = begin + strcspn(begin, delim);
+  if (*end) {
+    *end++ = '\0';
+    *str = end;
+  } else
+    *str = NULL;
+  return begin;
+}
+bool is_number(char *value) {
+  char *aux = value;
+  for (; *aux; aux++) {
+    if (!isdigit(*aux))
+      return false;
+  }
+  return true;
+}
+int my_atoi(char *str) {
+  if (!strcmp(str, "0")) {
+    return 0;
+  }
+  int r = atoi(str);
+  if (!r)
+    return -1;
+  else
+    return r;
+}
+float my_atof(char *str) {
+  if (!strcmp(str, "0.0")) {
+    return 0;
+  }
+  int r = atoi(str);
+  if (!r)
+    return -1;
+  else
+    return r;
 }
 
