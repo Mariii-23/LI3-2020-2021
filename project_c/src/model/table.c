@@ -89,7 +89,7 @@ void fprintf_table(FILE *stream, TABLE table, char *delim_header,
 }
 char *table_index(TABLE table, size_t i, size_t j) {
   // encapsulamento
-  return table->lines->pdata[i * table->number_fields + j];
+  return g_strdup(table->lines->pdata[i * table->number_fields + j]);
 }
 ssize_t whereis_field(TABLE table, char *field_name) {
   int j;
