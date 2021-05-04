@@ -1,3 +1,10 @@
+/**
+ * @file business.c
+ * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
+ * @date 4 Maio 2021
+ * @brief This Module is responsible to manipulated all information relative a
+ * businesses and businesses collections.
+ */
 #include "model/businesses.h"
 
 #include <glib.h>
@@ -9,6 +16,9 @@
 #include "model/perfect_hash.h"
 #include "model/users.h"
 
+/**
+ \brief Struct that stores one business.
+ */
 struct business {
   char *business_id;
   char *name;
@@ -17,13 +27,17 @@ struct business {
   GPtrArray *categories;
 };
 
+/**
+ \brief Struct that stores several business.
+ */
 struct business_collection {
   GHashTable *by_id;
   PerfectHash by_letter;
 };
 
-/* Business: builder */
-
+/**
+ \brief Creates one business.
+ * */
 Business create_business(char *business_id, char *name, char *city, char *state,
                          GPtrArray *categories) {
   Business new_business = (Business)malloc(sizeof(struct business));
@@ -40,6 +54,9 @@ Business create_business(char *business_id, char *name, char *city, char *state,
 
 /* Business: getters and setters */
 
+/**
+ \brief given a business, returns his id.
+ * */
 char *get_business_id(Business self) {
   if (self && self->business_id)
     return g_strdup(self->business_id);
@@ -47,6 +64,9 @@ char *get_business_id(Business self) {
     return NULL;
 }
 
+/**
+ \brief Given a business, returns his name.
+ * */
 char *get_business_name(Business self) {
   if (self && self->name)
     return g_strdup(self->name);
@@ -54,6 +74,9 @@ char *get_business_name(Business self) {
     return NULL;
 }
 
+/**
+ \brief Given a business, returns his city.
+ * */
 char *get_business_city(Business self) {
   if (self && self->city)
     return g_strdup(self->city);
@@ -61,6 +84,9 @@ char *get_business_city(Business self) {
     return NULL;
 }
 
+/**
+ \brief Given a business, returns his state.
+ * */
 char *get_business_state(Business self) {
   if (self && self->state)
     return g_strdup(self->state);
@@ -68,6 +94,9 @@ char *get_business_state(Business self) {
     return NULL;
 }
 
+/**
+ \brief Given a business, returns a clone of all his categories (GPtrArray *).
+ * */
 GPtrArray *get_business_categories(Business self) {
   if (self && self->categories && self->categories->len > 0)
     return g_ptr_array_copy(self->categories, strdup_copy, NULL);
@@ -75,6 +104,9 @@ GPtrArray *get_business_categories(Business self) {
     return NULL;
 }
 
+/**
+ \brief Given a business, returns a clone of him self.
+ * */
 static Business clone_business(Business self) {
   if (!self)
     return NULL;
@@ -89,12 +121,18 @@ static Business clone_business(Business self) {
   return new_business;
 }
 
+/**
+ \brief Given a business, returns a clone of him self.
+ * */
 static gpointer g_business_copy(gconstpointer src, gpointer data) {
   return clone_business((Business)src);
 }
 
 /* Business: free */
 
+/**
+ \brief Free memory nedeed by one business.
+ * */
 void free_business(Business self) {
   if (self) {
     free(self->business_id);
@@ -110,9 +148,14 @@ void free_business(Business self) {
   }
 }
 
+/**
+ \brief Free memory nedeed by one business.
+ * */
 void g_free_business(gpointer data) { free_business((Business)data); }
 
-/* BusinessCollection: builder */
+/**
+ \brief Creates one business collection.
+ * */
 BusinessCollection create_business_collection() {
   BusinessCollection new_business_collection =
       (BusinessCollection)malloc(sizeof(struct business_collection));
@@ -123,6 +166,9 @@ BusinessCollection create_business_collection() {
   return new_business_collection;
 }
 
+/**
+ \brief Added one given business to a business collection.
+ * */
 void add_business(BusinessCollection collection, Business business) {
   if (!collection || !business)
     return;
@@ -133,6 +179,9 @@ void add_business(BusinessCollection collection, Business business) {
   phf_add(collection->by_letter, clone->name, clone);
 }
 
+/**
+ \brief Given a business collection and one business id, return a clone of this
+ business or null in case don't exists. */
 Business get_businessCollection_business_by_id(BusinessCollection self,
                                                char *id) {
   Business new = NULL;
@@ -146,6 +195,10 @@ Business get_businessCollection_business_by_id(BusinessCollection self,
   return new;
 }
 
+/**
+ \brief Given a business collection and one letter, return a clone of
+ all businesses started with that letter (GPtrArray*).
+*/
 GPtrArray *get_businessCollection_business_by_letter(BusinessCollection self,
                                                      char *name) {
   GPtrArray *new = NULL;
@@ -159,6 +212,9 @@ GPtrArray *get_businessCollection_business_by_letter(BusinessCollection self,
   return new;
 }
 
+/**
+ \brief Given a business collection and one business id, return a clone of his
+ state. */
 char *get_state_by_business_id(BusinessCollection business_collection,
                                char *business_id) {
   if (!business_collection || !business_id)
@@ -171,8 +227,9 @@ char *get_state_by_business_id(BusinessCollection business_collection,
   return state;
 }
 
-/* BusinessCollection: free */
-
+/**
+ \brief Free memory nedeed by one business collection.
+ * */
 void free_businessCollection(BusinessCollection self) {
   if (self) {
     g_hash_table_destroy(self->by_id);

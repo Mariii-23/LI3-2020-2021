@@ -1,3 +1,9 @@
+/**
+ * @file sgr.c
+ * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
+ * @date 4 Maio 2021
+ * @brief This Module is responsible to manipulated all information.
+ */
 #include "model/sgr.h"
 
 #include <stdio.h>
@@ -21,6 +27,9 @@
 #define QUERY_NINE_FIELDS_N 1
 #define MAX_BUFFER 100
 
+/**
+ \brief Struct that stores one sgr.
+ */
 struct sgr {
   UserCollection catalogo_users;
   BusinessCollection catalogo_businesses;
@@ -28,6 +37,9 @@ struct sgr {
   Stats estatisticas;
 };
 
+/**
+ \brief Free memory nedeed by one sgr.
+ * */
 void free_sgr(SGR sgr) {
   if (!sgr)
     return;
@@ -37,13 +49,15 @@ void free_sgr(SGR sgr) {
   free_stats(sgr->estatisticas);
 }
 
-GPtrArray *build_head(char *fields[], int N) {
-  GPtrArray *field_names = g_ptr_array_sized_new(N);
-  for (size_t i = 0; i < N; i++) {
-    g_ptr_array_add(field_names, fields[i]); // literals
-  }
-  return field_names;
-}
+/* GPtrArray *build_head(char *fields[], int N) { */
+/*   GPtrArray *field_names = g_ptr_array_sized_new(N); */
+/*   for (size_t i = 0; i < N; i++) { */
+/*     g_ptr_array_add(field_names, fields[i]); // literals */
+/*   } */
+/*   return field_names; */
+/* } */
+
+// TODO
 bool validate_review(SGR sgr, Review review) {
   if (!review)
     return false;
@@ -65,6 +79,12 @@ bool validate_review(SGR sgr, Review review) {
 }
 
 // Query 1
+/**
+ \brief Given 3 paths to files, converts all valide lines in that files to a
+sgr. There will be 3 csv(s) files that must be processed: users.csv,
+business.csv and reviews.csv, each line in these files must contain a record
+with the information of a user, business and review, respectively.
+*/
 SGR load_sgr(char *users, char *businesses, char *reviews) {
 
   FILE *fp_users = fopen(users, "r");
@@ -94,6 +114,9 @@ void call_update_average_stars(SGR sgr, char *business_id, float stars) {
   update_average_stars(sgr->estatisticas, business_id, stars);
 }
 // Query 2
+/**
+ \brief Given a SGR and a letter, returns one table with all of business started
+ with that give letter. */
 TABLE businesses_started_by_letter(SGR sgr, char letter) {
   char *fields[] = {"Name"};
   TABLE table = new_table(fields, QUERY_TWO_FIELDS_N);
@@ -122,6 +145,11 @@ TABLE businesses_started_by_letter(SGR sgr, char letter) {
 }
 
 // Query 3
+/**
+ \brief Given a SGR and a business id, returns a table with information about
+ that given business. Sice we have one hash table with all business stored by
+ they id, we just need to get it. After that, we just need to go get the stars
+ saved in stats. */
 TABLE business_info(SGR sgr, char *business_id) {
   char *query_three_fields[] = {"nome", "cidade", "estado", "stars",
                                 "numero_reviews"};

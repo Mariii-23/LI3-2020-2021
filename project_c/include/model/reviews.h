@@ -24,14 +24,6 @@ char *get_review_business_id(Review self);
 
 float get_review_stars(Review self);
 
-int get_review_useful(Review self);
-
-int get_review_funny(Review self);
-
-int get_review_cool(Review self);
-
-char *get_review_date(Review self);
-
 void free_review(Review self);
 
 ReviewCollection create_review_collection();
@@ -47,7 +39,7 @@ GPtrArray *get_reviewCollection_review_by_user_id(ReviewCollection self,
 GPtrArray *get_reviewCollection_review_by_business_id(ReviewCollection self,
                                                       char *id);
 void free_reviewCollection(ReviewCollection self);
-void aux_international_user(ReviewCollection review_collection,
-                            BusinessCollection business_collection,
+void aux_international_user(ReviewCollection const review_collection,
+                            BusinessCollection const business_collection,
                             TABLE table);
 #endif

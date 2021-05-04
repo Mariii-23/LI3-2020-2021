@@ -1,3 +1,11 @@
+/**
+ * @file sgr.c
+ * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
+ * @date 4 Maio 2021
+ * ????????????????????????????????????????????????????????????????????????
+ * @brief This Module is responsible to calculate and interpreted stats.
+ * reviews and reviews collections.
+ */
 #include "model/stats.h"
 
 #include <stdbool.h>
@@ -29,6 +37,7 @@ struct stats {
                                             // ssorted decrescently by
                                             // category (city_tuple)
 };
+
 void free_city_tuple(CityTuple self) {
   if (!self)
     return;
@@ -44,6 +53,8 @@ void g_free_ll(gpointer pointer) {
   g_slist_free_full(ptr_list, free_g_city_tuple);
 }
 
+/**
+ \brief Creates one stats. */
 Stats start_statistics() {
   Stats stats = malloc(sizeof(struct stats));
   stats->business_id_to_stars =
@@ -73,6 +84,9 @@ void update_average_stars(Stats stats, char *business_id, float new_star) {
   }
 }
 
+/**
+ \brief Given a stats and a business id, returns his average number stars or -1
+ if don't exist. */
 float get_average_number_stars(Stats stats, char *business_id) {
   if (!stats || !business_id)
     return (-1);
@@ -83,6 +97,8 @@ float get_average_number_stars(Stats stats, char *business_id) {
   return tuple->current_average;
 }
 
+/**
+ \brief Given a stats, checks if it's empty. */
 bool is_empty_stats(Stats stats) {
   int empty = true;
   if (stats)
@@ -90,6 +106,8 @@ bool is_empty_stats(Stats stats) {
   return empty;
 }
 
+/**
+ \brief Given a stats, checks if the field "business_id_to_stars" is empty. */
 bool is_empty_business_id_to_stars(Stats stats) {
   int empty = true;
   if (stats && stats->business_id_to_stars)
@@ -104,6 +122,8 @@ void start_table_iter_init_business_id_hash_table(GHashTableIter *iter,
   g_hash_table_iter_init(iter, stats->business_id_to_stars);
 }
 
+/**
+ * Creates one CityTuple */
 CityTuple init_city_tuple(float stars, char *business_id, char *name) {
   CityTuple tuplo = calloc(1, sizeof(struct city_tuple));
   tuplo->business_id = g_strdup(business_id);
@@ -112,6 +132,8 @@ CityTuple init_city_tuple(float stars, char *business_id, char *name) {
   return tuplo;
 }
 
+/**
+ \brief Given a city tuplo, retuns a clone. */
 CityTuple copy_city_tuple(CityTuple self) {
   CityTuple tuplo = calloc(1, sizeof(struct city_tuple));
   tuplo->business_id = g_strdup(self->business_id);
@@ -120,35 +142,45 @@ CityTuple copy_city_tuple(CityTuple self) {
   return tuplo;
 }
 
+/**
+ *TODO */
 static void free_all_elems(gpointer key, gpointer value, gpointer user_data) {
   g_free_ll(value);
   free(key);
 }
 
+/**
+ \brief Free memory nedeed by one stats.
+ * */
 void free_stats(Stats stats) {
   if (!stats)
     return;
   // calls function passed when created
-  g_hash_table_destroy(stats->business_id_to_stars);
-
   g_hash_table_foreach(stats->city_to_business_by_star, free_all_elems, NULL);
-  /* free(stats->city_to_business_by_star); */
-
   g_hash_table_foreach(stats->category_to_business_by_star, free_all_elems,
                        NULL);
 
-  /* free(stats->category_to_business_by_star); */
+  g_hash_table_destroy(stats->business_id_to_stars);
+  g_hash_table_destroy(stats->category_to_business_by_star);
+  g_hash_table_destroy(stats->city_to_business_by_star);
 }
 
-gint compare_stars(gconstpointer key1, gconstpointer key2, gpointer user_data) {
+/**
+ \brief Compare two City Tuplo based on number of stars. */
+static gint compare_stars(gconstpointer key1, gconstpointer key2,
+                          gpointer user_data) {
   return (((CityTuple)key2)->stars - ((CityTuple)key1)->stars) * 100000000;
 }
 
+/**
+ \brief Given a stats, initialized the field "business_id_to_stars" */
 void init_city_to_business_by_star(Stats stats) {
   if (stats && !stats->business_id_to_stars)
     stats->business_id_to_stars = g_hash_table_new(g_str_hash, g_str_equal);
 }
 
+/**
+ \brief Given a stats, initialized the field "category_to_business_by_star" */
 void init_category_to_business_by_star(Stats stats) {
   if (stats && !stats->category_to_business_by_star)
     stats->category_to_business_by_star =
@@ -160,9 +192,14 @@ void print_node(gpointer data, gpointer user_data) {
   CityTuple x = (CityTuple)data;
   printf("City %s, business : %f\n", x->name, x->stars);
 }
-
+// TODO comentario
 void print_list(GSList *list) { g_slist_foreach(list, print_node, NULL); }
 
+/**
+ \brief Given a stats, information relative to City Tuple and a city, this
+ function creates an City tuple with that given information and added this or
+ create a new GSList*. Inserting this in our Hash Table
+ ("city_to_business_by_stars"), taken in account the city given. */
 static void add_city_to_business_by_star(Stats stats, char *city,
                                          char *business_id, float stars,
                                          char *name) {
@@ -180,6 +217,11 @@ static void add_city_to_business_by_star(Stats stats, char *city,
   g_hash_table_insert(stats->city_to_business_by_star, key, aux);
 }
 
+/**
+ \brief Given a stats, information relative to City Tuple and a category, this
+ function creates an City tuple with that given information and added this or
+ create a new GSList*. Inserting this in our Hash Table
+ ("category_to_business_by_star"), taken in account the category given. */
 static void add_category_to_business_by_star(Stats stats, char *category,
                                              char *business_id, float stars,
                                              char *name) {
@@ -198,27 +240,26 @@ static void add_category_to_business_by_star(Stats stats, char *category,
   g_hash_table_insert(stats->category_to_business_by_star, key, aux);
 }
 
+/**
+ \brief Given a business collection and a stats, this function build the fields
+ named "category_to_business_by_star" and "city_to_business_by_star" on stats
+ with the data on business collection. */
 void build_city_and_category_hash_table(BusinessCollection const businesses,
                                         Stats stats) {
-
   if (!businesses || !stats || !stats->business_id_to_stars)
     return;
 
   GHashTableIter iter;
-
   char *key = NULL;
   StarsTuple value = NULL;
 
   g_hash_table_iter_init(&iter, stats->business_id_to_stars);
-
   while (g_hash_table_iter_next(&iter, (gpointer *)&key, (gpointer *)&value)) {
 
     if (!key)
       continue;
-
     char *business_id = g_strdup(key);
     float current_average = value->current_average;
-
     Business business =
         get_businessCollection_business_by_id(businesses, business_id);
 
@@ -228,9 +269,7 @@ void build_city_and_category_hash_table(BusinessCollection const businesses,
     }
 
     char *city = get_business_city(business);
-
     char *name = get_business_name(business);
-
     if (!city || !name) {
       if (city)
         free(city);
@@ -240,7 +279,6 @@ void build_city_and_category_hash_table(BusinessCollection const businesses,
     }
 
     GPtrArray *categories = get_business_categories(business);
-
     add_city_to_business_by_star(stats, city, business_id, current_average,
                                  name);
 
@@ -254,6 +292,13 @@ void build_city_and_category_hash_table(BusinessCollection const businesses,
     free_business(business);
   }
 }
+
+/**
+ \brief Given a stats, a city, a number N and a table, this function added to
+the table, the name, the business id and the stars of the N first elems on
+"city_to_business_by_star" corresponding to that given city.
+Note that our data struct on "city_to_business_by_star" is store in descending
+order. */
 static void n_larger_than_city_star(Stats stats, char *city, int const N,
                                     TABLE table) {
   if (!stats || !stats->city_to_business_by_star) {
@@ -284,6 +329,11 @@ static void n_larger_than_city_star(Stats stats, char *city, int const N,
   }
 }
 
+/**
+ \brief Given a stats, a number N and a table, this function added to
+the table, the name, the business id and the stars of the N first elems on all
+fields of "city_to_business_by_stars". Note that our data struct on
+"city_to_business_by_star" is store in descending order. */
 void all_n_larger_city_star(Stats stats, int const N, TABLE table) {
   if (!stats || !stats->city_to_business_by_star) {
     return;
@@ -304,6 +354,11 @@ void all_n_larger_city_star(Stats stats, int const N, TABLE table) {
   g_list_free(all_keys);
 }
 
+/**
+ \brief Given a stats, a category, a number N and a table, this function added
+to the table, the name, the business id and the stars of all elems that have
+more than N stars on that category. Note that our data struct on
+"category_to_business_by_star" is store in descending order. */
 void n_larger_than_category_star(Stats stats, char *category, int const N,
                                  TABLE table) {
   if (!stats || !stats->city_to_business_by_star) {
@@ -347,6 +402,11 @@ void n_larger_than_category_star(Stats stats, char *category, int const N,
   free(size_str);
 }
 
+/**
+ \brief Given a stats, a city, a number N and a table, this function added
+to the table, the name, the business id and the stars of all elems that have
+more than N stars on that city. Note that our data struct on
+"city_to_business_by_star" is store in descending order. */
 void n_larger_city_star(Stats stats, char *city, int const N, TABLE table) {
   if (!stats || !stats->city_to_business_by_star) {
     return;

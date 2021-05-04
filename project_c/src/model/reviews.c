@@ -1,3 +1,10 @@
+/**
+ * @file reviews.c
+ * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
+ * @date 4 Maio 2021
+ * @brief This Module is responsible to manipulated all information relative a
+ * reviews and reviews collections.
+ */
 #include "model/reviews.h"
 
 #include <ctype.h>
@@ -13,11 +20,15 @@
 #include "model/table.h"
 #include "model/users.h"
 
+// TODO
 typedef struct word_text {
   char *palavra;
   size_t len;
 } WordText;
 
+/**
+ \brief Struct that stores one review.
+ */
 struct review {
   char *review_id;
   char *user_id;
@@ -32,12 +43,16 @@ struct review {
   char *text;
 };
 
+/**
+ \brief Struct that stores several reviews.
+ */
 struct review_collection {
   GHashTable *by_id;
   GHashTable *by_user_id;
   GHashTable *by_business_id;
 };
 
+// TODO comentario
 bool find_word(char *text, char *query_word) {
   // o que pode ter pontuacao é a token, a query_word nao
   // case sensitive ou nao?
@@ -66,6 +81,7 @@ bool find_word(char *text, char *query_word) {
   return can_be_equal && !b;
 }
 
+// TODO comentario
 void review_id_with_word_in_text(ReviewCollection collection, char *word,
                                  TABLE table) {
   // apagar counter
@@ -141,7 +157,10 @@ void review_id_with_word_in_text(ReviewCollection collection, char *word,
 //
 //  return tree;
 //}
-/* Review: builder */
+
+/**
+ \brief Creates one review.
+ * */
 Review create_review(char *review_id, char *user_id, char *business_id,
                      float stars, int useful, int funny, int cool, char *date,
                      char *text) {
@@ -159,6 +178,10 @@ Review create_review(char *review_id, char *user_id, char *business_id,
 }
 
 /* Review: getters and setters */
+
+/**
+ \brief Given a user, returns his id.
+ * */
 char *get_review_id(Review self) {
   if (self) {
     return g_strdup(self->review_id);
@@ -166,6 +189,9 @@ char *get_review_id(Review self) {
     return NULL;
 }
 
+/**
+ \brief Given a user, returns his user id.
+ * */
 char *get_review_user_id(Review self) {
   if (self) {
     return g_strdup(self->user_id);
@@ -173,6 +199,9 @@ char *get_review_user_id(Review self) {
     return NULL;
 }
 
+/**
+ \brief Given a user, returns his business id.
+ * */
 char *get_review_business_id(Review self) {
   if (self) {
     return g_strdup(self->business_id);
@@ -180,6 +209,9 @@ char *get_review_business_id(Review self) {
     return NULL;
 }
 
+/**
+ \brief Given a user, returns his stars.
+ * */
 float get_review_stars(Review self) {
   if (self) {
     return self->stars;
@@ -187,27 +219,9 @@ float get_review_stars(Review self) {
     return -1;
 }
 
-int get_review_useful(Review self) {
-  if (self) {
-    return self->useful;
-  } else
-    return -1;
-}
-
-int get_review_funny(Review self) {
-  if (self) {
-    return self->funny;
-  } else
-    return (-1);
-}
-
-int get_review_cool(Review self) {
-  if (self) {
-    return self->cool;
-  } else
-    return -1;
-}
-
+/**
+ \brief Given a review, returns a clone of him self.
+ * */
 static Review clone_review(Review self) {
   if (!self)
     return NULL;
@@ -224,10 +238,16 @@ static Review clone_review(Review self) {
   return new_review;
 }
 
+/**
+ \brief Given a review, returns a clone of him self.
+ * */
 static gpointer g_review_copy(gconstpointer src, gpointer data) {
   return clone_review((Review)src);
 }
 
+/**
+ \brief Free memory nedeed by one review.
+ * */
 void free_review(Review self) {
   if (!self)
     return;
@@ -251,11 +271,17 @@ void free_review(Review self) {
   free(self);
 }
 
+/**
+ \brief Free memory nedeed by one review.
+ * */
 void g_free_review(gpointer data) { free_review((Review)data); }
 
 /* Review Collection */
 /* Review Collection: Builder */
 
+/**
+ \brief Creates one review collection.
+ * */
 ReviewCollection create_review_collection() {
   ReviewCollection new_review_collection =
       (ReviewCollection)malloc(sizeof(struct review_collection));
@@ -267,6 +293,9 @@ ReviewCollection create_review_collection() {
   return new_review_collection;
 }
 
+/**
+ \brief Added one given review to a review collection.
+ * */
 void add_review(ReviewCollection collection, Review review) {
   if (!collection || !review)
     return;
@@ -280,6 +309,10 @@ void add_review(ReviewCollection collection, Review review) {
   append_to_value(collection->by_business_id, new->business_id, new);
 }
 
+/**
+ \brief Given a review collection and one review id, return a clone of this
+ users or null in case don exists.
+*/
 Review get_reviewCollection_review_by_id(ReviewCollection self, char *id) {
   Review new = NULL;
   if (!self || !id)
@@ -292,6 +325,10 @@ Review get_reviewCollection_review_by_id(ReviewCollection self, char *id) {
   return new;
 }
 
+/**
+ \brief Given a review collection and one business id, returns the number of all
+ reviews made by this business.
+*/
 int get_number_reviews_by_business(ReviewCollection self, char *business_id) {
   if (!self || !business_id)
     return -1;
@@ -302,6 +339,10 @@ int get_number_reviews_by_business(ReviewCollection self, char *business_id) {
   return array->len;
 }
 
+/**
+ \brief Given a review collection and one user id, returns a clone of all
+ reviews made by this user (GPtrArray*).
+*/
 GPtrArray *get_reviewCollection_review_by_user_id(ReviewCollection self,
                                                   char *id) {
   GPtrArray *new = NULL;
@@ -314,6 +355,10 @@ GPtrArray *get_reviewCollection_review_by_user_id(ReviewCollection self,
   return new;
 }
 
+/**
+ \brief Given a review collection and one business id, returns a clone of all
+ reviews made by this business (GPtrArray*).
+*/
 GPtrArray *get_reviewCollection_review_by_business_id(ReviewCollection self,
                                                       char *id) {
   GPtrArray *new = NULL;
@@ -326,6 +371,9 @@ GPtrArray *get_reviewCollection_review_by_business_id(ReviewCollection self,
   return new;
 }
 
+/**
+ \brief Free memory nedeed by one review collection.
+ * */
 void free_reviewCollection(ReviewCollection self) {
   if (self) {
     g_hash_table_destroy(self->by_id);
@@ -335,23 +383,17 @@ void free_reviewCollection(ReviewCollection self) {
   }
 }
 
-static int g_array_contain(GPtrArray *array, char *string) {
-  int fail = 0;
-  if (!array)
-    return fail;
-  int size = array->len;
-  for (int i = 0; i < size && !fail; i++)
-    fail = strcmp((char *)g_ptr_array_index(array, i), string);
-  return fail;
-}
-
-void aux_international_user(ReviewCollection review_collection,
-                            BusinessCollection business_collection,
+/**
+ \brief Given a review and a business collection and a table, added to table,
+ all users id that have visited more than one state.
+ */
+void aux_international_user(ReviewCollection const review_collection,
+                            BusinessCollection const business_collection,
                             TABLE table) {
   if (!review_collection || !business_collection || !table)
     return;
 
-  int count = 0;
+  int international_users = 0;
 
   GHashTableIter iter;
   gpointer key, value;
@@ -359,49 +401,32 @@ void aux_international_user(ReviewCollection review_collection,
   g_hash_table_iter_init(&iter, review_collection->by_user_id);
   while (g_hash_table_iter_next(&iter, &key, &value)) {
 
-    GPtrArray *array = (GPtrArray *)value;
-    int size = array->len, count_states = 1;
+    GPtrArray *all_reviews = (GPtrArray *)value;
+    int size = all_reviews->len, count_states = 0;
     if (size <= 1)
       continue;
 
-    GPtrArray *states = g_ptr_array_new();
+    char *visited_state = NULL;
 
-    Review review = (Review)g_ptr_array_index(array, 0);
-    if (!review)
-      continue;
-
-    char *business_id = review->business_id;
-    char *current_state =
-        get_state_by_business_id(business_collection, business_id);
-
-    g_ptr_array_add(states, g_strdup(current_state));
-    free(current_state);
-
-    for (int i = 1; i < size && count_states < 2; i++) {
-      review = (Review)g_ptr_array_index(array, i);
-      business_id = review->business_id;
-
-      current_state =
+    for (int i = 0; i < size && count_states < 2; i++) {
+      Review review = (Review)g_ptr_array_index(all_reviews, i);
+      char *business_id = review->business_id;
+      char *current_state =
           get_state_by_business_id(business_collection, business_id);
 
-      if (g_array_contain(states, current_state)) {
+      if (!visited_state || strcmp(current_state, visited_state) != 0) {
         count_states++;
-      } else
-        g_ptr_array_add(states, current_state);
-      free(current_state);
+      }
+      free(visited_state);
+      visited_state = current_state;
     }
-    // dar free do states
-    /* g_ptr_array_set_free_func(states, free); */
-    g_ptr_array_free(states, TRUE);
-
+    free(visited_state);
     if (count_states >= 2) {
-      count++;
+      international_users++;
       add_field(table, (char *)key);
     }
   }
-
-  char *size_str = g_strdup_printf("%d", count);
+  char *size_str = g_strdup_printf("%d", international_users);
   add_footer(table, "Numero Total de de utilizadores:", size_str);
-  add_field(table, size_str);
   free(size_str);
 }
