@@ -374,8 +374,13 @@ GPtrArray *get_reviewCollection_review_by_business_id(ReviewCollection self,
 /**
  \brief Free memory nedeed by one review collection.
  * */
+void g_free_array(gpointer key, gpointer value, gpointer user_data) {
+  g_ptr_array_free((GPtrArray *)value, TRUE);
+}
 void free_reviewCollection(ReviewCollection self) {
   if (self) {
+    g_hash_table_foreach(self->by_business_id, g_free_array, NULL);
+    g_hash_table_foreach(self->by_user_id, g_free_array, NULL);
     g_hash_table_destroy(self->by_id);
     g_hash_table_destroy(self->by_user_id);
     g_hash_table_destroy(self->by_business_id);
