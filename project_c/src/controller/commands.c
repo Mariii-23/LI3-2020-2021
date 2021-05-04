@@ -96,10 +96,11 @@ TABLE filter(TABLE table, char *field_name, char *value, OPERATOR op) {
     // more to free?
     return NULL;
   }
-
-  if (is_number(value) && is_number(table_index(table, 0, col_index))) {
+  char *first_value = table_index(table, 0, col_index);
+  if (is_number(value) && is_number(first_value)) {
     isnumber = true;
   }
+  free(first_value);
   TABLE table_two = new_table_ptr_array(fields);
   size_t number_lines = get_number_lines_table(table);
   for (int i = 0; i < number_lines; i++) {
@@ -108,6 +109,7 @@ TABLE filter(TABLE table, char *field_name, char *value, OPERATOR op) {
       for (int j = 0; j < number_fields; j++) {
         elem = table_index(table, i, j);
         add_field(table_two, elem);
+        free(elem);
       }
     }
   }

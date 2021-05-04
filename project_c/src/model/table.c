@@ -72,7 +72,7 @@ void add_footer(TABLE table, char *footer_name, char *footer_value) {
   if (!ft) {
     ft = malloc(sizeof(char *) * table->number_footers);
   } else {
-    ft = realloc(ft, sizeof(char*) * table->number_footers);
+    ft = realloc(ft, sizeof(char *) * table->number_footers);
   }
 
   table->footer = ft;
@@ -139,17 +139,13 @@ GPtrArray *get_header_table(TABLE table) {
   return build_ptr_array(table->header, table->number_fields);
 }
 
-char *get_footer_name(TABLE table, size_t i) {
-  return table->footer[i * 2];
-}
+char *get_footer_name(TABLE table, size_t i) { return table->footer[i * 2]; }
 
 char *get_footer_value(TABLE table, size_t i) {
   return table->footer[i * 2 + 1];
 }
 
-size_t get_number_footers_table(TABLE table) {
-  return table->number_footers;
-}
+size_t get_number_footers_table(TABLE table) { return table->number_footers; }
 
 void free_table(TABLE table) {
   free_ptr_array_deep(table->lines);
@@ -161,7 +157,7 @@ void free_table(TABLE table) {
 
   for (int i = 0; i < table->number_footers; i++) {
     free(table->footer[i]);
-    free(table->footer[i+1]);
+    free(table->footer[i + 1]);
   }
 
   free(table->footer);

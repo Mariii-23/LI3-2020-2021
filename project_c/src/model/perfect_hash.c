@@ -18,6 +18,7 @@ void phf_free(PerfectHash phf) {
   for (int i = 0; i <= NUMBER_LETTERS; i++) {
     g_ptr_array_free(phf->phf[i], TRUE);
   }
+  free(phf->phf);
   free(phf);
 }
 

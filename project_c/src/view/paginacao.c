@@ -35,7 +35,7 @@ void get_cursor(int *x, int *y) {
   // https://www2.ccs.neu.edu/research/gpc/MSim/vona/terminal/vtansi.htm
   // Código para receber a posição atual
   printf("\e[6n");
-  if(scanf("\e[%d;%dR", x, y) != 2) {
+  if (scanf("\e[%d;%dR", x, y) != 2) {
     *x = 0;
     *y = 0;
   }
@@ -108,10 +108,12 @@ void show_table(TABLE t) {
       min(table_lines, max(5, min(height / 2 - 4, table_lines)));
   int cols = get_number_fields_table(t);
   int widths[cols];
-  int footer_widths[2] = { 0, 0 };
+  int footer_widths[2] = {0, 0};
 
   for (int i = 0; i < cols; i++) {
-    widths[i] = strlen(field_index(t, i));
+    char *field = field_index(t, i);
+    widths[i] = strlen(field);
+    free(field);
   }
 
   // Por defeito, o stdin é buffered até encontrar um EOF ou um
@@ -160,7 +162,9 @@ void show_table(TABLE t) {
 
     for (int i = start; i < lines_to_show + start; i++) {
       for (int j = 0; j < cols; j++) {
-        widths[j] = max(widths[j], strlen(table_index(t, i, j)));
+        char *value = table_index(t, i, j);
+        widths[j] = max(widths[j], strlen(value));
+        free(value);
       }
     }
 
@@ -176,7 +180,9 @@ void show_table(TABLE t) {
     for (int j = 0, start_col = start_x; j < cols; j++) {
       move_cursor_to_x(start_col);
       printf("│ ");
-      printf(BOLD FG_CYAN "%s" RESET_ALL, field_index(t, j));
+      char *field = field_index(t, j);
+      printf(BOLD FG_CYAN "%s" RESET_ALL, field);
+      free(field);
       move_cursor_to_x(start_col);
       start_col += widths[j] + 3;
 
@@ -194,7 +200,9 @@ void show_table(TABLE t) {
       for (int j = 0; j < cols; j++) {
         move_cursor_to_x(start_col);
         printf("│ ");
-        printf("%s", table_index(t, i, j));
+        char *value = table_index(t, i, j);
+        printf("%s", value);
+        free(value);
         start_col += widths[j] + 3;
       }
 
@@ -205,7 +213,6 @@ void show_table(TABLE t) {
         draw_hborder(0, cols, widths);
       }
     }
-
 
     move_cursor_to_x(start_x);
     draw_hborder(1, cols, widths);
@@ -240,7 +247,8 @@ void show_table(TABLE t) {
         printf("│ " BOLD FG_CYAN "%s" RESET_ALL, get_footer_name(t, i));
         move_cursor_to_x(start_at + footer_widths[0] + 3);
         printf("│ %s", get_footer_value(t, i));
-        move_cursor_to_x(start_at + footer_widths[0] + 3 + footer_widths[1] + 3);
+        move_cursor_to_x(start_at + footer_widths[0] + 3 + footer_widths[1] +
+                         3);
         printf("│\n");
         move_cursor_to_x(start_at);
 
