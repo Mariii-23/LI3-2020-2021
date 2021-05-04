@@ -3,6 +3,4 @@
 
 #include "view/cli.h"
 
-int main() {
-    repl();
-}
+int main() { repl(); }

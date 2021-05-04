@@ -251,10 +251,11 @@ void free_review(Review self) {
   free(self);
 }
 
+void g_free_review(gpointer data) { free_review((Review)data); }
+
 /* Review Collection */
 /* Review Collection: Builder */
 
-void g_free_review(gpointer data) { free_review((Review)data); }
 ReviewCollection create_review_collection() {
   ReviewCollection new_review_collection =
       (ReviewCollection)malloc(sizeof(struct review_collection));
@@ -327,9 +328,6 @@ GPtrArray *get_reviewCollection_review_by_business_id(ReviewCollection self,
 
 void free_reviewCollection(ReviewCollection self) {
   if (self) {
-    g_hash_table_foreach(self->by_id, free_key, NULL);
-    g_hash_table_foreach(self->by_user_id, free_key, NULL);
-    g_hash_table_foreach(self->by_business_id, free_key, NULL);
     g_hash_table_destroy(self->by_id);
     g_hash_table_destroy(self->by_user_id);
     g_hash_table_destroy(self->by_business_id);

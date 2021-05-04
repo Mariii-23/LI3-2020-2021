@@ -175,7 +175,6 @@ char *get_state_by_business_id(BusinessCollection business_collection,
 
 void free_businessCollection(BusinessCollection self) {
   if (self) {
-    g_hash_table_foreach(self->by_id, free_key, NULL);
     g_hash_table_destroy(self->by_id);
     phf_free(self->by_letter);
     free(self);

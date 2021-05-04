@@ -28,14 +28,13 @@ struct sgr {
   Stats estatisticas;
 };
 
-// ainda nao funciona
 void free_sgr(SGR sgr) {
   if (!sgr)
     return;
   free_businessCollection(sgr->catalogo_businesses);
   free_reviewCollection(sgr->catalogo_reviews);
   free_user_collection(sgr->catalogo_users);
-  /* free_stats(sgr->estatisticas); */
+  free_stats(sgr->estatisticas);
 }
 
 GPtrArray *build_head(char *fields[], int N) {

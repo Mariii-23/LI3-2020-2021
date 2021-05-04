@@ -50,6 +50,7 @@ static gpointer g_user_copy(gconstpointer src, gpointer data) {
 }
 
 void g_free_user(gpointer data) { free_user((User)data); }
+
 UserCollection create_user_collection() {
   UserCollection new_collection = malloc(sizeof(struct user_collection));
   new_collection->by_id =
