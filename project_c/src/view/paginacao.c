@@ -35,7 +35,10 @@ void get_cursor(int *x, int *y) {
   // https://www2.ccs.neu.edu/research/gpc/MSim/vona/terminal/vtansi.htm
   // Código para receber a posição atual
   printf("\e[6n");
-  scanf("\e[%d;%dR", x, y);
+  if(scanf("\e[%d;%dR", x, y) != 2) {
+    *x = 0;
+    *y = 0;
+  }
 }
 
 void set_cursor(int x, int y) { printf("\e[%d;%df", x, y); }
@@ -98,12 +101,14 @@ void show_table(TABLE t) {
   // Fazer um loop, enquanto não se carregar no 'q' ou não acabar a tabela,
   // esperamos por uma seta para os lados! Mostramos tbm essa indicação
   int table_lines = get_number_lines_table(t);
+  int footer_lines = get_number_footers_table(t);
 
   // TODO lógica de wrapping.... :/
   int lines_to_show =
       min(table_lines, max(5, min(height / 2 - 4, table_lines)));
   int cols = get_number_fields_table(t);
   int widths[cols];
+  int footer_widths[2] = { 0, 0 };
 
   for (int i = 0; i < cols; i++) {
     widths[i] = strlen(field_index(t, i));
@@ -159,6 +164,11 @@ void show_table(TABLE t) {
       }
     }
 
+    for (int i = 0; i < footer_lines; i++) {
+      footer_widths[0] = max(footer_widths[0], strlen(get_footer_name(t, i)));
+      footer_widths[1] = max(footer_widths[1], strlen(get_footer_value(t, i)));
+    }
+
     // Vamos desenhar a caixa
     move_cursor_to_x(start_x);
 
@@ -195,16 +205,54 @@ void show_table(TABLE t) {
         draw_hborder(0, cols, widths);
       }
     }
+
+
     move_cursor_to_x(start_x);
     draw_hborder(1, cols, widths);
 
     if (lines_to_show < table_lines) {
       move_cursor_to_x(start_x);
       printf(BOLD BG_WHITE FG_BLACK "%d-%d/%d" RESET_ALL "\n", start + 1,
-             start + lines_to_show + 1, table_lines);
+             start + lines_to_show, table_lines);
     }
 
     lines = lines_to_show * 2 + 4;
+
+    // Vamos desenhar o footer
+    if (footer_lines > 0) {
+      int cursor_x, cursor_y;
+      get_cursor(&cursor_x, &cursor_y);
+
+      int table_width = 4;
+      for (int i = 0; i < cols; i++) {
+        table_width += widths[i];
+        if (i != cols - 1)
+          table_width += 3;
+      }
+
+      int start_at = start_x + table_width + 1;
+      cursor_up(lines);
+      move_cursor_to_x(start_at);
+      draw_hborder(-1, 2, footer_widths);
+
+      for (int i = 0; i < footer_lines; i++) {
+        move_cursor_to_x(start_at);
+        printf("│ " BOLD FG_CYAN "%s" RESET_ALL, get_footer_name(t, i));
+        move_cursor_to_x(start_at + footer_widths[0] + 3);
+        printf("│ %s", get_footer_value(t, i));
+        move_cursor_to_x(start_at + footer_widths[0] + 3 + footer_widths[1] + 3);
+        printf("│\n");
+        move_cursor_to_x(start_at);
+
+        if (i == footer_lines - 1) {
+          draw_hborder(1, 2, footer_widths);
+        } else {
+          draw_hborder(0, 2, footer_widths);
+        }
+      }
+
+      set_cursor(cursor_x, cursor_y);
+    }
   } while (lines_to_show < table_lines && (c = getchar()) != 'q');
 
   // Vamos desfazer todas as configurações que fizemos no início

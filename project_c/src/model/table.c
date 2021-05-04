@@ -8,8 +8,9 @@
 
 struct table {
   size_t number_fields;
+  size_t number_footers;
   char **header;    // tem size == number_fields
-  char **footer;    // tem size 2 sempre, name do footer e value
+  char **footer;    // tem size 2*number_footers, name do footer e value
   GPtrArray *lines; // array de strings que será uma especie de matriz
 };
 
@@ -25,6 +26,7 @@ TABLE new_table_ptr_array(GPtrArray *header) {
   g_ptr_array_free(header, true);
   table->lines = g_ptr_array_sized_new(number_fields); // breaks encapsulamento
   table->number_fields = number_fields;
+  table->number_footers = 0;
   table->footer = NULL;
   // g_ptr_array_copy(fields, strdup_copy, NULL);
   // free_ptr_array_deep(fields);
@@ -44,6 +46,7 @@ TABLE new_table(char **header, size_t number_fields) {
       copy_char_array(header, number_fields); // breaks encapsulamento
   table->lines = g_ptr_array_sized_new(number_fields);
   table->number_fields = number_fields;
+  table->number_footers = 0;
   table->footer = NULL;
   return table;
 }
@@ -53,6 +56,7 @@ TABLE new_table_without_fields(size_t number_fields) {
   table->header = malloc(sizeof(char *) * number_fields);
   table->lines = g_ptr_array_sized_new(number_fields);
   table->number_fields = number_fields;
+  table->number_footers = 0;
   table->footer = NULL;
   return table;
 }
@@ -63,14 +67,20 @@ void add_field(TABLE table, char *field) {
 
 void add_footer(TABLE table, char *footer_name, char *footer_value) {
   char **ft = table->footer;
+  table->number_footers += 1;
+
   if (!ft) {
-    ft = malloc(sizeof(char *) * 2);
-    table->footer = ft;
+    ft = malloc(sizeof(char *) * table->number_footers);
+  } else {
+    ft = realloc(ft, sizeof(char*) * table->number_footers);
   }
-  // memleak
-  ft[0] = g_strdup(footer_name);
-  ft[1] = g_strdup(footer_value);
+
+  table->footer = ft;
+
+  ft[table->number_footers * 2 - 2] = g_strdup(footer_name);
+  ft[table->number_footers * 2 - 1] = g_strdup(footer_value);
 }
+
 void fprintf_table(FILE *stream, TABLE table, char *delim_header,
                    char *delim_main) {
   if (table) {
@@ -87,10 +97,12 @@ void fprintf_table(FILE *stream, TABLE table, char *delim_header,
     fprint_str_array(stream, table->lines, n_fields, delim_main);
   }
 }
+
 char *table_index(TABLE table, size_t i, size_t j) {
   // encapsulamento
   return g_strdup(table->lines->pdata[i * table->number_fields + j]);
 }
+
 ssize_t whereis_field(TABLE table, char *field_name) {
   int j;
   for (j = 0; j < table->number_fields; j++) {
@@ -105,11 +117,13 @@ char *table_index_by_field(TABLE table, char *field_name, size_t line) {
   int j = whereis_field(table, field_name);
   return table_index(table, line, j);
 }
+
 char *field_index(TABLE table, size_t i) { return g_strdup(table->header[i]); }
 
 size_t get_number_lines_table(TABLE table) {
   return table->lines->len / table->number_fields;
 }
+
 size_t get_number_fields_table(TABLE table) { return table->number_fields; }
 
 GPtrArray *get_fields_table(TABLE table) {
@@ -120,8 +134,21 @@ GPtrArray *get_fields_table(TABLE table) {
   }
   return fields;
 }
+
 GPtrArray *get_header_table(TABLE table) {
   return build_ptr_array(table->header, table->number_fields);
+}
+
+char *get_footer_name(TABLE table, size_t i) {
+  return table->footer[i * 2];
+}
+
+char *get_footer_value(TABLE table, size_t i) {
+  return table->footer[i * 2 + 1];
+}
+
+size_t get_number_footers_table(TABLE table) {
+  return table->number_footers;
 }
 
 void free_table(TABLE table) {
@@ -131,8 +158,13 @@ void free_table(TABLE table) {
     free(table->header[i]);
   }
   free(table->header);
-  free(table->footer[0]);
-  free(table->footer[1]);
+
+  for (int i = 0; i < table->number_footers; i++) {
+    free(table->footer[i]);
+    free(table->footer[i+1]);
+  }
+
   free(table->footer);
+
   free(table);
 }
