@@ -87,8 +87,11 @@ static Business parse_business_line(char *str) {
   // if (strchr(resto, ';')) return NULL;
   // set tiver ainda mais parametros ou o nome tiver ; ?
   GPtrArray *categories_array =
-      read_to_ptr_array(my_strsep(&str, ";"), ","); // passar o resto da linha
-  return create_business(business_id, name, city, state, categories_array);
+      read_to_ptr_array(categories, ","); // passar o resto da linha
+  Business bus =
+      create_business(business_id, name, city, state, categories_array);
+  free_ptr_array_deep(categories_array);
+  return bus;
 }
 
 static User parse_user_line(char *str) {
