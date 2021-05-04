@@ -46,9 +46,11 @@ char **read_to_array(char *line, char *delim, size_t number_fields) {
   int i = 1;
   for (; i < number_fields; i++) {
     item = strtok(NULL, delim);
+    if (!item)
+      break;
     array[i] = g_strdup(item);
   }
-  if (strtok(NULL, delim)) {
+  if (!item || strtok(NULL, delim)) {
     for (int j = 0; j < i; j++) {
       free(array[j]);
     }
@@ -85,7 +87,7 @@ static Business parse_business_line(char *str) {
   // if (strchr(resto, ';')) return NULL;
   // set tiver ainda mais parametros ou o nome tiver ; ?
   GPtrArray *categories_array =
-      read_to_ptr_array(strtok(NULL, ";"), ","); // passar o resto da linha
+      read_to_ptr_array(my_strsep(&str, ";"), ","); // passar o resto da linha
   return create_business(business_id, name, city, state, categories_array);
 }
 
