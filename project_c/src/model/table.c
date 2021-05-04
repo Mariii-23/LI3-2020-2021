@@ -93,8 +93,8 @@ char *table_index(TABLE table, size_t i, size_t j) {
 }
 ssize_t whereis_field(TABLE table, char *field_name) {
   int j;
-  for (j = 0; j < get_number_fields_table(table); j++) {
-    if (!strcmp(table_index(table, 0, j), field_name)) {
+  for (j = 0; j < table->number_fields; j++) {
+    if (!strcmp(table->header[j], field_name)) {
       return j;
     }
   }

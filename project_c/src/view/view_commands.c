@@ -213,3 +213,9 @@ Variable cmd_join(Variable *args) {
   val.table = join(get_var_value(args[0]).table, get_var_value(args[1]).table);
   return init_var(VAR_TABLE, val, NULL);
 }
+
+Variable cmd_avg(Variable *args) {
+  VariableValue val;
+  val.string = avg(get_var_value(args[0]).table, get_var_value(args[1]).string);
+  return init_var(VAR_STRING, val, NULL);
+}

@@ -195,19 +195,23 @@ TABLE join(TABLE table_x, TABLE table_y) {
 //
 // TABLE min(TABLE table, char *field_name) {}
 //
-size_t avg(TABLE table, char *field_name) {
-  size_t sum = 0;
-  size_t column = whereis_field(table, field_name);
+char *avg(TABLE table, char *field_name) {
+  float sum = 0;
+  ssize_t column = whereis_field(table, field_name);
+  if (column == -1) {
+    printf("Field doesn't exist\n");
+    return NULL;
+  }
   char *first_value = table_index(table, 0, column);
   size_t number_lines = get_number_lines_table(table);
   if (!is_number(first_value) || number_lines <= 0) {
     printf("Please provide a colum with numbers\n");
-    return 0;
+    return NULL;
   }
   for (int i = 0; i < number_lines; i++) {
     char *curr = table_index(table, i, column);
-    sum += atoi(curr);
+    sum += atof(curr);
   }
-  return sum / number_lines;
+  float avg = sum / number_lines;
+  return g_strdup_printf("%.2f", avg);
 }
-
