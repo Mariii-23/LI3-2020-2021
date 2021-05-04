@@ -21,24 +21,24 @@ typedef struct stars_tuple {
 } * StarsTuple;
 
 // Mudar nome
-typedef struct city_tuple {
+typedef struct stars_node {
   float stars; // current start average
   char *business_id;
   char *name;
-} * CityTuple;
+} * StarsNode;
 
 struct stats {
   GHashTable *business_id_to_stars; // updated as a new review is read,
                                     // business_id to a StarsTuple
   GHashTable
       *city_to_business_by_star; // linked list of businesse
-                                 // ssorted decrescently by stars (city_tuple)
+                                 // ssorted decrescently by stars (stars_node)
   GHashTable *category_to_business_by_star; // linked list of businesse
                                             // ssorted decrescently by
-                                            // category (city_tuple)
+                                            // category (stars_node)
 };
 
-void free_city_tuple(CityTuple self) {
+void free_stars_node(StarsNode self) {
   if (!self)
     return;
   free(self->business_id);
@@ -46,11 +46,11 @@ void free_city_tuple(CityTuple self) {
   free(self);
 }
 
-void free_g_city_tuple(gpointer data) { free_city_tuple((CityTuple)data); }
+void free_g_stars_node(gpointer data) { free_stars_node((StarsNode)data); }
 
 void g_free_ll(gpointer pointer) {
   GSList *ptr_list = (GSList *)pointer;
-  g_slist_free_full(ptr_list, free_g_city_tuple);
+  g_slist_free_full(ptr_list, free_g_stars_node);
 }
 
 /**
@@ -123,9 +123,9 @@ void start_table_iter_init_business_id_hash_table(GHashTableIter *iter,
 }
 
 /**
- * Creates one CityTuple */
-CityTuple init_city_tuple(float stars, char *business_id, char *name) {
-  CityTuple tuplo = calloc(1, sizeof(struct city_tuple));
+ * Creates one StarsNode */
+StarsNode init_stars_node(float stars, char *business_id, char *name) {
+  StarsNode tuplo = calloc(1, sizeof(struct stars_node));
   tuplo->business_id = g_strdup(business_id);
   tuplo->stars = stars;
   tuplo->name = g_strdup(name);
@@ -134,8 +134,8 @@ CityTuple init_city_tuple(float stars, char *business_id, char *name) {
 
 /**
  \brief Given a city tuplo, retuns a clone. */
-CityTuple copy_city_tuple(CityTuple self) {
-  CityTuple tuplo = calloc(1, sizeof(struct city_tuple));
+StarsNode copy_stars_node(StarsNode self) {
+  StarsNode tuplo = calloc(1, sizeof(struct stars_node));
   tuplo->business_id = g_strdup(self->business_id);
   tuplo->stars = self->stars;
   tuplo->name = g_strdup(self->name);
@@ -169,7 +169,7 @@ void free_stats(Stats stats) {
  \brief Compare two City Tuplo based on number of stars. */
 static gint compare_stars(gconstpointer key1, gconstpointer key2,
                           gpointer user_data) {
-  return (((CityTuple)key2)->stars - ((CityTuple)key1)->stars) * 100000000;
+  return (((StarsNode)key2)->stars - ((StarsNode)key1)->stars) * 100000000;
 }
 
 /**
@@ -189,7 +189,7 @@ void init_category_to_business_by_star(Stats stats) {
 
 // debugging prints
 void print_node(gpointer data, gpointer user_data) {
-  CityTuple x = (CityTuple)data;
+  StarsNode x = (StarsNode)data;
   printf("City %s, business : %f\n", x->name, x->stars);
 }
 // TODO comentario
@@ -206,7 +206,7 @@ static void add_city_to_business_by_star(Stats stats, char *city,
   if (!stats || !stats->business_id_to_stars)
     return;
 
-  CityTuple value = init_city_tuple(stars, business_id, name);
+  StarsNode value = init_stars_node(stars, business_id, name);
 
   GSList *aux = g_hash_table_lookup(stats->city_to_business_by_star, city);
 
@@ -229,7 +229,7 @@ static void add_category_to_business_by_star(Stats stats, char *category,
     return;
   }
 
-  CityTuple value = init_city_tuple(stars, business_id, name);
+  StarsNode value = init_stars_node(stars, business_id, name);
 
   GSList *aux =
       g_hash_table_lookup(stats->category_to_business_by_star, category);
@@ -310,11 +310,11 @@ static void n_larger_than_city_star(Stats stats, char *city, int const N,
   if (!list)
     return;
 
-  CityTuple value;
+  StarsNode value;
   int size = g_slist_length(list);
 
   for (int i = 0; i < size && i < N; i++) {
-    value = (CityTuple)g_slist_nth_data(list, i);
+    value = (StarsNode)g_slist_nth_data(list, i);
 
     char *id = value->business_id;
     char *name = value->name;
@@ -374,16 +374,11 @@ void n_larger_than_category_star(Stats stats, char *category, int const N,
 
   int size = g_slist_length(list);
 
-  CityTuple value;
-  int i, stop = 0;
-  for (i = 0; i < size && !stop; i++) {
+  StarsNode value;
+  int i = 0;
+  for (i = 0; i < size && i < N; i++) {
 
-    value = (CityTuple)g_slist_nth_data(list, i);
-
-    if (value->stars < N) {
-      stop = 1;
-      continue;
-    }
+    value = (StarsNode)g_slist_nth_data(list, i);
 
     char *id = value->business_id;
     char *name = value->name;
@@ -420,11 +415,11 @@ void n_larger_city_star(Stats stats, char *city, int const N, TABLE table) {
 
   int size = g_slist_length(list);
 
-  CityTuple value;
+  StarsNode value;
   int i, stop = 0;
   for (i = 0; i < size && !stop; i++) {
 
-    value = (CityTuple)g_slist_nth_data(list, i);
+    value = (StarsNode)g_slist_nth_data(list, i);
 
     if (value->stars < N) {
       stop = 1;

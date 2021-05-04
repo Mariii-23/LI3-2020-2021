@@ -332,11 +332,11 @@ Review get_reviewCollection_review_by_id(ReviewCollection self, char *id) {
 int get_number_reviews_by_business(ReviewCollection self, char *business_id) {
   if (!self || !business_id)
     return -1;
-  GPtrArray *array =
-      get_reviewCollection_review_by_business_id(self, business_id);
+  GPtrArray *array = g_hash_table_lookup(self->by_business_id, business_id);
   if (!array)
-    return (-1);
-  return array->len;
+    return -1;
+  else
+    return array->len;
 }
 
 /**
