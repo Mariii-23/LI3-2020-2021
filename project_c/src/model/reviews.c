@@ -234,7 +234,7 @@ static Review clone_review(Review self) {
                                 .funny = self->funny,
                                 .cool = self->cool,
                                 .date = g_strdup(self->date),
-                                .text = self->text};
+                                .text = g_strdup(self->text)};
   return new_review;
 }
 
@@ -264,9 +264,8 @@ void free_review(Review self) {
   if (self->date)
     free(self->date);
 
-  // TODO mudar
-  /* if (self->text) */
-  /*   free(self->text); */
+  if (self->text)
+    free(self->text);
 
   free(self);
 }
@@ -292,7 +291,6 @@ ReviewCollection create_review_collection() {
       .by_business_id = g_hash_table_new(g_str_hash, g_str_equal)};
   return new_review_collection;
 }
-
 /**
  \brief Added one given review to a review collection.
  * */

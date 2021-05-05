@@ -18,14 +18,19 @@ Config read_config(char *path_to_config) {
                               .businesses_csv = g_strdup("businesses.csv"),
                               .reviews_csv = g_strdup("reviews.csv")};
   } else {
-    // parse csv
     TABLE t = from_csv(path_to_config, ";");
-    *config = (struct config){
-        .user_csv = table_index(t, 0, 1),
-        .businesses_csv = table_index(t, 1, 1),
-        .reviews_csv = table_index(t, 2, 1),
-    };
-    free_table(t);
+    if (!t) {
+      *config = (struct config){.user_csv = g_strdup("users.csv"),
+                                .businesses_csv = g_strdup("businesses.csv"),
+                                .reviews_csv = g_strdup("reviews.csv")};
+    } else {
+      *config = (struct config){
+          .user_csv = table_index(t, 0, 1),
+          .businesses_csv = table_index(t, 1, 1),
+          .reviews_csv = table_index(t, 2, 1),
+      };
+      free_table(t);
+    }
   }
   return config;
 }

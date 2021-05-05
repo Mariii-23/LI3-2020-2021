@@ -20,6 +20,6 @@ int main(int argc, char **argv) {
   }
   Config config = read_config(path_to_config);
   repl();
-  // repl(config);
-  free(config);
+  //// repl(config);
+  free_config(config);
 }

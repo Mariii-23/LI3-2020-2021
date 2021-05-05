@@ -24,6 +24,9 @@ void cmd_print(GArray *args) {
   printf(":%s:\n", g_array_index(args, char *, 1));
 }
 
+/** Creates  a table with all the content from the provided CSV file, which must
+ * contain a  header,  separated by the given delimiter. The number of columns
+ * of the table will be the same as the fields in the header*/
 TABLE from_csv(char *filename, char *delim) {
   FILE *fp = fopen(filename, "r");
   if (!fp) {
@@ -52,6 +55,8 @@ TABLE from_csv(char *filename, char *delim) {
   }
   return table;
 }
+/** Converts a  table to a CSV file, using the provided delimiter. The first
+ * line of the CSV will be the header contained in the table.*/
 void to_csv(TABLE table, char *filename, char *delim) {
   FILE *fp = fopen(filename, "w");
   if (!fp) {
@@ -61,6 +66,9 @@ void to_csv(TABLE table, char *filename, char *delim) {
   fprintf_table(fp, table, delim, delim);
 }
 
+/** Checks whether the value matches the condition with the provided operator
+ * and values. The comparison is different depending on whether the string can
+ * be converted to a string or not*/
 bool matches_by_operator(char *the_value, char *current_value, OPERATOR op,
                          bool is_number) {
 
@@ -76,6 +84,11 @@ bool matches_by_operator(char *the_value, char *current_value, OPERATOR op,
   return !res ? (op == EQ) : (res / abs(res)) == op;
 }
 
+/*Provided a table, creates another one containing only the lines which match a
+ * certain condition. The condition which must be met is that the chosen  field
+ * in that line(field_name) must be equal(EQ), less than(LT) or greater than(GT)
+ * the value passed as parameter, depending on the chosen operator.
+ */
 TABLE filter(TABLE table, char *field_name, char *value, OPERATOR op) {
   bool isnumber = false;
   size_t number_fields = get_number_fields_table(table);
@@ -117,6 +130,10 @@ TABLE filter(TABLE table, char *field_name, char *value, OPERATOR op) {
   return table_two;
 }
 
+/**
+  Provided a table, creates another one with only the columns whose index is in
+  the array passed as parameter.
+  */
 TABLE projection(TABLE table, GArray *colunas) {
   // se der valor negativo colunas?
   size_t n_col = colunas->len;
@@ -147,7 +164,8 @@ TABLE projection(TABLE table, GArray *colunas) {
   return table_two;
 }
 
-// join two tables with same fields
+/**Provided a table and a column name, it calculates de average of all the
+ * values in it,  should they be numbers. */
 TABLE join(TABLE table_x, TABLE table_y) {
   if ((!table_x && table_y) || (!table_y && table_x))
     return NULL;
@@ -186,6 +204,8 @@ TABLE join(TABLE table_x, TABLE table_y) {
   // free_ptr_array_deep(table_y_fields);
   return nova;
 }
+/** Returns the maximum or minimum value between the two, depending on the
+ * function pointer passed*/
 static char *max_min(TABLE table, char *field_name,
                      float (*cmp)(float, float)) {
   ssize_t column = whereis_field(table, field_name);
@@ -210,14 +230,19 @@ static char *max_min(TABLE table, char *field_name,
   }
   return g_strdup_printf("%.2f", max_min);
 }
+/** Returns the maximum value in the table, in the provided column */
 char *max_table(TABLE table, char *field_name) {
   return max_min(table, field_name, max_float);
 }
-
+/** Returns the minimum value in the table, in the provided column */
 char *min_table(TABLE table, char *field_name) {
   return max_min(table, field_name, min_float);
 }
 
+/**
+  Provided a table and a column name, it calculates de average of all the values
+  in it,  should they be numbers.
+*/
 char *avg(TABLE table, char *field_name) {
   float sum = 0;
   ssize_t column = whereis_field(table, field_name);

@@ -216,6 +216,8 @@ TABLE businesses_reviewed(SGR sgr, char *id) {
 }
 
 // Query 5
+/** Creates  a table with information about all the businesses in that city
+ * which have an average number of stars above the provided one.*/
 TABLE businesses_with_stars_and_city(SGR sgr, float stars, char *city) {
   char *fields[] = {"id", "name", "stars"};
   TABLE table = new_table(fields, QUERY_FIVE_FIELDS_N + 1);
@@ -224,6 +226,8 @@ TABLE businesses_with_stars_and_city(SGR sgr, float stars, char *city) {
 }
 
 // Query 6
+/** Creates a table with information about the n businesses with the most stars
+ * in all city.*/
 TABLE top_businesses_by_city(SGR sgr, int top) {
   // tirar a cidade
   char *fields[] = {"city", "id", "name", "stars"};
@@ -233,6 +237,8 @@ TABLE top_businesses_by_city(SGR sgr, int top) {
 }
 
 // Query 7
+/** Creates a table with information with all the users that have visited more
+ * than one state.*/
 TABLE international_users(SGR sgr) {
   char *fields[] = {"id"};
   TABLE table = new_table(fields, QUERY_SEVEN_FIELDS_N);
@@ -242,6 +248,8 @@ TABLE international_users(SGR sgr) {
 }
 
 // Query 8
+/**Creates a table with information about the n businesses with the most stars
+ * in that category.*/
 TABLE top_businesses_with_category(SGR sgr, int top, char *category) {
   char *fields[] = {"id", "name", "stars"};
   TABLE table = new_table(fields, QUERY_EIGHT_FIELDS_N);
@@ -250,6 +258,9 @@ TABLE top_businesses_with_category(SGR sgr, int top, char *category) {
 }
 
 // Query 9
+/**
+Creates a table with the id of all reviews which contain the given word on its
+field text.*/
 TABLE reviews_with_word(SGR sgr, char *word) {
   char *fields[] = {"id"};
   TABLE table = new_table(fields, QUERY_NINE_FIELDS_N);
