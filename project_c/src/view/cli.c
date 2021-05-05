@@ -114,9 +114,9 @@ void repl() {
   define_function(state, "avg", cmd_avg, VAR_FLOAT, 0, 2,
                   "Get average of a certain column", VAR_TABLE, VAR_STRING);
 
-  define_function(state, "max", cmd_max, VAR_FLOAT, 0, 2,
+  define_function(state, "max", cmd_max, VAR_TABLE, 0, 2,
                   "Get max value of certain column", VAR_TABLE, VAR_STRING);
-  define_function(state, "min", cmd_min, VAR_FLOAT, 0, 2,
+  define_function(state, "min", cmd_min, VAR_TABLE, 0, 2,
                   "Get min value of a certain column", VAR_TABLE, VAR_STRING);
 
   // O readline devolve NULL quando chega ao EOF

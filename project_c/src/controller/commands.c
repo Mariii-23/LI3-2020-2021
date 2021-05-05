@@ -205,12 +205,12 @@ TABLE join(TABLE table_x, TABLE table_y) {
 }
 /** Returns the maximum or minimum value between the two, depending on the
  * function pointer passed*/
-static float max_min(TABLE table, char *field_name,
+static TABLE max_min(TABLE table, char *field_name,
                      float (*cmp)(float, float)) {
   ssize_t column = whereis_field(table, field_name);
   if (column == -1) {
     printf("Field doesn't exist\n");
-    return -1;
+    return NULL;
   }
   char *first_value = table_index(table, 0, column);
   float max_min = atof(first_value);
@@ -218,7 +218,7 @@ static float max_min(TABLE table, char *field_name,
   if (!is_number(first_value) || number_lines <= 0) {
     printf("Please provide a colum with numbers\n");
     free(first_value);
-    return -1;
+    return NULL;
   }
   free(first_value);
   for (int i = 0; i < number_lines; i++) {
@@ -227,14 +227,17 @@ static float max_min(TABLE table, char *field_name,
     max_min = cmp(curr_float, max_min);
     free(curr);
   }
-  return max_min;
+  char *max_min_str = g_strdup_printf("%f", max_min);
+  TABLE nova = filter(table, field_name, max_min_str, EQ);
+  free(max_min_str);
+  return nova;
 }
 /** Returns the maximum value in the table, in the provided column */
-float max_table(TABLE table, char *field_name) {
+TABLE max_table(TABLE table, char *field_name) {
   return max_min(table, field_name, max_float);
 }
 /** Returns the minimum value in the table, in the provided column */
-float min_table(TABLE table, char *field_name) {
+TABLE min_table(TABLE table, char *field_name) {
   return max_min(table, field_name, min_float);
 }
 
