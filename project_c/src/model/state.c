@@ -84,6 +84,8 @@ const char *type_name(VariableType type) {
   switch (type) {
   case VAR_NUMBER:
     return "number";
+  case VAR_FLOAT:
+    return "float";
   case VAR_SGR:
     return "SGR";
   case VAR_TABLE:

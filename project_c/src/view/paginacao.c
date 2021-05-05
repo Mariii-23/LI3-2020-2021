@@ -260,5 +260,6 @@ void show_table(TABLE t) {
 
   // Vamos desfazer todas as configurações que fizemos no início
   tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+  // Por algum motivo, o line wrapping não está a ficar ativo...
   printf("\e[?25h\e[7h");
 }

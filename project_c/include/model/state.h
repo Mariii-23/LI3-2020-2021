@@ -8,6 +8,7 @@
 // Uma variável é qualquer valor no programa - incluindo funções.
 typedef enum variable_type {
   VAR_NUMBER,
+  VAR_FLOAT,
   VAR_SGR,
   VAR_TABLE,
   VAR_STRING,
@@ -20,6 +21,7 @@ typedef enum variable_type {
 
 typedef union {
   int number;
+  float float_num;
   SGR sgr;
   TABLE table;
   char *string;

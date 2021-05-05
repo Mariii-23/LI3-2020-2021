@@ -26,6 +26,10 @@ Variable execute(STATE state, AST ast) {
     val.number = get_ast_number(ast);
     ret = init_var(VAR_NUMBER, val, NULL);
     break;
+  case AST_FLOAT:
+    val.float_num = get_ast_float(ast);
+    ret = init_var(VAR_FLOAT, val, NULL);
+    break;
   case AST_STRING:
     // Tenho de retirar as aspas
     {
@@ -203,6 +207,9 @@ void print_var(Variable var) {
     break;
   case VAR_NUMBER:
     printf("Number: %d\n", get_var_value(var).number);
+    break;
+  case VAR_FLOAT:
+    printf("Float: %f\n", get_var_value(var).float_num);
     break;
   case VAR_FUNCTION:
     printf("Function\n");

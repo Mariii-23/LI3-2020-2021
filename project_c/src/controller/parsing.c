@@ -132,6 +132,9 @@ SyntaxError parse_expression(const TokenStream tokens, AST node, int *consumed) 
     if (type == TOK_NUMBER) {
       set_ast_number(node, atoi(get_token_text(tok)));
       consumed_now = 1;
+    } else if (type == TOK_FLOAT) {
+      set_ast_float(node, atof(get_token_text(tok)));
+      consumed_now = 1;
     } else if (type == TOK_NAME) {
       // Vamos tentar ler uma função, se não é uma variável
       SyntaxError e = parse_function(tokens, node, &consumed_now);

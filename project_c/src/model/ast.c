@@ -40,6 +40,7 @@ struct ast {
     char *variable;
     char *string;
     int number;
+    float float_num;
     GPtrArray *array;
   } value;
 };
@@ -95,9 +96,24 @@ const char *identify(const char *string, Token *dest) {
     return s + 1;
   } else if (*s >= '0' && *s <= '9') {
     // Encontrámos um número. Vamos ler até encontrarmos algo diferente
-    for (i = 0; s[i] && s[i] >= '0' && s[i] <= '9'; i++)
-      ;
-    dest->type = TOK_NUMBER;
+    int dot = 0;
+    for (i = 0; s[i] && ((s[i] >= '0' && s[i] <= '9') || s[i] == '.'); i++) {
+      if (s[i] == '.') {
+        if (!dot)
+          dot = 1;
+        else {
+          i -= 1;
+          break;
+        }
+      }
+    }
+
+    if (dot) {
+      dest->type = TOK_FLOAT;
+    } else {
+      dest->type = TOK_NUMBER;
+    }
+
     dest->text = g_strndup(s, i);
 
     return s + i;
@@ -225,6 +241,9 @@ AST ast_dup(const AST ast) {
     case AST_NUMBER:
       set_ast_number(ret, ast->value.number);
       break;
+    case AST_FLOAT:
+      set_ast_float(ret, ast->value.float_num);
+      break;
     default:
       printf(BOLD "NOT IMPLEMENTED\n" RESET_ALL);
       break;
@@ -296,6 +315,10 @@ int get_ast_number(AST ast) {
   return ast->value.number;
 }
 
+float get_ast_float(AST ast) {
+  return ast->value.float_num;
+}
+
 void set_ast_function(AST ast, FunctionCall call) {
   ast->type = AST_FUNCTIONCALL;
   ast->value.function = call;
@@ -314,6 +337,11 @@ void set_ast_index(AST ast, const Indexed i) {
 void set_ast_number(AST ast, int n) {
   ast->type = AST_NUMBER;
   ast->value.number = n;
+}
+
+void set_ast_float(AST ast, float n) {
+  ast->type = AST_FLOAT;
+  ast->value.float_num = n;
 }
 
 void set_ast_variable(AST ast, const char *variable) {

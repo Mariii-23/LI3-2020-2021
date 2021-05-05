@@ -9,6 +9,7 @@ typedef enum token_type {
     TOK_NAME,       // e.g. x, avg, fromCSV
     TOK_STRING,     // e.g. "business.csv"
     TOK_NUMBER,     // e.g. 0, 15
+    TOK_FLOAT,      // e.g. 0.3
     TOK_EQUALS,     // =
     TOK_COMMA,      // ,
     TOK_OPAREN,     // (
@@ -27,6 +28,7 @@ typedef enum ast_type {
     AST_ASSIGNMENT,
     AST_VARIABLE,
     AST_NUMBER,
+    AST_FLOAT,
     AST_STRING,
     AST_INDEX,
     AST_ARRAY
@@ -73,12 +75,16 @@ const char *get_ast_variable(AST ast);
 const char *get_ast_string(AST ast);
 const GPtrArray *get_ast_array(AST ast);
 int get_ast_number(AST ast);
+float get_ast_float(AST ast);
 
-// AVISO: Para evitar alocações desnecessárias, estas funções passam a gerir o seu segundo argumento, já que são sempre algo criado apenas para a função. A única exceção é set_ast_string e set_ast_variable.
+// AVISO: Para evitar alocações desnecessárias, estas funções passam a gerir o
+// seu segundo argumento, já que são sempre algo criado apenas para a função. A
+// única exceção é set_ast_string e set_ast_variable.
 void set_ast_function(AST ast, FunctionCall call);
 void set_ast_var_assignment(AST ast, VarAssignment assignment);
 void set_ast_index(AST ast, Indexed i);
 void set_ast_number(AST ast, int n);
+void set_ast_float(AST ast, float n);
 void set_ast_variable(AST ast, const char *variable);
 void set_ast_string(AST ast, const char *string);
 void set_ast_array(AST ast, GPtrArray *array);
