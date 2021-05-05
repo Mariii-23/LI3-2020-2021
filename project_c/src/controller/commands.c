@@ -106,6 +106,7 @@ TABLE filter(TABLE table, char *field_name, char *value, OPERATOR op) {
   for (int i = 0; i < number_lines; i++) {
     char *elem = table_index(table, i, col_index);
     if (matches_by_operator(elem, value, op, isnumber)) {
+      free(elem);
       for (int j = 0; j < number_fields; j++) {
         elem = table_index(table, i, j);
         add_field(table_two, elem);
@@ -138,7 +139,9 @@ TABLE projection(TABLE table, GArray *colunas) {
       size_t col = g_array_index(colunas, size_t, j);
       if (col >= number_fields)
         continue; // ignorar numeros de colunas que nao existem
-      add_field(table_two, table_index(table, i, col));
+      char *elem = table_index(table, i, col);
+      add_field(table_two, elem);
+      free(elem);
     }
   }
   return table_two;
@@ -166,29 +169,55 @@ TABLE join(TABLE table_x, TABLE table_y) {
       for (int j = 0; j < fields_x; j++) {
         char *c = table_index(table_x, i, j);
         add_field(nova, c);
+        free(c);
       }
     }
     for (int i = 0; i < get_number_lines_table(table_y); i++) {
       for (int j = 0; j < fields_x; j++) {
-        add_field(nova, table_index(table_y, i, j));
+        char *c = table_index(table_y, i, j);
+        add_field(nova, c);
+        free(c);
       }
     }
   } else {
     nova = NULL;
   }
-  free_ptr_array_deep(table_x_fields);
-  free_ptr_array_deep(table_y_fields);
+  // free_ptr_array_deep(table_x_fields);
+  // free_ptr_array_deep(table_y_fields);
   return nova;
 }
-//// count ??
-//
-// TABLE max(TABLE table, char *field_name) {
-//  if (is_number(field_name)) {
-//  }
-//}
-//
-// TABLE min(TABLE table, char *field_name) {}
-//
+static char *max_min(TABLE table, char *field_name,
+                     float (*cmp)(float, float)) {
+  ssize_t column = whereis_field(table, field_name);
+  if (column == -1) {
+    printf("Field doesn't exist\n");
+    return NULL;
+  }
+  char *first_value = table_index(table, 0, column);
+  float max_min = atof(first_value);
+  size_t number_lines = get_number_lines_table(table);
+  if (!is_number(first_value) || number_lines <= 0) {
+    printf("Please provide a colum with numbers\n");
+    free(first_value);
+    return NULL;
+  }
+  free(first_value);
+  for (int i = 0; i < number_lines; i++) {
+    char *curr = table_index(table, i, column);
+    float curr_float = atof(curr);
+    max_min = cmp(curr_float, max_min);
+    free(curr);
+  }
+  return g_strdup_printf("%.2f", max_min);
+}
+char *max_table(TABLE table, char *field_name) {
+  return max_min(table, field_name, max_float);
+}
+
+char *min_table(TABLE table, char *field_name) {
+  return max_min(table, field_name, min_float);
+}
+
 char *avg(TABLE table, char *field_name) {
   float sum = 0;
   ssize_t column = whereis_field(table, field_name);
@@ -200,11 +229,14 @@ char *avg(TABLE table, char *field_name) {
   size_t number_lines = get_number_lines_table(table);
   if (!is_number(first_value) || number_lines <= 0) {
     printf("Please provide a colum with numbers\n");
+    free(first_value);
     return NULL;
   }
+  free(first_value);
   for (int i = 0; i < number_lines; i++) {
     char *curr = table_index(table, i, column);
     sum += atof(curr);
+    free(curr);
   }
   float avg = sum / number_lines;
   return g_strdup_printf("%.2f", avg);

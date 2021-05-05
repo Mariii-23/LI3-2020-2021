@@ -163,6 +163,7 @@ void free_stats(Stats stats) {
   g_hash_table_destroy(stats->business_id_to_stars);
   g_hash_table_destroy(stats->category_to_business_by_star);
   g_hash_table_destroy(stats->city_to_business_by_star);
+  free(stats);
 }
 
 /**

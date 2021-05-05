@@ -23,4 +23,9 @@ char *my_strsep(char **str, const char *delim);
 bool is_number(char *value);
 int my_atoi(char *str);
 float my_atof(char *str);
+int min(int a, int b);
+int max(int a, int b);
+float min_float(float a, float b);
+float max_float(float a, float b);
+
 #endif

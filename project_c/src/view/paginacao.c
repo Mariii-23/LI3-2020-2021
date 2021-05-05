@@ -1,4 +1,5 @@
 #include "view/paginacao.h"
+#include "model/auxiliary.h"
 #include "model/table.h"
 #include "view/colors.h"
 #include <stdio.h>
@@ -12,18 +13,6 @@ void get_terminal_size(int *width, int *height) {
 
   *width = w.ws_col;
   *height = w.ws_row;
-}
-
-int min(int a, int b) {
-  if (a < b)
-    return a;
-  return b;
-}
-
-int max(int a, int b) {
-  if (a > b)
-    return a;
-  return b;
 }
 
 void move_cursor_to_x(int x) {

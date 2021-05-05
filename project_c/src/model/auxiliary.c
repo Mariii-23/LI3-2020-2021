@@ -10,7 +10,6 @@ void *assert_return(void *ptr) {
   assert(ptr);
   return ptr;
 }
-
 void free_key(gpointer key, gpointer value, gpointer user_data) { free(key); }
 
 void free_key_value(gpointer key, gpointer value, gpointer user_data) {
@@ -95,9 +94,18 @@ char *my_strsep(char **str, const char *delim) {
 }
 bool is_number(char *value) {
   char *aux = value;
+  bool dot = false;
   for (; *aux; aux++) {
-    if (!isdigit(*aux))
-      return false;
+    if (*aux == '.') {
+      if (!dot) {
+        dot = true;
+      } else {
+        return false;
+      }
+    } else {
+      if (!isdigit(*aux))
+        return false;
+    }
   }
   return true;
 }
@@ -120,5 +128,29 @@ float my_atof(char *str) {
     return -1;
   else
     return r;
+}
+
+int min(int a, int b) {
+  if (a < b)
+    return a;
+  return b;
+}
+
+int max(int a, int b) {
+  if (a > b)
+    return a;
+  return b;
+}
+
+float min_float(float a, float b) {
+  if (a < b)
+    return a;
+  return b;
+}
+
+float max_float(float a, float b) {
+  if (a > b)
+    return a;
+  return b;
 }
 

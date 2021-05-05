@@ -219,3 +219,16 @@ Variable cmd_avg(Variable *args) {
   val.string = avg(get_var_value(args[0]).table, get_var_value(args[1]).string);
   return init_var(VAR_STRING, val, NULL);
 }
+Variable cmd_max(Variable *args) {
+  VariableValue val;
+  val.string =
+      max_table(get_var_value(args[0]).table, get_var_value(args[1]).string);
+  return init_var(VAR_STRING, val, NULL);
+}
+Variable cmd_min(Variable *args) {
+  VariableValue val;
+  val.string =
+      min_table(get_var_value(args[0]).table, get_var_value(args[1]).string);
+  return init_var(VAR_STRING, val, NULL);
+}
+

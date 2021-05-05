@@ -25,5 +25,7 @@ Variable cmd_projection(Variable *args);
 Variable cmd_filter(Variable *args);
 Variable cmd_join(Variable *args);
 Variable cmd_avg(Variable *args);
+Variable cmd_max(Variable *args);
+Variable cmd_min(Variable *args);
 
 #endif

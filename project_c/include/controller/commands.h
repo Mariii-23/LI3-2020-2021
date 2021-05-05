@@ -16,5 +16,7 @@ TABLE projection(TABLE table, GArray *colunas);
 TABLE filter(TABLE table, char *field_name, char *value, OPERATOR op);
 TABLE join(TABLE table_x, TABLE table_y);
 char *avg(TABLE table, char *field_name);
+char *max_table(TABLE table, char *field_name);
+char *min_table(TABLE table, char *field_name);
 
 #endif
