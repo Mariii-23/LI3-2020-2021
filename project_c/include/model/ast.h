@@ -61,7 +61,7 @@ void free_token_stream(TokenStream t);
 //
 // AST
 AST make_empty_ast();
-AST ast_dup(AST ast);
+AST ast_dup(const AST ast);
 void free_ast(AST ast);
 ASTType get_ast_type(AST ast);
 void set_ast_type(AST ast, ASTType type);
@@ -77,6 +77,7 @@ int get_ast_number(AST ast);
 // AVISO: Para evitar alocações desnecessárias, estas funções passam a gerir o seu segundo argumento, já que são sempre algo criado apenas para a função. A única exceção é set_ast_string e set_ast_variable.
 void set_ast_function(AST ast, FunctionCall call);
 void set_ast_var_assignment(AST ast, VarAssignment assignment);
+void set_ast_index(AST ast, Indexed i);
 void set_ast_number(AST ast, int n);
 void set_ast_variable(AST ast, const char *variable);
 void set_ast_string(AST ast, const char *string);
@@ -96,6 +97,7 @@ void set_var_assignment_value(VarAssignment v, AST val); // TODO
 const AST get_var_assignment_value(const VarAssignment v); // TODO
 const char *get_var_assignment_variable(const VarAssignment v); // TODO
 
+Indexed indexed_dup(const Indexed i);
 void index_expression(AST expression, AST index);
 void free_indexed(Indexed i); // TODO
 const AST get_indexed_expression(const Indexed i);

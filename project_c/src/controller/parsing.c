@@ -212,7 +212,7 @@ SyntaxError parse_array(const TokenStream tokens, AST node, int *consumed) {
 
   while (get_token_type(get_token_stream_token(tokens, tok)) != TOK_CBRACKET) {
     int consumed = 0;
-    AST node;
+    AST node = make_empty_ast();
     SyntaxError e =
         parse_expression(get_token_stream_token(tokens, tok + consumed), node, &consumed);
 

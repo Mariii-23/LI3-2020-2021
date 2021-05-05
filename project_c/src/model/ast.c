@@ -195,13 +195,35 @@ AST make_empty_ast() {
   return ret;
 }
 
-AST ast_dup(AST ast) {
+AST ast_dup_gptr(const AST ast, gpointer data) {
+  return ast_dup(ast);
+}
+
+AST ast_dup(const AST ast) {
   AST ret = make_empty_ast();
   ret->type = ast->type;
 
   switch (ret->type) {
     case AST_FUNCTIONCALL:
       set_ast_function(ret, function_call_dup(ast->value.function));
+      break;
+    case AST_ASSIGNMENT:
+      set_ast_var_assignment(ret, var_assignment_dup(ast->value.assignment));
+      break;
+    case AST_INDEX:
+      set_ast_index(ret, indexed_dup(ast->value.index));
+      break;
+    case AST_VARIABLE:
+      set_ast_variable(ret, ast->value.variable);
+      break;
+    case AST_STRING:
+      set_ast_string(ret, ast->value.string);
+      break;
+    case AST_ARRAY:
+      set_ast_array(ret, g_ptr_array_copy(ast->value.array, (GCopyFunc) ast_dup_gptr, NULL));
+      break;
+    case AST_NUMBER:
+      set_ast_number(ret, ast->value.number);
       break;
     default:
       printf(BOLD "NOT IMPLEMENTED\n" RESET_ALL);
@@ -217,10 +239,16 @@ void free_ast(AST ast) {
       free_function_call(ast->value.function);
       break;
     case AST_ASSIGNMENT:
+      free_var_assignment(ast->value.assignment);
+      break;
     case AST_VARIABLE:
+      free(ast->value.variable);
+      break;
     case AST_INDEX:
+      free_indexed(ast->value.index);
+      break;
     case AST_ARRAY:
-      printf(BOLD "NOT IMPLEMENTED\n" RESET_ALL);
+      g_ptr_array_free(ast->value.array, TRUE);
       break;
     case AST_STRING:
       free(ast->value.string);
@@ -276,6 +304,11 @@ void set_ast_function(AST ast, FunctionCall call) {
 void set_ast_var_assignment(AST ast, VarAssignment var) {
   ast->type = AST_ASSIGNMENT;
   ast->value.assignment = var;
+}
+
+void set_ast_index(AST ast, const Indexed i) {
+  ast->type = AST_INDEX;
+  ast->value.index = i;
 }
 
 void set_ast_number(AST ast, int n) {
@@ -365,6 +398,13 @@ const AST get_var_assignment_value(const VarAssignment v) {
 
 const char *get_var_assignment_variable(const VarAssignment v) {
   return v->variable;
+}
+
+Indexed indexed_dup(const Indexed i) {
+  Indexed ret = malloc(sizeof(struct indexed));
+  ret->expression = ast_dup(i->expression);
+  ret->index = ast_dup(i->index);
+  return ret;
 }
 
 void index_expression(AST expression, AST index) {
