@@ -20,38 +20,38 @@ static double get_time_taken(struct timespec start, struct timespec end) {
   return time_taken;
 }
 
-Variable print(Variable *args) {
+Variable print(STATE s, Variable *args) {
   print_var(*args);
   return void_var();
 }
 
-Variable quit(Variable *args) {
+Variable quit(STATE s, Variable *args) {
   exit(0);
   return NULL;
 }
 
-Variable show(Variable *args) {
+Variable show(STATE s, Variable *args) {
   /* fprintf_table(stdout, get_var_value(args[0]).table, " | ", " | "); */
   show_table(get_var_value(args[0]).table);
 
   return void_var();
 }
 
-Variable cmd_from_csv(Variable *args) {
+Variable cmd_from_csv(STATE s, Variable *args) {
   VariableValue val;
   val.table =
       from_csv(get_var_value(args[0]).string, get_var_value(args[1]).string);
   return init_var(VAR_TABLE, val, NULL);
 }
 
-Variable cmd_to_csv(Variable *args) {
+Variable cmd_to_csv(STATE s, Variable *args) {
   to_csv(get_var_value(args[0]).table, get_var_value(args[1]).string,
          get_var_value(args[2]).string);
   return void_var();
 }
 
 // Query 1
-Variable cmd_load_sgr(Variable *args) {
+Variable cmd_load_sgr(STATE s, Variable *args) {
   struct timespec start, end;
   clock_gettime(CLOCK_MONOTONIC, &start);
 
@@ -66,7 +66,7 @@ Variable cmd_load_sgr(Variable *args) {
 }
 
 // Query 2
-Variable cmd_businesses_started_by_letter(Variable *args) {
+Variable cmd_businesses_started_by_letter(STATE s, Variable *args) {
   struct timespec start, end;
   clock_gettime(CLOCK_MONOTONIC, &start);
 
@@ -81,7 +81,7 @@ Variable cmd_businesses_started_by_letter(Variable *args) {
 }
 
 // Query 3
-Variable cmd_business_info(Variable *args) {
+Variable cmd_business_info(STATE s, Variable *args) {
   struct timespec start, end;
   clock_gettime(CLOCK_MONOTONIC, &start);
 
@@ -95,7 +95,7 @@ Variable cmd_business_info(Variable *args) {
 }
 
 // Query 4
-Variable cmd_businesses_reviewed(Variable *args) {
+Variable cmd_businesses_reviewed(STATE s, Variable *args) {
   struct timespec start, end;
   clock_gettime(CLOCK_MONOTONIC, &start);
 
@@ -109,7 +109,7 @@ Variable cmd_businesses_reviewed(Variable *args) {
 }
 
 // Query 5
-Variable cmd_businesses_with_stars_and_city(Variable *args) {
+Variable cmd_businesses_with_stars_and_city(STATE s, Variable *args) {
   struct timespec start, end;
   clock_gettime(CLOCK_MONOTONIC, &start);
 
@@ -124,7 +124,7 @@ Variable cmd_businesses_with_stars_and_city(Variable *args) {
 }
 
 // Query 6
-Variable cmd_top_businesses_by_city(Variable *args) {
+Variable cmd_top_businesses_by_city(STATE s, Variable *args) {
   struct timespec start, end;
   clock_gettime(CLOCK_MONOTONIC, &start);
 
@@ -138,7 +138,7 @@ Variable cmd_top_businesses_by_city(Variable *args) {
 }
 
 // Query 7
-Variable cmd_international_users(Variable *args) {
+Variable cmd_international_users(STATE s, Variable *args) {
   struct timespec start, end;
   clock_gettime(CLOCK_MONOTONIC, &start);
 
@@ -151,7 +151,7 @@ Variable cmd_international_users(Variable *args) {
 }
 
 // Query 8
-Variable cmd_top_businesses_with_category(Variable *args) {
+Variable cmd_top_businesses_with_category(STATE s, Variable *args) {
   struct timespec start, end;
   clock_gettime(CLOCK_MONOTONIC, &start);
 
@@ -166,7 +166,7 @@ Variable cmd_top_businesses_with_category(Variable *args) {
 }
 
 // Query 9
-Variable cmd_reviews_with_word(Variable *args) {
+Variable cmd_reviews_with_word(STATE s, Variable *args) {
   struct timespec start, end;
   clock_gettime(CLOCK_MONOTONIC, &start);
 
@@ -179,7 +179,7 @@ Variable cmd_reviews_with_word(Variable *args) {
   return init_var(VAR_TABLE, val, NULL);
 }
 
-Variable cmd_projection(Variable *args) {
+Variable cmd_projection(STATE s, Variable *args) {
   VariableValue val;
   GPtrArray *col_array = get_var_value(args[1]).array;
   GArray *columns =
@@ -201,35 +201,36 @@ Variable cmd_projection(Variable *args) {
   return init_var(VAR_TABLE, val, NULL);
 }
 
-Variable cmd_filter(Variable *args) {
+Variable cmd_filter(STATE s, Variable *args) {
   VariableValue val;
   val.table =
       filter(get_var_value(args[0]).table, get_var_value(args[1]).string,
              get_var_value(args[2]).string, get_var_value(args[3]).operator);
   return init_var(VAR_TABLE, val, NULL);
 }
-Variable cmd_join(Variable *args) {
+Variable cmd_join(STATE s, Variable *args) {
   VariableValue val;
   val.table = join(get_var_value(args[0]).table, get_var_value(args[1]).table);
   return init_var(VAR_TABLE, val, NULL);
 }
 
-Variable cmd_avg(Variable *args) {
+Variable cmd_avg(STATE s, Variable *args) {
   VariableValue val;
   val.float_num =
       avg(get_var_value(args[0]).table, get_var_value(args[1]).string);
   return init_var(VAR_FLOAT, val, NULL);
 }
-Variable cmd_max(Variable *args) {
+
+Variable cmd_max(STATE s, Variable *args) {
   VariableValue val;
   val.float_num =
       max_table(get_var_value(args[0]).table, get_var_value(args[1]).string);
   return init_var(VAR_FLOAT, val, NULL);
 }
-Variable cmd_min(Variable *args) {
+
+Variable cmd_min(STATE s, Variable *args) {
   VariableValue val;
   val.float_num =
       min_table(get_var_value(args[0]).table, get_var_value(args[1]).string);
   return init_var(VAR_FLOAT, val, NULL);
 }
-

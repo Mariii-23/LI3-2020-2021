@@ -4,28 +4,28 @@
 #include "model/state.h"
 
 // Comandos utilizados no programa
-Variable print(Variable *args);
-Variable quit(Variable *args);
-Variable help(Variable *args);
-Variable cmd_from_csv(Variable *args);
-Variable cmd_to_csv(Variable *args);
+Variable print(STATE s, Variable *args);
+Variable quit(STATE s, Variable *args);
+Variable help(STATE s, Variable *args);
+Variable cmd_from_csv(STATE s, Variable *args);
+Variable cmd_to_csv(STATE s, Variable *args);
 
-Variable cmd_load_sgr(Variable *args);
-Variable cmd_businesses_started_by_letter(Variable *args);
-Variable cmd_business_info(Variable *args);
-Variable cmd_businesses_reviewed(Variable *args);
-Variable cmd_businesses_with_stars_and_city(Variable *args);
-Variable cmd_top_businesses_by_city(Variable *args);
-Variable cmd_international_users(Variable *args);
-Variable cmd_top_businesses_with_category(Variable *args);
-Variable cmd_reviews_with_word(Variable *args);
+Variable cmd_load_sgr(STATE s, Variable *args);
+Variable cmd_businesses_started_by_letter(STATE s, Variable *args);
+Variable cmd_business_info(STATE s, Variable *args);
+Variable cmd_businesses_reviewed(STATE s, Variable *args);
+Variable cmd_businesses_with_stars_and_city(STATE s, Variable *args);
+Variable cmd_top_businesses_by_city(STATE s, Variable *args);
+Variable cmd_international_users(STATE s, Variable *args);
+Variable cmd_top_businesses_with_category(STATE s, Variable *args);
+Variable cmd_reviews_with_word(STATE s, Variable *args);
 
-Variable show(Variable *args);
-Variable cmd_projection(Variable *args);
-Variable cmd_filter(Variable *args);
-Variable cmd_join(Variable *args);
-Variable cmd_avg(Variable *args);
-Variable cmd_max(Variable *args);
-Variable cmd_min(Variable *args);
+Variable show(STATE s, Variable *args);
+Variable cmd_projection(STATE s, Variable *args);
+Variable cmd_filter(STATE s, Variable *args);
+Variable cmd_join(STATE s, Variable *args);
+Variable cmd_avg(STATE s, Variable *args);
+Variable cmd_max(STATE s, Variable *args);
+Variable cmd_min(STATE s, Variable *args);
 
 #endif

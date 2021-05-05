@@ -51,14 +51,6 @@ char **command_complete(const char *text, int start, int end) {
   return NULL;
 }
 
-#define define_function(state, name, handler, ret, n_args, help, ...)          \
-  {                                                                            \
-    VariableType f_args[] = {__VA_ARGS__};                                     \
-    VariableValue val;                                                         \
-    val.function = create_function(n_args, ret, handler, f_args, help);        \
-    create_variable(state, init_var(VAR_FUNCTION, val, name));                 \
-  }
-
 // Executa o Read-Eval-Print Loop
 void repl() {
   char *line;
@@ -68,62 +60,65 @@ void repl() {
   STATE state = init_state();
 
   // Funções novas
-  define_function(state, "print", print, VAR_VOID, 1, NULL, VAR_ANY);
-  define_function(state, "quit", quit, VAR_VOID, 0, "Quit");
-  define_function(state, "show", show, VAR_VOID, 1, "Show Table", VAR_TABLE);
-  define_function(state, "from_csv", cmd_from_csv, VAR_TABLE, 2, "From CSV",
+  define_function(state, "print", print, VAR_VOID, 0, 1, NULL, VAR_ANY);
+  define_function(state, "quit", quit, VAR_VOID, 0, 0, "Quit");
+  define_function(state, "show", show, VAR_VOID, 0, 1, "Show Table", VAR_TABLE);
+  define_function(state, "from_csv", cmd_from_csv, VAR_TABLE, 0, 2, "From CSV",
                   VAR_STRING, VAR_STRING);
-  define_function(state, "to_csv", cmd_to_csv, VAR_VOID, 3, "To CSV", VAR_TABLE,
-                  VAR_STRING, VAR_STRING);
+  define_function(state, "to_csv", cmd_to_csv, VAR_VOID, 0, 3, "To CSV",
+                  VAR_TABLE, VAR_STRING, VAR_STRING);
   // Query 1
-  define_function(state, "load_sgr", cmd_load_sgr, VAR_SGR, 3, "Load SGR",
+  define_function(state, "load_sgr", cmd_load_sgr, VAR_SGR, 1, 3, "Load SGR",
                   VAR_STRING, VAR_STRING, VAR_STRING);
   // Query 2
   define_function(state, "businesses_started_by_letter",
-                  cmd_businesses_started_by_letter, VAR_TABLE, 2,
+                  cmd_businesses_started_by_letter, VAR_TABLE, 0, 2,
                   "Businesses started by letter", VAR_SGR, VAR_STRING);
 
   // Query 3
-  define_function(state, "business_info", cmd_business_info, VAR_TABLE, 2,
+  define_function(state, "business_info", cmd_business_info, VAR_TABLE, 0, 2,
                   "Businesses information", VAR_SGR, VAR_STRING);
 
   // Query 4
   define_function(state, "businesses_reviewed", cmd_businesses_reviewed,
-                  VAR_TABLE, 2, "Businesses reviewed", VAR_SGR, VAR_STRING);
+                  VAR_TABLE, 0, 2, "Businesses reviewed", VAR_SGR, VAR_STRING);
 
   // Query 5
   define_function(state, "businesses_with_stars_and_city",
-                  cmd_businesses_with_stars_and_city, VAR_TABLE, 3,
+                  cmd_businesses_with_stars_and_city, VAR_TABLE, 0, 3,
                   "Businesses  with stars and city", VAR_SGR, VAR_FLOAT,
                   VAR_STRING);
   // Query 6
   define_function(state, "top_businesses_by_city", cmd_top_businesses_by_city,
-                  VAR_TABLE, 2, "Top Businesses by city", VAR_SGR, VAR_NUMBER);
+                  VAR_TABLE, 0, 2, "Top Businesses by city", VAR_SGR,
+                  VAR_NUMBER);
   // Query 7
   define_function(state, "international_users", cmd_international_users,
-                  VAR_TABLE, 1, "International users", VAR_SGR);
+                  VAR_TABLE, 0, 1, "International users", VAR_SGR);
   // Query 8
   define_function(state, "top_businesses_with_category",
-                  cmd_top_businesses_with_category, VAR_TABLE, 3,
+                  cmd_top_businesses_with_category, VAR_TABLE, 0, 3,
                   "Top businesses with category", VAR_SGR, VAR_NUMBER,
                   VAR_STRING);
   // Query 9
   define_function(state, "reviews_with_word", cmd_reviews_with_word, VAR_TABLE,
-                  2, "Reviews with word", VAR_SGR, VAR_STRING);
+                  0, 2, "Reviews with word", VAR_SGR, VAR_STRING);
 
-  define_function(state, "proj", cmd_projection, VAR_TABLE, 2,
+  define_function(state, "proj", cmd_projection, VAR_TABLE, 0, 2,
                   "Project a table", VAR_TABLE, VAR_ARRAY);
-  define_function(state, "filter", cmd_filter, VAR_TABLE, 4, "Filter a table",
-                  VAR_TABLE, VAR_STRING, VAR_STRING, VAR_OPERATOR);
-  define_function(state, "join", cmd_join, VAR_TABLE, 2, "Join two tables",
+  define_function(state, "filter", cmd_filter, VAR_TABLE, 0, 4,
+                  "Filter a table", VAR_TABLE, VAR_STRING, VAR_STRING,
+                  VAR_OPERATOR);
+  define_function(state, "join", cmd_join, VAR_TABLE, 0, 2, "Join two tables",
                   VAR_TABLE, VAR_TABLE);
-  define_function(state, "avg", cmd_avg, VAR_FLOAT, 2,
+  define_function(state, "avg", cmd_avg, VAR_FLOAT, 0, 2,
                   "Get average of a certain column", VAR_TABLE, VAR_STRING);
 
-  define_function(state, "max", cmd_max, VAR_FLOAT, 2,
+  define_function(state, "max", cmd_max, VAR_FLOAT, 0, 2,
                   "Get max value of certain column", VAR_TABLE, VAR_STRING);
-  define_function(state, "min", cmd_min, VAR_FLOAT, 2,
+  define_function(state, "min", cmd_min, VAR_FLOAT, 0, 2,
                   "Get min value of a certain column", VAR_TABLE, VAR_STRING);
+
   // O readline devolve NULL quando chega ao EOF
   while ((line = readline(BOLD FG_CYAN "> " RESET_ALL))) {
     // Se a linha não for nula...

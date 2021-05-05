@@ -155,44 +155,64 @@ Variable execute(STATE state, AST ast) {
     const GPtrArray *args_ast = get_function_args(get_ast_function_call(ast));
     int n_args = get_n_args(function);
 
-    if (args_ast->len != n_args) {
-      fprintf(stderr,
-              BOLD FG_RED "Error: " RESET_ALL
-                          "wrong number of arguments, expected" BOLD
-                          " %d" RESET_ALL ", got " BOLD "%d" RESET_ALL ".\n",
-              n_args, args_ast->len);
-      return NULL;
-    }
-
     Variable *args = malloc(sizeof(Variable) * n_args);
-    for (int i = 0; i < n_args; i++) {
-      AST arg = g_ptr_array_index(args_ast, i);
-      args[i] = execute(state, arg);
-      int error = args[i] == NULL;
 
-      if (!error && get_arg_type(function, i) != VAR_ANY) {
-        if (get_arg_type(function, i) != get_var_type(args[i])) {
-          fprintf(stderr,
-                  BOLD FG_RED "Error on argument " FG_YELLOW "%d" FG_RED
-                              ": " RESET_ALL "expected type " BOLD
-                              "%s" RESET_ALL ", got " BOLD "%s" RESET_ALL ".\n",
-                  i + 1, type_name(get_arg_type(function, i)),
-                  type_name(get_var_type(args[i])));
-          error = 1;
-        }
+    if (get_defaultable(function) && args_ast->len == 0) {
+      // Vamos passar sempre void caso sejam os argumentos default
+      for (int i = 0; i < n_args; i++) {
+        args[i] = void_var();
       }
-
-      if (error) {
-        for (int j = 0; j <= i; j++) {
-          if (args[i])
-            free_if_possible(args[i]);
-        }
+    } else {
+      if (args_ast->len != n_args) {
         free(args);
+        fprintf(stderr,
+                BOLD FG_RED "Error: " RESET_ALL
+                            "wrong number of arguments, expected" BOLD
+                            " %d" RESET_ALL ", got " BOLD "%d" RESET_ALL ".\n",
+                n_args, args_ast->len);
         return NULL;
       }
+
+      // Verificar argumentos e passar argumentos à função
+      for (int i = 0; i < n_args; i++) {
+        AST arg = g_ptr_array_index(args_ast, i);
+        args[i] = execute(state, arg);
+        int error = args[i] == NULL;
+
+        if (!error && get_arg_type(function, i) != VAR_ANY) {
+          if (get_arg_type(function, i) != get_var_type(args[i])) {
+            if (get_arg_type(function, i) == VAR_FLOAT &&
+                get_var_type(args[i]) == VAR_NUMBER) {
+              // Promoção de ints a floats
+              set_var_type(args[i], VAR_FLOAT);
+              VariableValue v = get_var_value(args[i]);
+              v.float_num = v.number;
+              set_var_value(args[i], v);
+            } else {
+              fprintf(stderr,
+                      BOLD FG_RED "Error on argument " FG_YELLOW "%d" FG_RED
+                                  ": " RESET_ALL "expected type " BOLD
+                                  "%s" RESET_ALL ", got " BOLD "%s" RESET_ALL
+                                  ".\n",
+                      i + 1, type_name(get_arg_type(function, i)),
+                      type_name(get_var_type(args[i])));
+              error = 1;
+            }
+          }
+        }
+
+        if (error) {
+          for (int j = 0; j <= i; j++) {
+            if (args[i])
+              free_if_possible(args[i]);
+          }
+          free(args);
+          return NULL;
+        }
+      }
     }
 
-    ret = get_function(function)(args);
+    ret = get_function(function)(state, args);
   } break;
   }
 

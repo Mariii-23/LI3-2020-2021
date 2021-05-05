@@ -15,6 +15,7 @@ struct function {
   const char *help_text;
 
   int n_args;
+  int defaultable;
   VariableType *args;
 
   FunctionPtr function;
@@ -75,6 +76,10 @@ void set_var_name(Variable var, const char *name) {
     var->name = g_strdup(name);
 }
 
+void set_var_value(Variable var, VariableValue v) { var->value = v; }
+
+void set_var_type(Variable var, VariableType t) { var->type = t; }
+
 Variable void_var() {
   VariableValue val;
   val.number = 0;
@@ -112,11 +117,11 @@ STATE init_state() {
 
   // Vamos criar variáveis globais para os comparators
   VariableValue val;
-  val.operator = GT;
+  val.operator= GT;
   create_variable(s, init_var(VAR_OPERATOR, val, "GT"));
-  val.operator = EQ;
+  val.operator= EQ;
   create_variable(s, init_var(VAR_OPERATOR, val, "EQ"));
-  val.operator = LT;
+  val.operator= LT;
   create_variable(s, init_var(VAR_OPERATOR, val, "LT"));
 
   return s;
@@ -128,7 +133,7 @@ void create_variable(STATE state, Variable var) {
     v->references -= 1;
     free_if_possible(v);
   }
-  
+
   var->references += 1;
   g_tree_insert(state, var->name, var);
 }
@@ -137,15 +142,16 @@ Variable find_variable(STATE state, const char *name) {
   return g_tree_lookup(state, name);
 }
 
-FunctionVal create_function(int n_args, VariableType return_type,
-                            FunctionPtr function, const VariableType *args,
-                            const char *help) {
+FunctionVal create_function(int n_args, int defaultable,
+                            VariableType return_type, FunctionPtr function,
+                            const VariableType *args, const char *help) {
   FunctionVal ret = malloc(sizeof(struct function));
 
   ret->return_type = return_type;
   ret->help_text = help;
   ret->args = memcpy(malloc(n_args * sizeof(VariableType)), args,
                      n_args * sizeof(VariableType));
+  ret->defaultable = defaultable;
   ret->n_args = n_args;
   ret->function = function;
 
@@ -153,6 +159,8 @@ FunctionVal create_function(int n_args, VariableType return_type,
 }
 
 int get_n_args(FunctionVal func) { return func->n_args; }
+
+int get_defaultable(FunctionVal func) { return func->defaultable; }
 
 VariableType get_arg_type(FunctionVal func, int i) { return func->args[i]; }
 

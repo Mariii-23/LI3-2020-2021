@@ -1,9 +1,9 @@
 #ifndef STATE_H
 #define STATE_H
-#include <glib.h>
-#include "sgr.h"
-#include "model/table.h"
 #include "controller/commands.h"
+#include "model/table.h"
+#include "sgr.h"
+#include <glib.h>
 
 // Uma variável é qualquer valor no programa - incluindo funções.
 typedef enum variable_type {
@@ -30,13 +30,13 @@ typedef union {
   OPERATOR operator;
 } VariableValue;
 
-typedef struct variable *Variable;
-typedef struct function *FunctionVal;
-typedef Variable (*FunctionPtr)(Variable* args);
-
 // STATE é o estado do programa - contem todas as variáveis e os seus
 // valores
 typedef GTree *STATE;
+
+typedef struct variable *Variable;
+typedef struct function *FunctionVal;
+typedef Variable (*FunctionPtr)(STATE s, Variable *args);
 
 Variable init_var(VariableType type, VariableValue val, const char *name);
 void free_var(Variable var);
@@ -44,6 +44,8 @@ void free_if_possible(Variable var);
 VariableType get_var_type(Variable var);
 VariableValue get_var_value(Variable var);
 void set_var_name(Variable var, const char *name);
+void set_var_value(Variable var, VariableValue v);
+void set_var_type(Variable var, VariableType t);
 // Devolve uma variável do tipo void
 Variable void_var();
 
@@ -55,9 +57,23 @@ void free_state(STATE state);
 void create_variable(STATE state, Variable var);
 Variable find_variable(STATE state, const char *name);
 
-FunctionVal create_function(int n_args, VariableType return_type, FunctionPtr function, const VariableType* args, const char *help);
+FunctionVal create_function(int n_args, int defaultable,
+                            VariableType return_type, FunctionPtr function,
+                            const VariableType *args, const char *help);
 int get_n_args(FunctionVal func);
+int get_defaultable(FunctionVal func);
 VariableType get_arg_type(FunctionVal func, int i);
 FunctionPtr get_function(FunctionVal func);
+
+// Esta macro serve para definir uma função rapidamente
+#define define_function(state, name, handler, ret, defaultable, n_args, help,  \
+                        ...)                                                   \
+  {                                                                            \
+    VariableType f_args[] = {__VA_ARGS__};                                     \
+    VariableValue val;                                                         \
+    val.function =                                                             \
+        create_function(n_args, defaultable, ret, handler, f_args, help);      \
+    create_variable(state, init_var(VAR_FUNCTION, val, name));                 \
+  }
 
 #endif
