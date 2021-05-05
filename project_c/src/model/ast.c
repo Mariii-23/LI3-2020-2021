@@ -240,6 +240,34 @@ void set_ast_type(AST ast, ASTType type) {
   ast->type = type;
 }
 
+const VarAssignment get_ast_assignment(AST ast) {
+  return ast->value.assignment;
+}
+
+const FunctionCall get_ast_function_call(AST ast) {
+  return ast->value.function;
+}
+
+const Indexed get_ast_index(AST ast) {
+  return ast->value.index;
+}
+
+const char *get_ast_variable(AST ast) {
+  return ast->value.variable;
+}
+
+const char *get_ast_string(AST ast) {
+  return ast->value.string;
+}
+
+const GPtrArray *get_ast_array(AST ast) {
+  return ast->value.array;
+}
+
+int get_ast_number(AST ast) {
+  return ast->value.number;
+}
+
 void set_ast_function(AST ast, FunctionCall call) {
   ast->type = AST_FUNCTIONCALL;
   ast->value.function = call;
@@ -248,6 +276,26 @@ void set_ast_function(AST ast, FunctionCall call) {
 void set_ast_var_assignment(AST ast, VarAssignment var) {
   ast->type = AST_ASSIGNMENT;
   ast->value.assignment = var;
+}
+
+void set_ast_number(AST ast, int n) {
+  ast->type = AST_NUMBER;
+  ast->value.number = n;
+}
+
+void set_ast_variable(AST ast, const char *variable) {
+  ast->type = AST_VARIABLE;
+  ast->value.variable = g_strdup(variable);
+}
+
+void set_ast_string(AST ast, const char *string) {
+  ast->type = AST_STRING;
+  ast->value.string = g_strdup(string);
+}
+
+void set_ast_array(AST ast, GPtrArray *array) {
+  ast->type = AST_ARRAY;
+  ast->value.array = array;
 }
 
 FunctionCall make_function_call(const char *name) {
@@ -259,7 +307,7 @@ FunctionCall make_function_call(const char *name) {
   return ret;
 }
 
-FunctionCall function_call_dup(FunctionCall f) {
+FunctionCall function_call_dup(const FunctionCall f) {
   FunctionCall ret = make_function_call(f->name);
   for (int i = 0; i < f->args->len; i++) {
     function_call_add_arg(ret, g_ptr_array_index(f->args, i));
@@ -278,12 +326,67 @@ void free_function_call(FunctionCall f) {
   free(f);
 }
 
+const char *get_function_name(const FunctionCall f) {
+  return f->name;
+}
+
+const GPtrArray *get_function_args(const FunctionCall f) {
+  return f->args;
+}
+
+VarAssignment make_var_assignment(const char *variable) {
+  VarAssignment ret = malloc(sizeof(struct var_assignment));
+  ret->variable = g_strdup(variable);
+  ret->value = NULL;
+  return ret;
+}
+
+void free_var_assignment(VarAssignment var) {
+  free(var->variable);
+  if (var->value)
+    free_ast(var->value);
+}
+
+VarAssignment var_assignment_dup(const VarAssignment v) {
+  VarAssignment ret = make_var_assignment(v->variable);
+  if (v->value)
+    ret->value = ast_dup(v->value);
+
+  return ret;
+}
+
+void set_var_assignment_value(VarAssignment v, AST val) {
+  v->value = val;
+}
+
+const AST get_var_assignment_value(const VarAssignment v) {
+  return v->value;
+}
+
+const char *get_var_assignment_variable(const VarAssignment v) {
+  return v->variable;
+}
+
 void index_expression(AST expression, AST index) {
   Indexed indexed = malloc(sizeof(struct indexed));
   indexed->expression = memcpy(malloc(sizeof(struct ast)), expression, sizeof(struct ast));
   indexed->index = index;
   expression->type = AST_INDEX;
   expression->value.index = indexed;
+}
+
+void free_indexed(Indexed i) {
+  free_ast(i->expression);
+  free_ast(i->index);
+  free(i);
+}
+
+const AST get_indexed_expression(const Indexed i) {
+  return i->expression;
+}
+
+const AST get_indexed_index(const Indexed i) {
+  return i->index;
 }
 
 SyntaxError syntax_error(const char *expected, const Token *token) {

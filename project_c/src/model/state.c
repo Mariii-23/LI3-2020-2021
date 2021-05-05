@@ -71,9 +71,9 @@ VariableType get_var_type(Variable var) { return var->type; }
 
 VariableValue get_var_value(Variable var) { return var->value; }
 
-void set_var_name(Variable var, char *name) {
+void set_var_name(Variable var, const char *name) {
   if (var != NULL)
-    var->name = name;
+    var->name = g_strdup(name);
 }
 
 Variable void_var() {
@@ -111,11 +111,11 @@ STATE init_state() {
 
   // Vamos criar variáveis globais para os comparators
   VariableValue val;
-  val.operator= GT;
+  val.operator = GT;
   create_variable(s, init_var(VAR_OPERATOR, val, "GT"));
-  val.operator= EQ;
+  val.operator = EQ;
   create_variable(s, init_var(VAR_OPERATOR, val, "EQ"));
-  val.operator= LT;
+  val.operator = LT;
   create_variable(s, init_var(VAR_OPERATOR, val, "LT"));
 
   return s;
@@ -125,7 +125,7 @@ void create_variable(STATE state, Variable var) {
   g_tree_insert(state, var->name, var);
 }
 
-Variable find_variable(STATE state, char *name) {
+Variable find_variable(STATE state, const char *name) {
   return g_tree_lookup(state, name);
 }
 

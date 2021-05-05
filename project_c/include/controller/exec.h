@@ -5,7 +5,7 @@
 #include "model/state.h"
 #include <glib.h>
 
-Variable execute(STATE state, AST *ast);
+Variable execute(STATE state, AST ast);
 
 void free_var(Variable var);
 

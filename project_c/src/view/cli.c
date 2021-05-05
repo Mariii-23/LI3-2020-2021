@@ -131,16 +131,16 @@ void repl() {
       // adicionar ao histórico
       add_history(line);
 
-      Token *toks = split_line(line);
-      AST ast;
+      TokenStream toks = split_line(line);
+      AST ast = make_empty_ast();
       int consumed = 0;
-      SyntaxError *e = NULL;
-      while (e == NULL && toks->type != TOK_FINISH) {
-        e = parse_statement(toks, &ast, &consumed);
-        toks += consumed;
+      SyntaxError e = NULL;
+      while (e == NULL && get_token_type(get_token_stream_token(toks, 0)) != TOK_FINISH) {
+        e = parse_statement(toks, ast, &consumed);
+        toks = get_token_stream_token(toks, consumed);
 
         if (!e) {
-          Variable v = execute(state, &ast);
+          Variable v = execute(state, ast);
 
           if (v) {
             if (get_var_type(v) != VAR_VOID)
@@ -149,7 +149,7 @@ void repl() {
             free_if_possible(state, v);
           }
         } else {
-          print_error(e, line);
+          print_syntax_error(e);
         }
       }
     }

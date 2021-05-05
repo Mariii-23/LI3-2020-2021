@@ -8,58 +8,63 @@
 #include "model/table.h"
 #include "view/colors.h"
 
-Variable execute(STATE state, AST *ast) {
+Variable execute(STATE state, AST ast) {
   Variable ret = NULL;
   VariableValue val;
 
-  switch (ast->type) {
+  switch (get_ast_type(ast)) {
+  case AST_NONE:
+    return NULL;
   case AST_VARIABLE:
-    ret = find_variable(state, ast->value.variable);
+    ret = find_variable(state, get_ast_variable(ast));
     if (!ret)
       fprintf(stderr,
               BOLD FG_RED "Error: " RESET_ALL "variable %s does not exist.\n",
-              ast->value.variable);
+              get_ast_variable(ast));
     break;
   case AST_NUMBER:
-    val.number = ast->value.number;
+    val.number = get_ast_number(ast);
     ret = init_var(VAR_NUMBER, val, NULL);
     break;
   case AST_STRING:
     // Tenho de retirar as aspas
-    val.string = malloc(strlen(ast->value.string) - 1);
-    int i = 0, j = 0;
+    {
+      const char *str = get_ast_string(ast);
+      val.string = malloc(strlen(str) - 1);
+      int i = 0, j = 0;
 
-    for (; ast->value.string[j]; j++) {
-      if (ast->value.string[j] != '"') {
-        if (ast->value.string[j] == '\\')
-          j++;
-        val.string[i] = ast->value.string[j];
-        i++;
+      for (; str[j]; j++) {
+        if (str[j] != '"') {
+          if (str[j] == '\\')
+            j++;
+          val.string[i] = str[j];
+          i++;
+        }
       }
+
+      val.string[i] = '\0';
+
+      ret = init_var(VAR_STRING, val, NULL);
+
+      break;
     }
-
-    val.string[i] = '\0';
-
-    ret = init_var(VAR_STRING, val, NULL);
-
-    break;
   case AST_ASSIGNMENT:
     // Bug possivel com garbage collection, provavelmente o melhor é ter
     // "names" em vez de name, com um array. Ou então simplesmente
     // fazemos reference counting, algo assim simples.
-    ret = execute(state, ast->value.assignment->value);
+    ret = execute(state, get_var_assignment_value(get_ast_assignment(ast)));
     if (ret) {
-      set_var_name(ret, ast->value.assignment->variable);
+      set_var_name(ret, get_var_assignment_variable(get_ast_assignment(ast)));
       create_variable(state, ret);
     }
     break;
   case AST_ARRAY: {
     GPtrArray *array = g_ptr_array_new();
-    GArray *array_ast = ast->value.array;
+    const GPtrArray *array_ast = get_ast_array(ast);
 
     for (int i = 0; i < array_ast->len; i++) {
-      AST element = g_array_index(array_ast, AST, i);
-      Variable result = execute(state, &element);
+      AST element = g_ptr_array_index(array_ast, i);
+      Variable result = execute(state, element);
       if (!result) {
         for (int j = 0; j < i; j++) {
           free_if_possible(state, g_ptr_array_index(array, j));
@@ -75,7 +80,7 @@ Variable execute(STATE state, AST *ast) {
     break;
   }
   case AST_INDEX: {
-    Variable expr = execute(state, ast->value.index->expression);
+    Variable expr = execute(state, get_indexed_expression(get_ast_index(ast)));
     if (expr == NULL) {
       return NULL;
     }
@@ -86,7 +91,7 @@ Variable execute(STATE state, AST *ast) {
       return NULL;
     }
 
-    Variable index = execute(state, ast->value.index->index);
+    Variable index = execute(state, get_indexed_index(get_ast_index(ast)));
     if (get_var_type(index) != VAR_NUMBER) {
       free_if_possible(state, expr);
       free_if_possible(state, index);
@@ -134,16 +139,16 @@ Variable execute(STATE state, AST *ast) {
   case AST_FUNCTIONCALL: {
     // Dentro de um block para podermos definir variáveis
 
-    ret = find_variable(state, ast->value.function->function_name);
+    ret = find_variable(state, get_function_name(get_ast_function_call(ast)));
     if (!ret) {
       fprintf(stderr,
               BOLD FG_RED "Error: " RESET_ALL "function %s does not exist.\n",
-              ast->value.function->function_name);
+              get_function_name(get_ast_function_call(ast)));
       return NULL;
     }
 
     FunctionVal function = get_var_value(ret).function;
-    GArray *args_ast = ast->value.function->args;
+    const GPtrArray *args_ast = get_function_args(get_ast_function_call(ast));
     int n_args = get_n_args(function);
 
     if (args_ast->len != n_args) {
@@ -157,8 +162,8 @@ Variable execute(STATE state, AST *ast) {
 
     Variable *args = malloc(sizeof(Variable) * n_args);
     for (int i = 0; i < n_args; i++) {
-      AST arg = g_array_index(args_ast, AST, i);
-      args[i] = execute(state, &arg);
+      AST arg = g_ptr_array_index(args_ast, i);
+      args[i] = execute(state, arg);
       int error = args[i] == NULL;
 
       if (!error && get_arg_type(function, i) != VAR_ANY) {

@@ -147,7 +147,7 @@ SyntaxError parse_expression(const TokenStream tokens, AST node, int *consumed) 
         return e;
       }
     } else if (type == TOK_STRING) {
-      set_ast_string(get_token_text(tok));
+      set_ast_string(node, get_token_text(tok));
       consumed_now = 1;
     } else if (type == TOK_OSQ) {
       AST index = make_empty_ast();
