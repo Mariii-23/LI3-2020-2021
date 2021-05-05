@@ -140,7 +140,8 @@ ReviewCollection collect_reviews(FILE *fp, SGR sgr) {
   char *line;
   ReviewCollection collection = create_review_collection();
   // read header
-  read_line(fp);
+  line = read_line(fp);
+  free(line);
   while ((line = read_line(fp))) {
     Review review = parse_review_line(line, sgr);
     free(line);
@@ -151,8 +152,7 @@ ReviewCollection collect_reviews(FILE *fp, SGR sgr) {
       continue;
     }
     add_review(collection, review);
-    // free da review
-    free(review);
+    free_review(review);
   }
   return collection;
 }
@@ -162,7 +162,8 @@ BusinessCollection collect_businesses(FILE *fp) {
   BusinessCollection collection = create_business_collection();
 
   // read header
-  read_line(fp);
+  line = read_line(fp);
+  free(line);
 
   while ((line = read_line(fp))) {
     Business business = parse_business_line(line);
@@ -180,7 +181,9 @@ UserCollection collect_users(FILE *fp) {
   char *line;
   UserCollection collection = create_user_collection();
   // read header
-  read_line(fp);
+  line = read_line(fp);
+  free(line);
+
   while ((line = read_line(fp))) {
     User user = parse_user_line(line);
     free(line);

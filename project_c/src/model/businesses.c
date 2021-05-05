@@ -140,10 +140,12 @@ void free_business(Business self) {
     free(self->city);
     free(self->state);
     if (self->categories) {
-      if (self->categories->len > 1)
+      /* if (self->categories->len > 1) */
+      if (self->categories->len >= 1)
         g_ptr_array_set_free_func(self->categories, free);
       g_ptr_array_free(self->categories, TRUE);
     }
+
     free(self);
   }
 }
@@ -161,7 +163,8 @@ BusinessCollection create_business_collection() {
       (BusinessCollection)malloc(sizeof(struct business_collection));
   *new_business_collection = (struct business_collection){
       .by_id =
-          g_hash_table_new_full(g_str_hash, g_str_equal, NULL, g_free_business),
+          // free key
+      g_hash_table_new_full(g_str_hash, g_str_equal, NULL, g_free_business),
       .by_letter = phf_new()};
   return new_business_collection;
 }

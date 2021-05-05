@@ -58,7 +58,7 @@ void g_free_ll(gpointer pointer) {
 Stats start_statistics() {
   Stats stats = malloc(sizeof(struct stats));
   stats->business_id_to_stars =
-      g_hash_table_new_full(g_str_hash, g_str_equal, NULL, free);
+      g_hash_table_new_full(g_str_hash, g_str_equal, free, free);
   stats->city_to_business_by_star = g_hash_table_new(g_str_hash, g_str_equal);
   stats->category_to_business_by_star =
       g_hash_table_new(g_str_hash, g_str_equal);
@@ -95,6 +95,23 @@ float get_average_number_stars(Stats stats, char *business_id) {
   if (!tuple)
     return (-1);
   return tuple->current_average;
+}
+
+void added_number_stars_and_reviews_table(Stats const stats, TABLE table,
+                                          char const *business_id) {
+  if (!stats || !table || !business_id)
+    return;
+  StarsTuple tuple = ((StarsTuple)g_hash_table_lookup(
+      stats->business_id_to_stars, business_id));
+
+  char *numero_stars = g_strdup_printf("%f", tuple->current_average);
+  char *numero_reviews = g_strdup_printf("%ld", tuple->number_reviews);
+
+  add_field(table, numero_stars);
+  add_field(table, numero_reviews);
+
+  free(numero_reviews);
+  free(numero_stars);
 }
 
 /**
@@ -291,6 +308,11 @@ void build_city_and_category_hash_table(BusinessCollection const businesses,
     free(name);
     free(business_id);
     free_business(business);
+    if (categories) {
+      if (categories->len >= 1)
+        g_ptr_array_set_free_func(categories, free);
+      g_ptr_array_free(categories, TRUE);
+    }
   }
 }
 
@@ -300,8 +322,7 @@ the table, the name, the business id and the stars of the N first elems on
 "city_to_business_by_star" corresponding to that given city.
 Note that our data struct on "city_to_business_by_star" is store in descending
 order. */
-static void n_larger_than_city_star(Stats stats, char *city, int const N,
-                                    TABLE table) {
+void n_larger_city_star(Stats stats, char *city, int const N, TABLE table) {
   if (!stats || !stats->city_to_business_by_star) {
     return;
   }
@@ -349,7 +370,7 @@ void all_n_larger_city_star(Stats stats, int const N, TABLE table) {
 
   for (int i = 0; i < size; i++) {
     char *city = g_strdup(g_list_nth_data(all_keys, i));
-    n_larger_than_city_star(stats, city, N, table);
+    n_larger_city_star(stats, city, N, table);
     free(city);
   }
   g_list_free(all_keys);
@@ -360,8 +381,8 @@ void all_n_larger_city_star(Stats stats, int const N, TABLE table) {
 to the table, the name, the business id and the stars of all elems that have
 more than N stars on that category. Note that our data struct on
 "category_to_business_by_star" is store in descending order. */
-void n_larger_than_category_star(Stats stats, char *category, int const N,
-                                 TABLE table) {
+void n_larger_category_star(Stats stats, char *category, int const N,
+                            TABLE table) {
   if (!stats || !stats->city_to_business_by_star) {
     return;
   }
@@ -403,7 +424,8 @@ void n_larger_than_category_star(Stats stats, char *category, int const N,
 to the table, the name, the business id and the stars of all elems that have
 more than N stars on that city. Note that our data struct on
 "city_to_business_by_star" is store in descending order. */
-void n_larger_city_star(Stats stats, char *city, int const N, TABLE table) {
+void n_larger_than_city_star(Stats stats, char *city, int const N,
+                             TABLE table) {
   if (!stats || !stats->city_to_business_by_star) {
     return;
   }

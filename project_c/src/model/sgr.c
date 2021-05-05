@@ -47,6 +47,7 @@ void free_sgr(SGR sgr) {
   free_reviewCollection(sgr->catalogo_reviews);
   free_user_collection(sgr->catalogo_users);
   free_stats(sgr->estatisticas);
+  free(sgr);
 }
 
 /* GPtrArray *build_head(char *fields[], int N) { */
@@ -133,7 +134,6 @@ TABLE businesses_started_by_letter(SGR sgr, char letter) {
     add_field(table, name);
     free(name);
   }
-  // falta apresentar o size
   char *size_str = g_strdup_printf("%d", size);
   add_footer(table, "Número total: ", size_str);
   free(size_str);
@@ -159,20 +159,15 @@ TABLE business_info(SGR sgr, char *business_id) {
       sgr->catalogo_businesses, business_id);
   if (!business)
     return table;
-  char *numero_stars = g_strdup_printf(
-      "%f", get_average_number_stars(sgr->estatisticas, business_id));
-  char *numero_reviews = g_strdup_printf(
-      "%d", get_number_reviews_by_business(sgr->catalogo_reviews, business_id));
   char *business_name = get_business_name(business);
   char *business_city = get_business_city(business);
   char *business_state = get_business_state(business);
   add_field(table, business_name);
   add_field(table, business_city);
   add_field(table, business_state);
-  add_field(table, numero_stars);
-  add_field(table, numero_reviews);
-  free(numero_reviews);
-  free(numero_stars);
+
+  added_number_stars_and_reviews_table(sgr->estatisticas, table, business_id);
+
   free(business_city);
   free(business_name);
   free(business_state);
@@ -193,7 +188,7 @@ TABLE businesses_reviewed(SGR sgr, char *id) {
       get_reviewCollection_review_by_user_id(sgr->catalogo_reviews, id);
 
   if (!reviews_array) {
-    add_field(table, "0");
+    add_footer(table, "Numero total de businesses:", "0");
     return table;
   }
 
@@ -213,9 +208,8 @@ TABLE businesses_reviewed(SGR sgr, char *id) {
 
   char *size_str = g_strdup_printf("%d", size);
   add_footer(table, "Numero total de businesses:", size_str);
-  // apagar
-  add_field(table, size_str);
   free(size_str);
+
   g_ptr_array_set_free_func(reviews_array, (void *)free_review);
   g_ptr_array_free(reviews_array, TRUE);
   return table;
@@ -225,7 +219,7 @@ TABLE businesses_reviewed(SGR sgr, char *id) {
 TABLE businesses_with_stars_and_city(SGR sgr, float stars, char *city) {
   char *fields[] = {"id", "name", "stars"};
   TABLE table = new_table(fields, QUERY_FIVE_FIELDS_N + 1);
-  n_larger_city_star(sgr->estatisticas, city, stars, table);
+  n_larger_than_city_star(sgr->estatisticas, city, stars, table);
   return table;
 }
 
@@ -251,7 +245,7 @@ TABLE international_users(SGR sgr) {
 TABLE top_businesses_with_category(SGR sgr, int top, char *category) {
   char *fields[] = {"id", "name", "stars"};
   TABLE table = new_table(fields, QUERY_EIGHT_FIELDS_N);
-  n_larger_than_category_star(sgr->estatisticas, category, top, table);
+  n_larger_category_star(sgr->estatisticas, category, top, table);
   return table;
 }
 
