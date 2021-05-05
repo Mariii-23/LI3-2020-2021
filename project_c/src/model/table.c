@@ -156,8 +156,8 @@ void free_table(TABLE table) {
   free(table->header);
 
   for (int i = 0; i < table->number_footers; i++) {
-    free(table->footer[i]);
-    free(table->footer[i + 1]);
+    free(table->footer[i * 2]);
+    free(table->footer[i * 2 + 1]);
   }
 
   free(table->footer);

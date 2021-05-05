@@ -265,5 +265,8 @@ TABLE reviews_with_word(SGR sgr, char *word) {
   char *fields[] = {"id"};
   TABLE table = new_table(fields, QUERY_NINE_FIELDS_N);
   review_id_with_word_in_text(sgr->catalogo_reviews, word, table);
+  char *size_str = g_strdup_printf("%zu", get_number_lines_table(table));
+  add_footer(table, "Número total de palavras:", size_str);
+  free(size_str);
   return table;
 }
