@@ -11,8 +11,8 @@ struct config {
   char *reviews_csv;
 };
 
-CONFIG read_config(char *path_to_config) {
-  CONFIG config = malloc(sizeof(struct config));
+Config read_config(char *path_to_config) {
+  Config config = malloc(sizeof(struct config));
   if (!path_to_config) {
     *config = (struct config){.user_csv = g_strdup("users.csv"),
                               .businesses_csv = g_strdup("businesses.csv"),
@@ -28,4 +28,13 @@ CONFIG read_config(char *path_to_config) {
     free_table(t);
   }
   return config;
+}
+
+void free_config(Config config) {
+  if (config) {
+    free(config->businesses_csv);
+    free(config->user_csv);
+    free(config->reviews_csv);
+    free(config);
+  }
 }
