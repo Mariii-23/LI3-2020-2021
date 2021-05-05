@@ -24,8 +24,8 @@ void build_city_and_category_hash_table(BusinessCollection const businesses,
 void all_n_larger_city_star(Stats stats, int const N, TABLE table);
 void n_larger_category_star(Stats stats, char *category, int const N,
                             TABLE table);
-void n_larger_city_star(Stats stats, char *category, int const N, TABLE table);
+void n_larger_city_star(Stats stats, char *category, float N, TABLE table);
 
-void n_larger_than_city_star(Stats stats, char *city, int const N, TABLE table);
+void n_larger_than_city_star(Stats stats, char *city, float N, TABLE table);
 void free_stats(Stats stats);
 #endif

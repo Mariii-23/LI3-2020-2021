@@ -206,12 +206,12 @@ TABLE join(TABLE table_x, TABLE table_y) {
 }
 /** Returns the maximum or minimum value between the two, depending on the
  * function pointer passed*/
-static char *max_min(TABLE table, char *field_name,
+static float max_min(TABLE table, char *field_name,
                      float (*cmp)(float, float)) {
   ssize_t column = whereis_field(table, field_name);
   if (column == -1) {
     printf("Field doesn't exist\n");
-    return NULL;
+    return -1;
   }
   char *first_value = table_index(table, 0, column);
   float max_min = atof(first_value);
@@ -219,7 +219,7 @@ static char *max_min(TABLE table, char *field_name,
   if (!is_number(first_value) || number_lines <= 0) {
     printf("Please provide a colum with numbers\n");
     free(first_value);
-    return NULL;
+    return -1;
   }
   free(first_value);
   for (int i = 0; i < number_lines; i++) {
@@ -228,14 +228,14 @@ static char *max_min(TABLE table, char *field_name,
     max_min = cmp(curr_float, max_min);
     free(curr);
   }
-  return g_strdup_printf("%.2f", max_min);
+  return max_min;
 }
 /** Returns the maximum value in the table, in the provided column */
-char *max_table(TABLE table, char *field_name) {
+float max_table(TABLE table, char *field_name) {
   return max_min(table, field_name, max_float);
 }
 /** Returns the minimum value in the table, in the provided column */
-char *min_table(TABLE table, char *field_name) {
+float min_table(TABLE table, char *field_name) {
   return max_min(table, field_name, min_float);
 }
 
@@ -243,19 +243,19 @@ char *min_table(TABLE table, char *field_name) {
   Provided a table and a column name, it calculates de average of all the values
   in it,  should they be numbers.
 */
-char *avg(TABLE table, char *field_name) {
+float avg(TABLE table, char *field_name) {
   float sum = 0;
   ssize_t column = whereis_field(table, field_name);
   if (column == -1) {
     printf("Field doesn't exist\n");
-    return NULL;
+    return -1;
   }
   char *first_value = table_index(table, 0, column);
   size_t number_lines = get_number_lines_table(table);
   if (!is_number(first_value) || number_lines <= 0) {
     printf("Please provide a colum with numbers\n");
     free(first_value);
-    return NULL;
+    return -1;
   }
   free(first_value);
   for (int i = 0; i < number_lines; i++) {
@@ -263,6 +263,5 @@ char *avg(TABLE table, char *field_name) {
     sum += atof(curr);
     free(curr);
   }
-  float avg = sum / number_lines;
-  return g_strdup_printf("%.2f", avg);
+  return sum / number_lines;
 }

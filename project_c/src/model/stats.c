@@ -89,11 +89,11 @@ void update_average_stars(Stats stats, char *business_id, float new_star) {
  if don't exist. */
 float get_average_number_stars(Stats stats, char *business_id) {
   if (!stats || !business_id)
-    return (-1);
+    return -1;
   StarsTuple tuple = ((StarsTuple)g_hash_table_lookup(
       stats->business_id_to_stars, business_id));
   if (!tuple)
-    return (-1);
+    return -1;
   return tuple->current_average;
 }
 
@@ -103,6 +103,8 @@ void added_number_stars_and_reviews_table(Stats const stats, TABLE table,
     return;
   StarsTuple tuple = ((StarsTuple)g_hash_table_lookup(
       stats->business_id_to_stars, business_id));
+  if (!tuple)
+    return;
 
   char *numero_stars = g_strdup_printf("%f", tuple->current_average);
   char *numero_reviews = g_strdup_printf("%ld", tuple->number_reviews);
@@ -322,7 +324,7 @@ the table, the name, the business id and the stars of the N first elems on
 "city_to_business_by_star" corresponding to that given city.
 Note that our data struct on "city_to_business_by_star" is store in descending
 order. */
-void n_larger_city_star(Stats stats, char *city, int const N, TABLE table) {
+void n_larger_city_star(Stats stats, char *city, float N, TABLE table) {
   if (!stats || !stats->city_to_business_by_star) {
     return;
   }
@@ -412,7 +414,7 @@ void n_larger_category_star(Stats stats, char *category, int const N,
     free(stars);
   }
 
-  char *size_str = g_strdup_printf("%d", i);
+  char *size_str = g_strdup_printf("%d", i - 1);
   add_footer(table, "Número total: ", size_str);
   // apagar
   add_field(table, size_str);
@@ -424,8 +426,7 @@ void n_larger_category_star(Stats stats, char *category, int const N,
 to the table, the name, the business id and the stars of all elems that have
 more than N stars on that city. Note that our data struct on
 "city_to_business_by_star" is store in descending order. */
-void n_larger_than_city_star(Stats stats, char *city, int const N,
-                             TABLE table) {
+void n_larger_than_city_star(Stats stats, char *city, float N, TABLE table) {
   if (!stats || !stats->city_to_business_by_star) {
     return;
   }
@@ -439,14 +440,13 @@ void n_larger_than_city_star(Stats stats, char *city, int const N,
   int size = g_slist_length(list);
 
   StarsNode value;
-  int i, stop = 0;
-  for (i = 0; i < size && !stop; i++) {
+  int i;
+  for (i = 0; i < size; i++) {
 
     value = (StarsNode)g_slist_nth_data(list, i);
 
     if (value->stars < N) {
-      stop = 1;
-      continue;
+      break;
     }
 
     char *id = value->business_id;
@@ -461,7 +461,5 @@ void n_larger_than_city_star(Stats stats, char *city, int const N,
 
   char *size_str = g_strdup_printf("%d", i);
   add_footer(table, "Número total: ", size_str);
-  // apagar
-  add_field(table, size_str);
   free(size_str);
 }

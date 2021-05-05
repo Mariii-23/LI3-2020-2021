@@ -94,7 +94,7 @@ void repl() {
   // Query 5
   define_function(state, "businesses_with_stars_and_city",
                   cmd_businesses_with_stars_and_city, VAR_TABLE, 3,
-                  "Businesses  with stars and city", VAR_SGR, VAR_NUMBER,
+                  "Businesses  with stars and city", VAR_SGR, VAR_FLOAT,
                   VAR_STRING);
   // Query 6
   define_function(state, "top_businesses_by_city", cmd_top_businesses_by_city,
@@ -117,12 +117,12 @@ void repl() {
                   VAR_TABLE, VAR_STRING, VAR_STRING, VAR_OPERATOR);
   define_function(state, "join", cmd_join, VAR_TABLE, 2, "Join two tables",
                   VAR_TABLE, VAR_TABLE);
-  define_function(state, "avg", cmd_avg, VAR_STRING, 2,
+  define_function(state, "avg", cmd_avg, VAR_FLOAT, 2,
                   "Get average of a certain column", VAR_TABLE, VAR_STRING);
 
-  define_function(state, "max", cmd_max, VAR_STRING, 2,
+  define_function(state, "max", cmd_max, VAR_FLOAT, 2,
                   "Get max value of certain column", VAR_TABLE, VAR_STRING);
-  define_function(state, "min", cmd_min, VAR_STRING, 2,
+  define_function(state, "min", cmd_min, VAR_FLOAT, 2,
                   "Get min value of a certain column", VAR_TABLE, VAR_STRING);
   // O readline devolve NULL quando chega ao EOF
   while ((line = readline(BOLD FG_CYAN "> " RESET_ALL))) {
@@ -135,7 +135,8 @@ void repl() {
       AST ast = make_empty_ast();
       int consumed = 0;
       SyntaxError e = NULL;
-      while (e == NULL && get_token_type(get_token_stream_token(toks, 0)) != TOK_FINISH) {
+      while (e == NULL &&
+             get_token_type(get_token_stream_token(toks, 0)) != TOK_FINISH) {
         e = parse_statement(toks, ast, &consumed);
         toks = get_token_stream_token(toks, consumed);
 

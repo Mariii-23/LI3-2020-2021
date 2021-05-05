@@ -15,8 +15,8 @@ void to_csv(TABLE table, char *filename, char *delim);
 TABLE projection(TABLE table, GArray *colunas);
 TABLE filter(TABLE table, char *field_name, char *value, OPERATOR op);
 TABLE join(TABLE table_x, TABLE table_y);
-char *avg(TABLE table, char *field_name);
-char *max_table(TABLE table, char *field_name);
-char *min_table(TABLE table, char *field_name);
+float avg(TABLE table, char *field_name);
+float max_table(TABLE table, char *field_name);
+float min_table(TABLE table, char *field_name);
 
 #endif

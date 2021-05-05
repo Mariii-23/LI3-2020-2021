@@ -115,7 +115,7 @@ Variable cmd_businesses_with_stars_and_city(Variable *args) {
 
   VariableValue val;
   val.table = businesses_with_stars_and_city(get_var_value(args[0]).sgr,
-                                             get_var_value(args[1]).number,
+                                             get_var_value(args[1]).float_num,
                                              get_var_value(args[2]).string);
 
   clock_gettime(CLOCK_MONOTONIC, &end);
@@ -216,19 +216,20 @@ Variable cmd_join(Variable *args) {
 
 Variable cmd_avg(Variable *args) {
   VariableValue val;
-  val.string = avg(get_var_value(args[0]).table, get_var_value(args[1]).string);
-  return init_var(VAR_STRING, val, NULL);
+  val.float_num =
+      avg(get_var_value(args[0]).table, get_var_value(args[1]).string);
+  return init_var(VAR_FLOAT, val, NULL);
 }
 Variable cmd_max(Variable *args) {
   VariableValue val;
-  val.string =
+  val.float_num =
       max_table(get_var_value(args[0]).table, get_var_value(args[1]).string);
-  return init_var(VAR_STRING, val, NULL);
+  return init_var(VAR_FLOAT, val, NULL);
 }
 Variable cmd_min(Variable *args) {
   VariableValue val;
-  val.string =
+  val.float_num =
       min_table(get_var_value(args[0]).table, get_var_value(args[1]).string);
-  return init_var(VAR_STRING, val, NULL);
+  return init_var(VAR_FLOAT, val, NULL);
 }
 
