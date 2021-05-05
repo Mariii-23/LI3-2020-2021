@@ -145,6 +145,12 @@ void show_table(TABLE t) {
         case 'B':
           start = min(table_lines - lines_to_show, start + 1);
           break;
+        case 'C':
+          start = min(table_lines - lines_to_show, start + lines_to_show - 1);
+          break;
+        case 'D':
+          start = max(0, start - (lines_to_show - 1));
+          break;
         }
       }
     }
