@@ -97,7 +97,7 @@ bool is_number(char *value) {
   bool dot = false;
   for (; *aux; aux++) {
     if (*aux == '.') {
-      if (!dot) {
+      if (!dot && aux[1] != '\0') {
         dot = true;
       } else {
         return false;

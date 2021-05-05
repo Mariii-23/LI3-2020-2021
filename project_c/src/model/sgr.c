@@ -80,7 +80,7 @@ bool validate_review(SGR sgr, Review review) {
 
 // Query 1
 /**
- \brief Given 3 paths to files, converts all valide lines in that files to a
+ \brief Given 3 paths to files, converts all valid lines in those files to a
 sgr. There will be 3 csv(s) files that must be processed: users.csv,
 business.csv and reviews.csv, each line in these files must contain a record
 with the information of a user, business and review, respectively.
@@ -181,6 +181,10 @@ TABLE business_info(SGR sgr, char *business_id) {
 }
 
 // Query 4
+/**
+ \brief Given a SGR and a user id, returns a table with information about
+ all the businesses the user has reviewed.
+ */
 TABLE businesses_reviewed(SGR sgr, char *id) {
   char *fields[] = {"id", "nome"};
   TABLE table = new_table(fields, QUERY_FOUR_FIELDS_N);
