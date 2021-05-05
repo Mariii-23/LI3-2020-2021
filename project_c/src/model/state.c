@@ -42,13 +42,11 @@ void free_var(Variable var) {
     free(var);
     break;
   case VAR_SGR:
-    // alguma cena para fazer free da SGR
-    /* free_sgr(var->value.sgr); */
+    free_sgr(var->value.sgr);
     free(var);
     break;
   case VAR_TABLE:
-    // mesma coisa que para a SGR
-    /* free_table(var->value.table); */
+    free_table(var->value.table);
     free(var);
     break;
   case VAR_FUNCTION:
