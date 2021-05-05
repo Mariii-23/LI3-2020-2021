@@ -5,5 +5,6 @@ BEGIN{
 }
 $3 == business_id {sum += $4; count++}
 END {
-    print sum/count
+    if(count != 0)
+        print sum/count
 }

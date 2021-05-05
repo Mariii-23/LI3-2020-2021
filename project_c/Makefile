@@ -6,8 +6,7 @@ LIBS := glib-2.0 readline
 
 INCLUDE = -I/usr/include/history -I/usr/include/readline -Iinclude/
 LDFLAGS += $(shell pkg-config --libs $(LIBS)) -lrt
-# CFLAGS += -Wall -std=c99 -Ofast -flto -march=native -mtune=native -Isrc $(shell pkg-config --cflags $(LIBS)) $(INCLUDE) -g
-CFLAGS += -Wall -std=c99 -Isrc $(shell pkg-config --cflags $(LIBS)) $(INCLUDE) -g
+CFLAGS += -Wall -std=c99 -Ofast -flto -march=native -mtune=native -Isrc $(shell pkg-config --cflags $(LIBS)) $(INCLUDE) -g
 
 .PHONY: run clean
 

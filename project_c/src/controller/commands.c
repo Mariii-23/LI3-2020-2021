@@ -200,8 +200,7 @@ TABLE join(TABLE table_x, TABLE table_y) {
   } else {
     nova = NULL;
   }
-  // free_ptr_array_deep(table_x_fields);
-  // free_ptr_array_deep(table_y_fields);
+  free_ptr_array_deep(table_y_fields);
   return nova;
 }
 /** Returns the maximum or minimum value between the two, depending on the
