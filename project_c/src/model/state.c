@@ -5,6 +5,7 @@
 
 struct variable {
   VariableType type;
+  int references;
   char *name;
   VariableValue value;
 };
@@ -27,6 +28,7 @@ Variable init_var(VariableType type, VariableValue val, const char *name) {
   else
     var->name = NULL;
   var->value = val;
+  var->references = 0;
 
   return var;
 }
@@ -59,10 +61,9 @@ void free_var(Variable var) {
   }
 }
 
-void free_if_possible(STATE state, Variable var) {
-  if (var->name == NULL || find_variable(state, var->name) == NULL) {
+void free_if_possible(Variable var) {
+  if (var->references == 0)
     free_var(var);
-  }
 }
 
 VariableType get_var_type(Variable var) { return var->type; }
@@ -122,6 +123,13 @@ STATE init_state() {
 }
 
 void create_variable(STATE state, Variable var) {
+  Variable v = find_variable(state, var->name);
+  if (v != NULL) {
+    v->references -= 1;
+    free_if_possible(v);
+  }
+  
+  var->references += 1;
   g_tree_insert(state, var->name, var);
 }
 

@@ -40,7 +40,7 @@ typedef GTree *STATE;
 
 Variable init_var(VariableType type, VariableValue val, const char *name);
 void free_var(Variable var);
-void free_if_possible(STATE state, Variable var);
+void free_if_possible(Variable var);
 VariableType get_var_type(Variable var);
 VariableValue get_var_value(Variable var);
 void set_var_name(Variable var, const char *name);

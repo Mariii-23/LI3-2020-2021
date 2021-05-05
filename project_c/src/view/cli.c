@@ -146,7 +146,7 @@ void repl() {
             if (get_var_type(v) != VAR_VOID)
               print_var(v);
 
-            free_if_possible(state, v);
+            free_if_possible(v);
           }
         } else {
           print_syntax_error(e);
