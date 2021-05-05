@@ -223,14 +223,14 @@ Variable cmd_avg(STATE s, Variable *args) {
 
 Variable cmd_max(STATE s, Variable *args) {
   VariableValue val;
-  val.float_num =
+  val.table =
       max_table(get_var_value(args[0]).table, get_var_value(args[1]).string);
-  return init_var(VAR_FLOAT, val, NULL);
+  return init_var(VAR_TABLE, val, NULL);
 }
 
 Variable cmd_min(STATE s, Variable *args) {
   VariableValue val;
-  val.float_num =
+  val.table =
       min_table(get_var_value(args[0]).table, get_var_value(args[1]).string);
-  return init_var(VAR_FLOAT, val, NULL);
+  return init_var(VAR_TABLE, val, NULL);
 }
