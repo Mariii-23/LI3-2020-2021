@@ -55,10 +55,43 @@ Variable cmd_load_sgr(STATE s, Variable *args) {
   struct timespec start, end;
   clock_gettime(CLOCK_MONOTONIC, &start);
 
+  char *arg1, *arg2, *arg3;
+
+  if (get_var_type(args[0]) == VAR_VOID) {
+    Variable v = find_variable(s, "USERS_CSV");
+    if (!v) {
+      arg1 = "users.csv";
+    } else {
+      arg1 = get_var_value(v).string;
+    }
+  } else {
+    arg1 = get_var_value(args[0]).string;
+  }
+
+  if (get_var_type(args[1]) == VAR_VOID) {
+    Variable v = find_variable(s, "BUSINESSES_CSV");
+    if (!v) {
+      arg2 = "businesses.csv";
+    } else {
+      arg2 = get_var_value(v).string;
+    }
+  } else {
+    arg2 = get_var_value(args[1]).string;
+  }
+
+  if (get_var_type(args[2]) == VAR_VOID) {
+    Variable v = find_variable(s, "REVIEWS_CSV");
+    if (!v) {
+      arg3 = "reviews.csv";
+    } else {
+      arg3 = get_var_value(v).string;
+    }
+  } else {
+    arg3 = get_var_value(args[2]).string;
+  }
+
   VariableValue val;
-  val.sgr =
-      load_sgr(get_var_value(args[0]).string, get_var_value(args[1]).string,
-               get_var_value(args[2]).string);
+  val.sgr = load_sgr(arg1, arg2, arg3);
 
   clock_gettime(CLOCK_MONOTONIC, &end);
   printf("\nTime: %f s\n", get_time_taken(start, end));

@@ -113,7 +113,7 @@ const char *type_name(VariableType type) {
 }
 
 STATE init_state() {
-  STATE s = g_tree_new((int (*)(const void *, const void *))g_strcmp0);
+  STATE s = g_tree_new((GCompareFunc)g_strcmp0);
 
   // Vamos criar variáveis globais para os comparators
   VariableValue val;
@@ -125,6 +125,14 @@ STATE init_state() {
   create_variable(s, init_var(VAR_OPERATOR, val, "LT"));
 
   return s;
+}
+
+void free_state(STATE s) {
+  for (GTreeNode *n = g_tree_node_first(s); n != NULL;
+       n = g_tree_node_next(n)) {
+    free_var(g_tree_node_value(n));
+  }
+  g_tree_destroy(s);
 }
 
 void create_variable(STATE state, Variable var) {

@@ -1,7 +1,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
-typedef struct config *Config;
-Config read_config(char *path_to_config);
-void free_config(Config config);
-#endif
+#include "model/state.h"
 
+void read_config_to_state(STATE s, char *config_path);
+#endif

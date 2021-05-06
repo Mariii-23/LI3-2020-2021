@@ -4,6 +4,7 @@
 #include "controller/commands.h"
 #include "model/config.h"
 #include "model/sgr.h"
+#include "model/state.h"
 #include "model/table.h"
 #include "view/cli.h"
 
@@ -18,8 +19,8 @@ int main(int argc, char **argv) {
       path_to_config = argv[2];
     }
   }
-  Config config = read_config(path_to_config);
-  repl();
-  //// repl(config);
-  free_config(config);
+  STATE s = init_state();
+  read_config_to_state(s, path_to_config);
+  repl(s);
+  free_state(s);
 }

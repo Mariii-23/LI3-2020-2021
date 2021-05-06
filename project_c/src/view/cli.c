@@ -52,12 +52,11 @@ char **command_complete(const char *text, int start, int end) {
 }
 
 // Executa o Read-Eval-Print Loop
-void repl() {
+void repl(STATE state) {
   char *line;
 
-  rl_attempted_completion_function = command_complete;
-
-  STATE state = init_state();
+  // TODO autocomplete!
+  /* rl_attempted_completion_function = command_complete; */
 
   // Funções novas
   define_function(state, "print", print, VAR_VOID, 0, 1, NULL, VAR_ANY);
