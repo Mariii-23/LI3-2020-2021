@@ -75,7 +75,7 @@ TABLE new_table_without_fields(size_t number_fields) {
 }
 
 /** Adds an element (field) to the table*/
-void add_field(TABLE table, char *field) {
+void add_field(TABLE table, const char *field) {
   g_ptr_array_add(table->lines, g_strdup(field));
 }
 

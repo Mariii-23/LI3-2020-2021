@@ -150,6 +150,19 @@ Variable find_variable(STATE state, const char *name) {
   return g_tree_lookup(state, name);
 }
 
+TABLE state_table(STATE s) {
+  char *header[2] = {"Variable", "Type"};
+  TABLE t = new_table(header, 2);
+
+  for (GTreeNode *n = g_tree_node_first(s); n != NULL;
+       n = g_tree_node_next(n)) {
+    add_field(t, g_tree_node_key(n));
+    add_field(t, type_name(get_var_type(g_tree_node_value(n))));
+  }
+
+  return t;
+}
+
 FunctionVal create_function(int n_args, int defaultable,
                             VariableType return_type, FunctionPtr function,
                             const VariableType *args, const char *help) {

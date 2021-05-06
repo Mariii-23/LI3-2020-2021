@@ -28,6 +28,7 @@ Variable cmd_top_businesses_with_category(STATE s, Variable *args);
 Variable cmd_reviews_with_word(STATE s, Variable *args);
 
 Variable show(STATE s, Variable *args);
+Variable cmd_state(STATE s, Variable *args);
 Variable cmd_projection(STATE s, Variable *args);
 Variable cmd_filter(STATE s, Variable *args);
 Variable cmd_join(STATE s, Variable *args);
