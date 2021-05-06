@@ -203,6 +203,6 @@
   "-> " FG_YELLOW BOLD "state" RESET_ALL "()\n"                                \
   "Returns: " FG_CYAN BOLD "TABLE" RESET_ALL "\n"                              \
   "Returns a table containing information about the interpreter's global "     \
-  "state."
+  "state.\n"
 
 #endif // __HELP_H_
