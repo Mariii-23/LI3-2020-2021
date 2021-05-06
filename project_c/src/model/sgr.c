@@ -2,7 +2,8 @@
  * @file sgr.c
  * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
  * @date 4 Maio 2021
- * @brief This Module is responsible to manipulated all information.
+ * @brief This Module is responsible to manipulated all information about the
+ * queries.
  */
 #include "model/sgr.h"
 

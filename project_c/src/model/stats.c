@@ -2,8 +2,8 @@
  * @file stats.c
  * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
  * @date 4 Maio 2021
- * @brief This Module is responsible to calculate and interpreted stats.
- * reviews and reviews collections.
+ * @brief This Module is responsible to manipulate all information about the
+ * stats.
  */
 #include "model/stats.h"
 

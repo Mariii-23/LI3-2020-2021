@@ -2,8 +2,7 @@
  * @file config.c
  * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
  * @date 4 Maio 2021
- * @brief This Module is responsible to calculate and interpreted stats.
- * reviews and reviews collections.
+ * @brief This Module is responsible to read the config.
  */
 
 #include "model/config.h"

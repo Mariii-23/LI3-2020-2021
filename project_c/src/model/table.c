@@ -2,7 +2,7 @@
  * @file table.c
  * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
  * @date 4 Maio 2021
- * @brief This Module is responsible to manipulated all information.
+ * @brief This Module is responsible for a table.
  */
 
 #include "model/table.h"
@@ -23,7 +23,6 @@ struct table {
 
 /**
   Creates a table with the headers passed as a parameter, inside a GPtrArray.
-
 */
 TABLE new_table_ptr_array(GPtrArray *header) {
   TABLE table = malloc(sizeof(struct table));
@@ -61,7 +60,6 @@ TABLE new_table(char **header, size_t number_fields) {
 /**
   Creates a table without specifying the header names. Only the number of fields
   in the header are provided.
-
 */
 
 TABLE new_table_without_fields(size_t number_fields) {

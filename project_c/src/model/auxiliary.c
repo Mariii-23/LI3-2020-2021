@@ -2,7 +2,7 @@
  * @file auxiliary.c
  * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
  * @date 4 Maio 2021
- * @brief This Module is responsible to manipulated all information.
+ * @brief This Module contains auxliary funcitions.
  */
 
 #include <assert.h>
@@ -17,6 +17,7 @@ void *assert_return(void *ptr) {
   assert(ptr);
   return ptr;
 }
+
 void free_key(gpointer key, gpointer value, gpointer user_data) { free(key); }
 
 void free_key_value(gpointer key, gpointer value, gpointer user_data) {
@@ -168,4 +169,3 @@ float max_float(float a, float b) {
     return a;
   return b;
 }
-

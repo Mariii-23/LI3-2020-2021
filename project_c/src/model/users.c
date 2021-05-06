@@ -104,7 +104,6 @@ UserCollection create_user_collection() {
   return new_collection;
 }
 
-//?????
 /**
  \brief Free memory
  * */
