@@ -2,7 +2,7 @@
  * @file help.h
  * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
  * @date 4 Maio 2021
- * @brief This Module is responsible to manipulated all information.
+ * @brief Contém definições de todos os textos de ajuda do programa
  */
 
 #ifndef __HELP_H_
@@ -198,5 +198,11 @@
   "Returns: " FG_CYAN BOLD "TABLE" RESET_ALL "\n\n"                            \
   "Provided a table and a column name, it returns a table with all the lines " \
   "which have the maximum value in that column\n"
+
+#define CMD_STATE_HELP                                                         \
+  "-> " FG_YELLOW BOLD "state" RESET_ALL "()\n"                                \
+  "Returns: " FG_CYAN BOLD "TABLE" RESET_ALL "\n"                              \
+  "Returns a table containing information about the interpreter's global "     \
+  "state."
 
 #endif // __HELP_H_

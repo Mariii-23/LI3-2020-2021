@@ -2,7 +2,7 @@
  * @file view_commands.c
  * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
  * @date 4 Maio 2021
- * @brief This Module is responsible to manipulated all information.
+ * @brief Contém definições de comandos para o interpretador
  */
 
 // Necessário para que clock_gettime exista

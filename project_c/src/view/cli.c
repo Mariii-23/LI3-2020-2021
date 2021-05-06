@@ -2,7 +2,7 @@
  * @file cli.c
  * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
  * @date 4 Maio 2021
- * @brief This Module is responsible to manipulated all information.
+ * @brief Contém o código que executa o REPL do programa
  */
 
 #include "view/cli.h"
@@ -128,7 +128,7 @@ void repl(STATE state) {
                   VAR_TABLE, VAR_STRING);
   define_function(state, "min", cmd_min, VAR_TABLE, 0, 2, CMD_MIN_HELP,
                   VAR_TABLE, VAR_STRING);
-  define_function(state, "state", cmd_state, VAR_TABLE, 0, 0, "Return a table with all variables");
+  define_function(state, "state", cmd_state, VAR_TABLE, 0, 0, CMD_STATE_HELP);
 
   // O readline devolve NULL quando chega ao EOF
   while ((line = readline(BOLD FG_CYAN "> " RESET_ALL))) {
