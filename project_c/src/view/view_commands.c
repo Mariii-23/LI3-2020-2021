@@ -283,3 +283,10 @@ Variable cmd_min(STATE s, Variable *args) {
       min_table(get_var_value(args[0]).table, get_var_value(args[1]).string);
   return init_var(VAR_TABLE, val, NULL);
 }
+
+Variable cmd_state(STATE s, Variable *args) {
+  VariableValue val;
+  val.table = state_table(s);
+
+  return init_var(VAR_TABLE, val, NULL);
+}

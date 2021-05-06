@@ -14,7 +14,7 @@ typedef struct table *TABLE;
 
 TABLE new_table_ptr_array(GPtrArray *header);
 TABLE new_table(char **header, size_t number_fields);
-void add_field(TABLE table, char *field);
+void add_field(TABLE table, const char *field);
 void fprintf_table(FILE *stream, TABLE table, char *delim_header,
                    char *delim_main);
 void add_footer(TABLE table, char *footer_name, char *footer_value);

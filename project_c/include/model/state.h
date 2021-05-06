@@ -98,6 +98,9 @@ void create_variable(STATE state, Variable var);
 // encontrada, devolve null.
 Variable find_variable(STATE state, const char *name);
 
+// Devolve uma tabela com o nome e tipo de todas as variáveis
+TABLE state_table(STATE s);
+
 // Cria uma função para o programa. Em princípio, nunca queremos usar isto
 // diretamente, sendo melhor usar a macro define_function
 FunctionVal create_function(int n_args, int defaultable,

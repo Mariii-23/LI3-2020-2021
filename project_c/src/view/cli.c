@@ -128,6 +128,7 @@ void repl(STATE state) {
                   VAR_TABLE, VAR_STRING);
   define_function(state, "min", cmd_min, VAR_TABLE, 0, 2, CMD_MIN_HELP,
                   VAR_TABLE, VAR_STRING);
+  define_function(state, "state", cmd_state, VAR_TABLE, 0, 0, "Return a table with all variables");
 
   // O readline devolve NULL quando chega ao EOF
   while ((line = readline(BOLD FG_CYAN "> " RESET_ALL))) {

@@ -14,29 +14,38 @@
 #include "model/auxiliary.h"
 #include "model/table.h"
 
+/**
+ *\brief Stores the star average and the
+ *number of reviews analyzed so far. */
 typedef struct stars_tuple {
   float current_average; // current start average
   size_t number_reviews; // number of reviews read up to this point
 } * StarsTuple;
 
-// Mudar nome
+/**
+ *\brief Stores the star average according to a given business id and it's
+ *number of reviews. */
 typedef struct stars_node {
   float stars; // current start average
   char *business_id;
   char *name;
 } * StarsNode;
 
+/**
+ *\brief Struct that stores all information related to statics. */
 struct stats {
-  GHashTable *business_id_to_stars; // updated as a new review is read,
-                                    // business_id to a StarsTuple
-  GHashTable
-      *city_to_business_by_star; // linked list of businesse
-                                 // ssorted decrescently by stars (stars_node)
-  GHashTable *category_to_business_by_star; // linked list of businesse
-                                            // ssorted decrescently by
-                                            // category (stars_node)
+  GHashTable *business_id_to_stars;         /** updated as a new review is read,
+                                                business_id to a StarsTuple */
+  GHashTable *city_to_business_by_star;     /** linked list of businesse
+                                                ssorted decrescently by stars
+                                               (stars_node) */
+  GHashTable *category_to_business_by_star; /** linked list of businesse
+                                                ssorted decrescently by
+                                                category (stars_node)*/
 };
 
+/**
+ *\brief Free a struct "StarsNode". */
 void free_stars_node(StarsNode self) {
   if (!self)
     return;
@@ -45,8 +54,12 @@ void free_stars_node(StarsNode self) {
   free(self);
 }
 
+/**
+ *\brief Free a struct "StarsNode". */
 void free_g_stars_node(gpointer data) { free_stars_node((StarsNode)data); }
 
+/**
+ *\brief Free all elems on a given GSList with "StarsNode". */
 void g_free_ll(gpointer pointer) {
   GSList *ptr_list = (GSList *)pointer;
   g_slist_free_full(ptr_list, free_g_stars_node);
@@ -64,7 +77,9 @@ Stats start_statistics() {
   return stats;
 }
 
-// when a new review is read this function is called
+/**
+ * \brief Given a stats, business id and a star, updates the informacion
+ * relative on that business with the new star. */
 void update_average_stars(Stats stats, char *business_id, float new_star) {
   GHashTable *business_hash = stats->business_id_to_stars;
   StarsTuple tuplo = g_hash_table_lookup(business_hash, business_id);
@@ -84,8 +99,8 @@ void update_average_stars(Stats stats, char *business_id, float new_star) {
 }
 
 /**
- \brief Given a stats and a business id, returns his average number stars or -1
- if don't exist. */
+ \brief Given a stats and a business id, returns his average number stars or
+ -1 if don't exist. */
 float get_average_number_stars(Stats stats, char *business_id) {
   if (!stats || !business_id)
     return -1;
@@ -96,6 +111,9 @@ float get_average_number_stars(Stats stats, char *business_id) {
   return tuple->current_average;
 }
 
+/**
+ \brief Given a stats and a business id, added the number of stars and
+ the number of reviews in that business on the given table. */
 void added_number_stars_and_reviews_table(Stats const stats, TABLE table,
                                           char const *business_id) {
   if (!stats || !table || !business_id)
@@ -133,6 +151,10 @@ bool is_empty_business_id_to_stars(Stats stats) {
   return empty;
 }
 
+/**
+ *\brief Given a stats, initializes a key/value pair iterator and associates
+ *it with hash_table "business_id_to_stars" in stats" .
+ * */
 void start_table_iter_init_business_id_hash_table(GHashTableIter *iter,
                                                   Stats stats) {
   if (!stats || !iter)
@@ -161,7 +183,8 @@ StarsNode copy_stars_node(StarsNode self) {
 }
 
 /**
- *TODO */
+ \brief Free one elem on Hash Table, where key is a string and the value is a
+ list with "stars node".*/
 static void free_all_elems(gpointer key, gpointer value, gpointer user_data) {
   g_free_ll(value);
   free(key);
@@ -260,9 +283,9 @@ static void add_category_to_business_by_star(Stats stats, char *category,
 }
 
 /**
- \brief Given a business collection and a stats, this function build the fields
- named "category_to_business_by_star" and "city_to_business_by_star" on stats
- with the data on business collection. */
+ \brief Given a business collection and a stats, this function build the
+ fields named "category_to_business_by_star" and "city_to_business_by_star" on
+ stats with the data on business collection. */
 void build_city_and_category_hash_table(BusinessCollection const businesses,
                                         Stats stats) {
   if (!businesses || !stats || !stats->business_id_to_stars)
@@ -379,9 +402,8 @@ void all_n_larger_city_star(Stats stats, int const N, TABLE table) {
 
 /**
  \brief Given a stats, a category, a number N and a table, this function added
-to the table, the name, the business id and the stars of all elems that have
-more than N stars on that category. Note that our data struct on
-"category_to_business_by_star" is store in descending order. */
+to the table, the name, the business id and the stars of the N first elems
+that on that category.*/
 void n_larger_category_star(Stats stats, char *category, int const N,
                             TABLE table) {
   if (!stats || !stats->city_to_business_by_star) {
