@@ -67,15 +67,15 @@ void repl(STATE state) {
   /* rl_attempted_completion_function = command_complete; */
 
   // Funções novas
-  define_function(state, "print", print, VAR_VOID, 0, 1, "Print a variable",
+  define_function(state, "print", print, VAR_VOID, 0, 1, CMD_PRINT_HELP,
                   VAR_ANY);
-  define_function(state, "quit", quit, VAR_VOID, 0, 0, "Quit");
-  define_function(state, "help", help, VAR_VOID, 0, 1,
-                  "Get help on a specific function", VAR_FUNCTION);
+  define_function(state, "quit", quit, VAR_VOID, 0, 0, CMD_QUIT_HELP);
+  define_function(state, "help", help, VAR_VOID, 0, 1, CMD_HELP_HELP,
+                  VAR_FUNCTION);
   define_function(state, "show", show, VAR_VOID, 0, 1, CMD_SHOW_HELP,
                   VAR_TABLE);
-  define_function(state, "from_csv", cmd_from_csv, VAR_TABLE, 0, 2, "From CSV",
-                  VAR_STRING, VAR_STRING);
+  define_function(state, "from_csv", cmd_from_csv, VAR_TABLE, 0, 2,
+                  CMD_FROM_CSV_HELP, VAR_STRING, VAR_STRING);
   define_function(state, "to_csv", cmd_to_csv, VAR_VOID, 0, 3, CMD_TO_CSV_HELP,
                   VAR_TABLE, VAR_STRING, VAR_STRING);
   // Query 1
@@ -120,7 +120,7 @@ void repl(STATE state) {
                   CMD_PROJECTION_HELP, VAR_TABLE, VAR_ARRAY);
   define_function(state, "filter", cmd_filter, VAR_TABLE, 0, 4, CMD_FILTER_HELP,
                   VAR_TABLE, VAR_STRING, VAR_STRING, VAR_OPERATOR);
-  define_function(state, "join", cmd_join, VAR_TABLE, 0, 2, "Join two tables",
+  define_function(state, "join", cmd_join, VAR_TABLE, 0, 2, CMD_JOIN_HELP,
                   VAR_TABLE, VAR_TABLE);
   define_function(state, "avg", cmd_avg, VAR_FLOAT, 0, 2, CMD_AVG_HELP,
                   VAR_TABLE, VAR_STRING);

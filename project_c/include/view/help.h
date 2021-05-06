@@ -8,10 +8,30 @@
 #ifndef __HELP_H_
 #define __HELP_H_
 
+#define CMD_PRINT_HELP                                                         \
+  BOLD FG_CYAN "-> " FG_YELLOW "print" RESET_ALL "(" FG_RED "any" RESET_ALL    \
+               ": " FG_CYAN BOLD "Any" RESET_ALL ")\n"                         \
+               "Returns: " FG_CYAN BOLD "void" RESET_ALL "\n\n"                \
+               "Prints the data typeof what is passed and also the value in "  \
+               "some circumstances.\n\n" FG_RED "Example:\n" RESET_ALL         \
+               "print(3.0)\n"                                                  \
+               "Float: 3.000000\n"
+
+#define CMD_HELP_HELP                                                          \
+  BOLD FG_CYAN "-> " FG_YELLOW "help" RESET_ALL "(" FG_RED                     \
+               "function" RESET_ALL ": " FG_CYAN BOLD "Function" RESET_ALL     \
+               ")\n"                                                           \
+               "Returns: " FG_CYAN BOLD "void" RESET_ALL "\n\n"                \
+               "Shows help for the given function\n"
+
+#define CMD_QUIT_HELP                                                          \
+  BOLD FG_CYAN "-> " FG_YELLOW "quit" RESET_ALL "()\n"                         \
+               "Returns: " FG_CYAN BOLD "void" RESET_ALL "\n\n"                \
+               "Quits program\n"
 #define CMD_SHOW_HELP                                                          \
   BOLD FG_CYAN "-> " FG_YELLOW "show" RESET_ALL "(" FG_RED "table" RESET_ALL   \
                ": " FG_CYAN BOLD "TABLE" RESET_ALL ")\n"                       \
-               "Returns: void\n\n"                                             \
+               "Returns: " FG_CYAN BOLD "void" RESET_ALL "\n\n"                \
                "Presents a table on the screen with a pager\n"                 \
                "Keys:\n"                                                       \
                "Arrow Up/Arrow Down: Go one line up and down, respectively\n"  \
@@ -83,7 +103,7 @@
   "Returns: " FG_CYAN BOLD "TABLE" RESET_ALL "\n\n"                            \
   "Creates a table with all the content from the provided CSV file, which "    \
   "must contain a header, separated by the given delimiter.The number of "     \
-  "columns of the table will be the same as the fields in the header."
+  "columns of the table will be the same as the fields in the header.\n"
 
 #define CMD_TOP_BUSINESSES_BY_CITY_HELP                                        \
   "-> " FG_YELLOW "top_businesses_by_city" RESET_ALL "(" FG_RED                \
@@ -162,7 +182,7 @@
   ": " FG_CYAN BOLD "String" RESET_ALL ")\n"                                   \
   "Returns: " FG_CYAN BOLD "float" RESET_ALL "\n\n"                            \
   "Provided a table and a column name, it calculates de average of all the "   \
-  "values in it,  should they be numbers."
+  "values in it,  should they be numbers.\n"
 #define CMD_MIN_HELP                                                           \
   "-> " FG_YELLOW "min" RESET_ALL "(" FG_RED "table" RESET_ALL                 \
   ": " FG_CYAN BOLD "TABLE" RESET_ALL ", " FG_RED "field_name" RESET_ALL       \
