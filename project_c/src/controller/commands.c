@@ -6,6 +6,7 @@
  */
 
 #include "controller/commands.h"
+#include <math.h>
 
 #include <ctype.h>
 #include <stdbool.h>
@@ -81,14 +82,14 @@ bool matches_by_operator(char *the_value, char *current_value, OPERATOR op,
 
   if (!current_value || !the_value)
     return false;
-  int res;
+  float res;
   if (is_number) {
-    res = atoi(the_value) - atoi(current_value);
+    res = atof(the_value) - atof(current_value);
 
   } else {
     res = strcmp(the_value, current_value);
   }
-  return !res ? (op == EQ) : (res / abs(res)) == op;
+  return !res ? (op == EQ) : (res / fabs(res)) == op;
 }
 
 /*Provided a table, creates another one containing only the lines which match a
