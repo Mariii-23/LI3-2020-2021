@@ -219,13 +219,14 @@ void show_table(TABLE t) {
     move_cursor_to_x(start_x);
     draw_hborder(1, cols, widths);
 
+    lines = lines_to_show * 2 + 3;
+
     if (lines_to_show < table_lines) {
       move_cursor_to_x(start_x);
       printf(BOLD BG_WHITE FG_BLACK "%d-%d/%d" RESET_ALL "\n", start + 1,
              start + lines_to_show, table_lines);
+      lines += 1;
     }
-
-    lines = lines_to_show * 2 + 4;
 
     // Vamos desenhar o footer
     if (footer_lines > 0) {
