@@ -1,3 +1,10 @@
+/**
+ * @file colors.h
+ * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
+ * @date 4 Maio 2021
+ * @brief This Module is responsible to manipulated all information.
+ */
+
 #ifndef COLORS_H
 #define COLORS_H
 

@@ -1,3 +1,10 @@
+/**
+ * @file ast.h
+ * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
+ * @date 4 Maio 2021
+ * @brief This Module is responsible to manipulated all information.
+ */
+
 #ifndef AST_H
 #define AST_H
 
@@ -6,32 +13,32 @@
 // Um elemento pode ser um nome, um igual, uma virgula, um número, parênteses ou
 // um ponto e virgula
 typedef enum token_type {
-    TOK_NAME,       // e.g. x, avg, fromCSV
-    TOK_STRING,     // e.g. "business.csv"
-    TOK_NUMBER,     // e.g. 0, 15
-    TOK_FLOAT,      // e.g. 0.3
-    TOK_EQUALS,     // =
-    TOK_COMMA,      // ,
-    TOK_OPAREN,     // (
-    TOK_CPAREN,     // )
-    TOK_SEMICOLON,  // ;
-    TOK_OSQ,        // [
-    TOK_CSQ,        // ]
-    TOK_OBRACKET,   // {
-    TOK_CBRACKET,   // }
-    TOK_FINISH      // Não temos mais elementos
+  TOK_NAME,      // e.g. x, avg, fromCSV
+  TOK_STRING,    // e.g. "business.csv"
+  TOK_NUMBER,    // e.g. 0, 15
+  TOK_FLOAT,     // e.g. 0.3
+  TOK_EQUALS,    // =
+  TOK_COMMA,     // ,
+  TOK_OPAREN,    // (
+  TOK_CPAREN,    // )
+  TOK_SEMICOLON, // ;
+  TOK_OSQ,       // [
+  TOK_CSQ,       // ]
+  TOK_OBRACKET,  // {
+  TOK_CBRACKET,  // }
+  TOK_FINISH     // Não temos mais elementos
 } TokenType;
 
 typedef enum ast_type {
-    AST_NONE,
-    AST_FUNCTIONCALL,
-    AST_ASSIGNMENT,
-    AST_VARIABLE,
-    AST_NUMBER,
-    AST_FLOAT,
-    AST_STRING,
-    AST_INDEX,
-    AST_ARRAY
+  AST_NONE,
+  AST_FUNCTIONCALL,
+  AST_ASSIGNMENT,
+  AST_VARIABLE,
+  AST_NUMBER,
+  AST_FLOAT,
+  AST_STRING,
+  AST_INDEX,
+  AST_ARRAY
 } ASTType;
 
 typedef struct token Token;
@@ -96,11 +103,11 @@ void free_function_call(FunctionCall f);
 const char *get_function_name(const FunctionCall f);
 const GPtrArray *get_function_args(const FunctionCall f);
 
-VarAssignment make_var_assignment(const char *variable); // TODO
-void free_var_assignment(VarAssignment var); // TODO
-VarAssignment var_assignment_dup(const VarAssignment v); // TODO
-void set_var_assignment_value(VarAssignment v, AST val); // TODO
-const AST get_var_assignment_value(const VarAssignment v); // TODO
+VarAssignment make_var_assignment(const char *variable);        // TODO
+void free_var_assignment(VarAssignment var);                    // TODO
+VarAssignment var_assignment_dup(const VarAssignment v);        // TODO
+void set_var_assignment_value(VarAssignment v, AST val);        // TODO
+const AST get_var_assignment_value(const VarAssignment v);      // TODO
 const char *get_var_assignment_variable(const VarAssignment v); // TODO
 
 Indexed indexed_dup(const Indexed i);

@@ -1,3 +1,10 @@
+/**
+ * @file table.c
+ * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
+ * @date 4 Maio 2021
+ * @brief This Module is responsible to manipulated all information.
+ */
+
 #include "model/table.h"
 
 #include <stdio.h>
@@ -127,6 +134,8 @@ ssize_t whereis_field(TABLE table, char *field_name) {
   return -1;
 }
 
+/* Returns  the value present in a certain line and certain column, where this
+ * last one is provided as field_name*/
 char *table_index_by_field(TABLE table, char *field_name, size_t line) {
   int j = whereis_field(table, field_name);
   return table_index(table, line, j);
@@ -134,26 +143,18 @@ char *table_index_by_field(TABLE table, char *field_name, size_t line) {
 
 char *field_index(TABLE table, size_t i) { return g_strdup(table->header[i]); }
 
+/** Returns number of lines in the table */
 size_t get_number_lines_table(TABLE table) {
   return table->lines->len / table->number_fields;
 }
 
+/** Returns number of fields in the table */
 size_t get_number_fields_table(TABLE table) { return table->number_fields; }
-
-GPtrArray *get_fields_table(TABLE table) {
-  size_t number_fields = table->number_fields;
-  GPtrArray *fields = g_ptr_array_sized_new(number_fields);
-  for (int i = 0; i < number_fields; i++) {
-    g_ptr_array_add(fields, g_strdup(g_ptr_array_index(table->lines, i)));
-  }
-  return fields;
-}
 
 /** Retuns header of the table as a GPtrArray*/
 GPtrArray *get_header_table(TABLE table) {
   return build_ptr_array(table->header, table->number_fields);
 }
-
 /** Retuns footer name given its index*/
 char *get_footer_name(TABLE table, size_t i) { return table->footer[i * 2]; }
 
@@ -161,11 +162,9 @@ char *get_footer_name(TABLE table, size_t i) { return table->footer[i * 2]; }
 char *get_footer_value(TABLE table, size_t i) {
   return table->footer[i * 2 + 1];
 }
-
 /** Retuns number of footers present in the table*/
 size_t get_number_footers_table(TABLE table) { return table->number_footers; }
 /**Frees table structure*/
-
 void free_table(TABLE table) {
   free_ptr_array_deep(table->lines);
 

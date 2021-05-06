@@ -1,8 +1,7 @@
 /**
- * @file sgr.c
+ * @file stats.c
  * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
  * @date 4 Maio 2021
- * ????????????????????????????????????????????????????????????????????????
  * @brief This Module is responsible to calculate and interpreted stats.
  * reviews and reviews collections.
  */
@@ -106,7 +105,7 @@ void added_number_stars_and_reviews_table(Stats const stats, TABLE table,
   if (!tuple)
     return;
 
-  char *numero_stars = g_strdup_printf("%f", tuple->current_average);
+  char *numero_stars = g_strdup_printf("%.1f", tuple->current_average);
   char *numero_reviews = g_strdup_printf("%ld", tuple->number_reviews);
 
   add_field(table, numero_stars);
@@ -210,7 +209,7 @@ void init_category_to_business_by_star(Stats stats) {
 // debugging prints
 void print_node(gpointer data, gpointer user_data) {
   StarsNode x = (StarsNode)data;
-  printf("City %s, business : %f\n", x->name, x->stars);
+  printf("City %s, business : %.1f\n", x->name, x->stars);
 }
 // TODO comentario
 void print_list(GSList *list) { g_slist_foreach(list, print_node, NULL); }
@@ -342,7 +341,7 @@ void n_larger_city_star(Stats stats, char *city, float N, TABLE table) {
 
     char *id = value->business_id;
     char *name = value->name;
-    char *stars = g_strdup_printf("%f", value->stars);
+    char *stars = g_strdup_printf("%.1f", value->stars);
 
     add_field(table, city);
     add_field(table, id);
@@ -406,7 +405,7 @@ void n_larger_category_star(Stats stats, char *category, int const N,
 
     char *id = value->business_id;
     char *name = value->name;
-    char *stars = g_strdup_printf("%f", value->stars);
+    char *stars = g_strdup_printf("%.1f", value->stars);
 
     add_field(table, id);
     add_field(table, name);
@@ -414,10 +413,8 @@ void n_larger_category_star(Stats stats, char *category, int const N,
     free(stars);
   }
 
-  char *size_str = g_strdup_printf("%d", i - 1);
+  char *size_str = g_strdup_printf("%d", i);
   add_footer(table, "Número total: ", size_str);
-  // apagar
-  add_field(table, size_str);
   free(size_str);
 }
 
@@ -451,7 +448,7 @@ void n_larger_than_city_star(Stats stats, char *city, float N, TABLE table) {
 
     char *id = value->business_id;
     char *name = value->name;
-    char *stars = g_strdup_printf("%f", value->stars);
+    char *stars = g_strdup_printf("%.2f", value->stars);
 
     add_field(table, id);
     add_field(table, name);

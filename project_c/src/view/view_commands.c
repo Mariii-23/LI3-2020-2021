@@ -1,3 +1,10 @@
+/**
+ * @file view_commands.c
+ * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
+ * @date 4 Maio 2021
+ * @brief This Module is responsible to manipulated all information.
+ */
+
 // Necessário para que clock_gettime exista
 #define _POSIX_C_SOURCE 199309L
 

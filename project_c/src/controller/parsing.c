@@ -1,3 +1,10 @@
+/**
+ * @file parsing.c
+ * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
+ * @date 4 Maio 2021
+ * @brief This Module is responsible to manipulated all information.
+ */
+
 #include "controller/parsing.h"
 
 #include <glib.h>
@@ -40,7 +47,8 @@ SyntaxError parse_function(const TokenStream tokens, AST node, int *consumed) {
 
   if (get_token_type(get_token_stream_token(tokens, tok)) == TOK_NAME) {
     // TODO criar um constructor para isto
-    call = make_function_call(get_token_text(get_token_stream_token(tokens, tok)));
+    call =
+        make_function_call(get_token_text(get_token_stream_token(tokens, tok)));
     tok++;
   } else {
     return syntax_error("a function name", get_token_stream_token(tokens, tok));
@@ -67,7 +75,8 @@ SyntaxError parse_function(const TokenStream tokens, AST node, int *consumed) {
     tok += consumed;
     token = get_token_stream_token(tokens, tok);
 
-    if (get_token_type(token) != TOK_CPAREN && get_token_type(token) != TOK_COMMA) {
+    if (get_token_type(token) != TOK_CPAREN &&
+        get_token_type(token) != TOK_COMMA) {
       free_function_call(call);
       return syntax_error("',' or ')'", token);
     }
@@ -85,12 +94,14 @@ SyntaxError parse_function(const TokenStream tokens, AST node, int *consumed) {
   return NULL;
 }
 
-SyntaxError parse_assignment(const TokenStream tokens, AST node, int *consumed) {
+SyntaxError parse_assignment(const TokenStream tokens, AST node,
+                             int *consumed) {
   int tok = 0;
   VarAssignment assignment;
 
   if (get_token_type(get_token_stream_token(tokens, tok)) == TOK_NAME) {
-    assignment = make_var_assignment(get_token_text(get_token_stream_token(tokens, tok)));
+    assignment = make_var_assignment(
+        get_token_text(get_token_stream_token(tokens, tok)));
     tok++;
   } else {
     return syntax_error("a name", get_token_stream_token(tokens, 1));
@@ -123,7 +134,8 @@ SyntaxError parse_assignment(const TokenStream tokens, AST node, int *consumed) 
   return NULL;
 }
 
-SyntaxError parse_expression(const TokenStream tokens, AST node, int *consumed) {
+SyntaxError parse_expression(const TokenStream tokens, AST node,
+                             int *consumed) {
   *consumed = 0;
   do {
     int consumed_now = 0;
@@ -156,15 +168,16 @@ SyntaxError parse_expression(const TokenStream tokens, AST node, int *consumed) 
       AST index = make_empty_ast();
       int c = 0;
       consumed_now += 1;
-      SyntaxError e =
-          parse_expression(get_token_stream_token(tokens, *consumed + consumed_now), index, &c);
+      SyntaxError e = parse_expression(
+          get_token_stream_token(tokens, *consumed + consumed_now), index, &c);
       if (e) {
         free_ast(index);
         return e;
       }
       consumed_now += c;
 
-      if (get_token_type(get_token_stream_token(tokens, *consumed + consumed_now)) != TOK_CSQ) {
+      if (get_token_type(get_token_stream_token(
+              tokens, *consumed + consumed_now)) != TOK_CSQ) {
         free_ast(index);
         return syntax_error("']'", get_token_stream_token(tokens, *consumed));
       }
@@ -176,7 +189,8 @@ SyntaxError parse_expression(const TokenStream tokens, AST node, int *consumed) 
       return syntax_error("an expression", tokens);
     }
     *consumed += consumed_now;
-  } while (get_token_type(get_token_stream_token(tokens, *consumed)) == TOK_OSQ);
+  } while (get_token_type(get_token_stream_token(tokens, *consumed)) ==
+           TOK_OSQ);
   return NULL;
 }
 
@@ -193,7 +207,8 @@ SyntaxError parse_statement(const TokenStream tokens, AST node, int *consumed) {
     }
   }
 
-  if (get_token_type(get_token_stream_token(tokens, *consumed)) != TOK_SEMICOLON) {
+  if (get_token_type(get_token_stream_token(tokens, *consumed)) !=
+      TOK_SEMICOLON) {
     free(e);
     return syntax_error("';'", get_token_stream_token(tokens, *consumed));
   }
@@ -211,13 +226,13 @@ SyntaxError parse_array(const TokenStream tokens, AST node, int *consumed) {
   }
 
   tok += 1;
-  GPtrArray *array = g_ptr_array_new_with_free_func((GDestroyNotify) free_ast);
+  GPtrArray *array = g_ptr_array_new_with_free_func((GDestroyNotify)free_ast);
 
   while (get_token_type(get_token_stream_token(tokens, tok)) != TOK_CBRACKET) {
     int consumed = 0;
     AST node = make_empty_ast();
-    SyntaxError e =
-        parse_expression(get_token_stream_token(tokens, tok + consumed), node, &consumed);
+    SyntaxError e = parse_expression(
+        get_token_stream_token(tokens, tok + consumed), node, &consumed);
 
     if (e) {
       g_ptr_array_free(array, TRUE);
@@ -226,7 +241,8 @@ SyntaxError parse_array(const TokenStream tokens, AST node, int *consumed) {
 
     tok += consumed;
 
-    if (get_token_type(get_token_stream_token(tokens, tok)) != TOK_CBRACKET && get_token_type(get_token_stream_token(tokens, tok)) != TOK_COMMA) {
+    if (get_token_type(get_token_stream_token(tokens, tok)) != TOK_CBRACKET &&
+        get_token_type(get_token_stream_token(tokens, tok)) != TOK_COMMA) {
       g_ptr_array_free(array, TRUE);
       return syntax_error("',' or '}'", get_token_stream_token(tokens, tok));
     }

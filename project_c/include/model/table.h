@@ -1,3 +1,10 @@
+/**
+ * @file table.h
+ * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
+ * @date 4 Maio 2021
+ * @brief This Module is responsible to manipulated all information.
+ */
+
 #ifndef TABLE_H
 #define TABLE_H
 #include <stdio.h>
@@ -17,7 +24,6 @@ char *table_index_by_field(TABLE table, char *field_name, size_t line);
 size_t get_number_fields_table(TABLE table);
 size_t get_number_lines_table(TABLE table);
 size_t get_number_footers_table(TABLE table);
-GPtrArray *get_fields_table(TABLE table);
 GPtrArray *get_header_table(TABLE table);
 char *get_footer_name(TABLE table, size_t i);
 char *get_footer_value(TABLE table, size_t i);

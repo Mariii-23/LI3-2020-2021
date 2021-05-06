@@ -1,3 +1,11 @@
+/**
+ * @file config.c
+ * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
+ * @date 4 Maio 2021
+ * @brief This Module is responsible to calculate and interpreted stats.
+ * reviews and reviews collections.
+ */
+
 #include "model/config.h"
 #include "controller/commands.h"
 #include "model/state.h"

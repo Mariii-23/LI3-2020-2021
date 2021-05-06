@@ -1,9 +1,16 @@
+/**
+ * @file ast.c
+ * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
+ * @date 4 Maio 2021
+ * @brief This Module is responsible to manipulated all information.
+ */
+
 #include "model/ast.h"
 
-#include <stdlib.h>
+#include "view/colors.h"
 #include <glib.h>
 #include <stdio.h>
-#include "view/colors.h"
+#include <stdlib.h>
 
 struct token {
   TokenType type;
@@ -22,13 +29,13 @@ struct function_call {
 };
 
 struct var_assignment {
-    char* variable;
-    struct ast* value;
+  char *variable;
+  struct ast *value;
 };
 
 struct indexed {
-    struct ast* expression;
-    struct ast* index;
+  struct ast *expression;
+  struct ast *index;
 };
 
 struct ast {
@@ -50,7 +57,8 @@ const char *identify(const char *string, Token *dest) {
   int i;
 
   // Vamos passar à frente qualquer espaço
-  for (s = string; *s && *s == ' '; s++);
+  for (s = string; *s && *s == ' '; s++)
+    ;
 
   dest->position = s - string;
 
@@ -168,33 +176,21 @@ void free_token(Token *t) {
   free(t);
 }
 
-void set_token_position(Token *t, int pos) {
-  t->position = pos;
-}
+void set_token_position(Token *t, int pos) { t->position = pos; }
 
-int get_token_position(const Token *t) {
-  return t->position;
-}
+int get_token_position(const Token *t) { return t->position; }
 
-const char *get_token_text(const Token *t) {
-  return t->text;
-}
+const char *get_token_text(const Token *t) { return t->text; }
 
-TokenType get_token_type(const Token *t) {
-  return t->type;
-}
+TokenType get_token_type(const Token *t) { return t->type; }
 
-TokenStream make_token_stream(int n) {
-  return calloc(sizeof(Token), n);
-}
+TokenStream make_token_stream(int n) { return calloc(sizeof(Token), n); }
 
 TokenStream resize_token_stream(TokenStream t, int n) {
   return realloc(t, sizeof(Token) * n);
 }
 
-Token *get_token_stream_token(TokenStream t, int i) {
-  return &t[i];
-}
+Token *get_token_stream_token(TokenStream t, int i) { return &t[i]; }
 
 void free_token_stream(TokenStream t) {
   for (int i = 0; t[i].type != TOK_FINISH; i++) {
@@ -211,42 +207,41 @@ AST make_empty_ast() {
   return ret;
 }
 
-AST ast_dup_gptr(const AST ast, gpointer data) {
-  return ast_dup(ast);
-}
+AST ast_dup_gptr(const AST ast, gpointer data) { return ast_dup(ast); }
 
 AST ast_dup(const AST ast) {
   AST ret = make_empty_ast();
   ret->type = ast->type;
 
   switch (ret->type) {
-    case AST_FUNCTIONCALL:
-      set_ast_function(ret, function_call_dup(ast->value.function));
-      break;
-    case AST_ASSIGNMENT:
-      set_ast_var_assignment(ret, var_assignment_dup(ast->value.assignment));
-      break;
-    case AST_INDEX:
-      set_ast_index(ret, indexed_dup(ast->value.index));
-      break;
-    case AST_VARIABLE:
-      set_ast_variable(ret, ast->value.variable);
-      break;
-    case AST_STRING:
-      set_ast_string(ret, ast->value.string);
-      break;
-    case AST_ARRAY:
-      set_ast_array(ret, g_ptr_array_copy(ast->value.array, (GCopyFunc) ast_dup_gptr, NULL));
-      break;
-    case AST_NUMBER:
-      set_ast_number(ret, ast->value.number);
-      break;
-    case AST_FLOAT:
-      set_ast_float(ret, ast->value.float_num);
-      break;
-    default:
-      printf(BOLD "NOT IMPLEMENTED\n" RESET_ALL);
-      break;
+  case AST_FUNCTIONCALL:
+    set_ast_function(ret, function_call_dup(ast->value.function));
+    break;
+  case AST_ASSIGNMENT:
+    set_ast_var_assignment(ret, var_assignment_dup(ast->value.assignment));
+    break;
+  case AST_INDEX:
+    set_ast_index(ret, indexed_dup(ast->value.index));
+    break;
+  case AST_VARIABLE:
+    set_ast_variable(ret, ast->value.variable);
+    break;
+  case AST_STRING:
+    set_ast_string(ret, ast->value.string);
+    break;
+  case AST_ARRAY:
+    set_ast_array(
+        ret, g_ptr_array_copy(ast->value.array, (GCopyFunc)ast_dup_gptr, NULL));
+    break;
+  case AST_NUMBER:
+    set_ast_number(ret, ast->value.number);
+    break;
+  case AST_FLOAT:
+    set_ast_float(ret, ast->value.float_num);
+    break;
+  default:
+    printf(BOLD "NOT IMPLEMENTED\n" RESET_ALL);
+    break;
   }
 
   return ret;
@@ -254,38 +249,34 @@ AST ast_dup(const AST ast) {
 
 void free_ast(AST ast) {
   switch (ast->type) {
-    case AST_FUNCTIONCALL:
-      free_function_call(ast->value.function);
-      break;
-    case AST_ASSIGNMENT:
-      free_var_assignment(ast->value.assignment);
-      break;
-    case AST_VARIABLE:
-      free(ast->value.variable);
-      break;
-    case AST_INDEX:
-      free_indexed(ast->value.index);
-      break;
-    case AST_ARRAY:
-      g_ptr_array_free(ast->value.array, TRUE);
-      break;
-    case AST_STRING:
-      free(ast->value.string);
-      break;
-    default:
-      break;
+  case AST_FUNCTIONCALL:
+    free_function_call(ast->value.function);
+    break;
+  case AST_ASSIGNMENT:
+    free_var_assignment(ast->value.assignment);
+    break;
+  case AST_VARIABLE:
+    free(ast->value.variable);
+    break;
+  case AST_INDEX:
+    free_indexed(ast->value.index);
+    break;
+  case AST_ARRAY:
+    g_ptr_array_free(ast->value.array, TRUE);
+    break;
+  case AST_STRING:
+    free(ast->value.string);
+    break;
+  default:
+    break;
   }
 
   free(ast);
 }
 
-ASTType get_ast_type(AST ast) {
-  return ast->type;
-}
+ASTType get_ast_type(AST ast) { return ast->type; }
 
-void set_ast_type(AST ast, ASTType type) {
-  ast->type = type;
-}
+void set_ast_type(AST ast, ASTType type) { ast->type = type; }
 
 const VarAssignment get_ast_assignment(AST ast) {
   return ast->value.assignment;
@@ -295,29 +286,17 @@ const FunctionCall get_ast_function_call(AST ast) {
   return ast->value.function;
 }
 
-const Indexed get_ast_index(AST ast) {
-  return ast->value.index;
-}
+const Indexed get_ast_index(AST ast) { return ast->value.index; }
 
-const char *get_ast_variable(AST ast) {
-  return ast->value.variable;
-}
+const char *get_ast_variable(AST ast) { return ast->value.variable; }
 
-const char *get_ast_string(AST ast) {
-  return ast->value.string;
-}
+const char *get_ast_string(AST ast) { return ast->value.string; }
 
-const GPtrArray *get_ast_array(AST ast) {
-  return ast->value.array;
-}
+const GPtrArray *get_ast_array(AST ast) { return ast->value.array; }
 
-int get_ast_number(AST ast) {
-  return ast->value.number;
-}
+int get_ast_number(AST ast) { return ast->value.number; }
 
-float get_ast_float(AST ast) {
-  return ast->value.float_num;
-}
+float get_ast_float(AST ast) { return ast->value.float_num; }
 
 void set_ast_function(AST ast, FunctionCall call) {
   ast->type = AST_FUNCTIONCALL;
@@ -363,7 +342,7 @@ FunctionCall make_function_call(const char *name) {
   FunctionCall ret = malloc(sizeof(struct function_call));
 
   ret->name = g_strdup(name);
-  ret->args = g_ptr_array_new_with_free_func((GDestroyNotify) free_ast);
+  ret->args = g_ptr_array_new_with_free_func((GDestroyNotify)free_ast);
 
   return ret;
 }
@@ -387,13 +366,9 @@ void free_function_call(FunctionCall f) {
   free(f);
 }
 
-const char *get_function_name(const FunctionCall f) {
-  return f->name;
-}
+const char *get_function_name(const FunctionCall f) { return f->name; }
 
-const GPtrArray *get_function_args(const FunctionCall f) {
-  return f->args;
-}
+const GPtrArray *get_function_args(const FunctionCall f) { return f->args; }
 
 VarAssignment make_var_assignment(const char *variable) {
   VarAssignment ret = malloc(sizeof(struct var_assignment));
@@ -416,13 +391,9 @@ VarAssignment var_assignment_dup(const VarAssignment v) {
   return ret;
 }
 
-void set_var_assignment_value(VarAssignment v, AST val) {
-  v->value = val;
-}
+void set_var_assignment_value(VarAssignment v, AST val) { v->value = val; }
 
-const AST get_var_assignment_value(const VarAssignment v) {
-  return v->value;
-}
+const AST get_var_assignment_value(const VarAssignment v) { return v->value; }
 
 const char *get_var_assignment_variable(const VarAssignment v) {
   return v->variable;
@@ -437,7 +408,8 @@ Indexed indexed_dup(const Indexed i) {
 
 void index_expression(AST expression, AST index) {
   Indexed indexed = malloc(sizeof(struct indexed));
-  indexed->expression = memcpy(malloc(sizeof(struct ast)), expression, sizeof(struct ast));
+  indexed->expression =
+      memcpy(malloc(sizeof(struct ast)), expression, sizeof(struct ast));
   indexed->index = index;
   expression->type = AST_INDEX;
   expression->value.index = indexed;
@@ -449,13 +421,9 @@ void free_indexed(Indexed i) {
   free(i);
 }
 
-const AST get_indexed_expression(const Indexed i) {
-  return i->expression;
-}
+const AST get_indexed_expression(const Indexed i) { return i->expression; }
 
-const AST get_indexed_index(const Indexed i) {
-  return i->index;
-}
+const AST get_indexed_index(const Indexed i) { return i->index; }
 
 SyntaxError syntax_error(const char *expected, const Token *token) {
   SyntaxError err = malloc(sizeof(struct syntax_error));
@@ -474,7 +442,7 @@ void print_syntax_error(SyntaxError error) {
   fprintf(stderr,
           BOLD FG_RED "Syntax error" RESET_ALL " on position %d. Expected " BOLD
                       "%s" RESET_ALL ", but found " BOLD "'%s'" RESET_ALL ".\n",
-          error->token->position, error->expected, get_token_text(error->token));
+          error->token->position, error->expected,
+          get_token_text(error->token));
 }
-
 

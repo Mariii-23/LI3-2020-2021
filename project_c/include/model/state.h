@@ -1,4 +1,11 @@
 #ifndef STATE_H
+/**
+ * @file state.h
+ * @author Mariana Rodrigues, Matilde Bravo e Pedro Alves
+ * @date 4 Maio 2021
+ * @brief This Module is responsible to manipulated all information.
+ */
+
 #define STATE_H
 #include "controller/commands.h"
 #include "model/table.h"
