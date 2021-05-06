@@ -2,6 +2,7 @@
 
 #include <glib.h>
 #include <stdlib.h>
+#include "view/colors.h"
 
 struct variable {
   VariableType type;
@@ -130,6 +131,7 @@ STATE init_state() {
 void free_state(STATE s) {
   for (GTreeNode *n = g_tree_node_first(s); n != NULL;
        n = g_tree_node_next(n)) {
+    free(g_tree_node_key(n));
     free_var(g_tree_node_value(n));
   }
   g_tree_destroy(s);
@@ -137,13 +139,16 @@ void free_state(STATE s) {
 
 void create_variable(STATE state, Variable var) {
   Variable v = find_variable(state, var->name);
-  if (v != NULL) {
+  if (v != NULL && v != var) {
+    // Não entendo o que se passa, isto está a fazer com que não seja possivel redefinir variáveis, aleatoriamente crasha....
     v->references -= 1;
     free_if_possible(v);
+    /* fprintf(stderr, BOLD FG_RED "Error: " RESET_ALL "cannot redefine variables.\n"); */
+    /* return; */
   }
 
   var->references += 1;
-  g_tree_insert(state, var->name, var);
+  g_tree_replace_node(state, g_strdup(var->name), var);
 }
 
 Variable find_variable(STATE state, const char *name) {
