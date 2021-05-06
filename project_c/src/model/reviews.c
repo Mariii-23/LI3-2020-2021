@@ -84,9 +84,6 @@ bool find_word(char *text, char *query_word) {
 // TODO comentario
 void review_id_with_word_in_text(ReviewCollection collection, char *word,
                                  TABLE table) {
-  // apagar counter
-  int counter = 0;
-
   GHashTableIter iter;
   char *id = NULL;
   Review review = NULL;
@@ -94,15 +91,8 @@ void review_id_with_word_in_text(ReviewCollection collection, char *word,
   while (g_hash_table_iter_next(&iter, (gpointer *)&id, (gpointer *)&review)) {
     if (find_word(review->text, word)) {
       add_field(table, id);
-      // apagar
-      counter++;
     }
   }
-
-  // apagar counter
-  char *size_str = g_strdup_printf("%d", counter);
-  add_field(table, size_str);
-  free(size_str);
 }
 
 // static gint compare_text(gconstpointer a, gconstpointer b) {
