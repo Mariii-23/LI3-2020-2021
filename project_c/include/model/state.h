@@ -64,6 +64,7 @@ int get_n_args(FunctionVal func);
 int get_defaultable(FunctionVal func);
 VariableType get_arg_type(FunctionVal func, int i);
 FunctionPtr get_function(FunctionVal func);
+const char *get_function_help(FunctionVal func);
 
 // Esta macro serve para definir uma função rapidamente
 #define define_function(state, name, handler, ret, defaultable, n_args, help,  \

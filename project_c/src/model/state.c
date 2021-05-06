@@ -167,6 +167,7 @@ FunctionVal create_function(int n_args, int defaultable,
 }
 
 int get_n_args(FunctionVal func) { return func->n_args; }
+const char *get_function_help(FunctionVal func) { return func->help_text; }
 
 int get_defaultable(FunctionVal func) { return func->defaultable; }
 

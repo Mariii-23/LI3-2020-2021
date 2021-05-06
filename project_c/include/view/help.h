@@ -2,18 +2,14 @@
 #define __HELP_H_
 
 #define CMD_SHOW_HELP                                                          \
-  "Presents a table on the screen with a pager\n"                              \
-  "Keys:\n"                                                                    \
-  "Arrow Up/Arrow Down: Go one line up and down, respectively\n"               \
-  "Arrow Left/Arrow Right: Go one page backward and foward, respectively\n"    \
-  "q: quit pager\n"
-
-#define CMD_JOIN_HELP                                                          \
-  " join(table_a: TABLE ,table_b: Table)\n"                                    \
-  "Returns: TABLE\n"                                                           \
-  "Creates a  new table which is essentially the result of appending all the " \
-  "lines of table_b to table_a. If the tables don't have the same "            \
-  "field_names and number, it will return NULL.\n"
+  BOLD FG_CYAN "-> " FG_YELLOW "show" RESET_ALL "(" FG_RED "table" RESET_ALL   \
+               ": " FG_CYAN BOLD "TABLE" RESET_ALL ")\n"                       \
+               "Presents a table on the screen with a pager\n"                 \
+               "Keys:\n"                                                       \
+               "Arrow Up/Arrow Down: Go one line up and down, respectively\n"  \
+               "Arrow Left/Arrow Right: Go one page backward and foward, "     \
+               "respectively\n"                                                \
+               "q: quit pager\n"
 
 #define CMD_LOAD_SGR_HELP                                                      \
   " load_sgr([users: String, businesses: String, reviews: String])"            \

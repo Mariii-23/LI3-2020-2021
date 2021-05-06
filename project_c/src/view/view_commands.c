@@ -37,6 +37,15 @@ Variable show(STATE s, Variable *args) {
   return void_var();
 }
 
+Variable help(STATE s, Variable *args) {
+  if (get_function_help(get_var_value(args[0]).function)) {
+    printf("%s", get_function_help(get_var_value(args[0]).function));
+  } else {
+    fprintf(stderr, BOLD FG_RED "Error: " RESET_ALL "no help available.\n");
+  }
+  return void_var();
+}
+
 Variable cmd_from_csv(STATE s, Variable *args) {
   VariableValue val;
   val.table =
