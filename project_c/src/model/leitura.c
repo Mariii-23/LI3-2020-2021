@@ -15,6 +15,10 @@
 #define NUMBER_REVIEW_PARAMS 9
 typedef enum { BUSINESS, REVIEW, USER } Type;
 
+/**
+Returns a string which has the content of a line of the csv, without the
+newline.
+*/
 char *read_line(FILE *fp) {
   char linha[LINESIZE];
   bool has_new_line = false;
@@ -36,6 +40,9 @@ char *read_line(FILE *fp) {
   return final;
 }
 
+/**
+  Creates an array of strings by splitting the provided line by the delimiter.
+*/
 char **read_to_array(char *line, char *delim, size_t number_fields) {
   // ver se tem campos a mais ou a menos
   char *item = strtok(line, delim);
@@ -60,6 +67,10 @@ char **read_to_array(char *line, char *delim, size_t number_fields) {
   return array;
 }
 
+/**
+  Creates a GPtrArray of strings by splitting the provided line by the
+  delimiter.
+*/
 GPtrArray *read_to_ptr_array(char *line, char *delim) {
   char *item = strtok(line, delim);
   if (!item)
@@ -71,7 +82,11 @@ GPtrArray *read_to_ptr_array(char *line, char *delim) {
   }
   return arr;
 }
-// read from csv generically
+/**
+  Parses a csv line from the businsess file and, if valid, creates a Business
+  structure with the values read from the line. If invalid, returns NULL;
+
+*/
 static Business parse_business_line(char *str) {
   char *business_id = my_strsep(&str, ";");
   char *name = my_strsep(&str, ";");
@@ -94,6 +109,11 @@ static Business parse_business_line(char *str) {
   return bus;
 }
 
+/**
+  Parses a csv line from the user file and, if valid, creates a User structure
+  with the values read from the line. If invalid, returns NULL;
+
+*/
 static User parse_user_line(char *str) {
   char *user_id = strtok(str, ";");
   char *name = strtok(NULL, ";");
@@ -103,6 +123,11 @@ static User parse_user_line(char *str) {
   /* GPtrArray *users = read_to_ptr_array(strtok(NULL, ";"), ","); */
   return create_user(user_id, name);
 }
+/**
+  Parses a csv line from the review file and, if valid, creates a Review
+  structure with the values read from the line. If invalid, returns NULL;
+
+*/
 
 static Review parse_review_line(char *str, SGR sgr) {
   // last field may contain ; so we have to change strategy
@@ -136,6 +161,11 @@ static Review parse_review_line(char *str, SGR sgr) {
                        cool, date, text);
 }
 
+/**
+  Reads the csv file containing the review information and creates a colection
+  containing all the reviews;
+
+*/
 ReviewCollection collect_reviews(FILE *fp, SGR sgr) {
   char *line;
   ReviewCollection collection = create_review_collection();
@@ -156,7 +186,10 @@ ReviewCollection collect_reviews(FILE *fp, SGR sgr) {
   }
   return collection;
 }
-
+/**
+  Reads the csv file containing the business information and creates a colection
+  containing all the businessess;
+*/
 BusinessCollection collect_businesses(FILE *fp) {
   char *line;
   BusinessCollection collection = create_business_collection();
@@ -176,6 +209,11 @@ BusinessCollection collect_businesses(FILE *fp) {
   }
   return collection;
 }
+
+/**
+  Reads the csv file containing the user information and creates a colection
+  containing all the users;
+*/
 
 UserCollection collect_users(FILE *fp) {
   char *line;

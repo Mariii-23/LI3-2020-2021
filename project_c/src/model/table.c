@@ -14,6 +14,10 @@ struct table {
   GPtrArray *lines; // array de strings que será uma especie de matriz
 };
 
+/**
+  Creates a table with the headers passed as a parameter, inside a GPtrArray.
+
+*/
 TABLE new_table_ptr_array(GPtrArray *header) {
   TABLE table = malloc(sizeof(struct table));
   size_t number_fields = header->len;
@@ -32,14 +36,10 @@ TABLE new_table_ptr_array(GPtrArray *header) {
   // free_ptr_array_deep(fields);
   return table;
 }
-char **copy_char_array(char **array, size_t n_fields) {
-  char **x = malloc(sizeof(char *) * n_fields);
-  for (int i = 0; i < n_fields; i++) {
-    x[i] = g_strdup(array[i]);
-  }
-  return x;
-}
+/**
+  Creates a table with the headers passed as a parameter, in an array.
 
+*/
 TABLE new_table(char **header, size_t number_fields) {
   TABLE table = malloc(sizeof(struct table));
   table->header =
@@ -51,6 +51,12 @@ TABLE new_table(char **header, size_t number_fields) {
   return table;
 }
 
+/**
+  Creates a table without specifying the header names. Only the number of fields
+  in the header are provided.
+
+*/
+
 TABLE new_table_without_fields(size_t number_fields) {
   TABLE table = malloc(sizeof(struct table));
   table->header = malloc(sizeof(char *) * number_fields);
@@ -61,10 +67,12 @@ TABLE new_table_without_fields(size_t number_fields) {
   return table;
 }
 
+/** Adds an element (field) to the table*/
 void add_field(TABLE table, char *field) {
   g_ptr_array_add(table->lines, g_strdup(field));
 }
 
+/** Adds a footer to the table, with the provided name and value*/
 void add_footer(TABLE table, char *footer_name, char *footer_value) {
   char **ft = table->footer;
   table->number_footers += 1;
@@ -81,6 +89,9 @@ void add_footer(TABLE table, char *footer_name, char *footer_value) {
   ft[table->number_footers * 2 - 1] = g_strdup(footer_value);
 }
 
+/** Writes the contents of the table to the specified stream. This function can
+ * be used for converting a table to a csv file or to write a table to stdout,
+ * mostly for debugging. */
 void fprintf_table(FILE *stream, TABLE table, char *delim_header,
                    char *delim_main) {
   if (table) {
@@ -98,11 +109,14 @@ void fprintf_table(FILE *stream, TABLE table, char *delim_header,
   }
 }
 
+/** Returns the value (string) at the provided line and column of the table*/
 char *table_index(TABLE table, size_t i, size_t j) {
   // encapsulamento
   return g_strdup(table->lines->pdata[i * table->number_fields + j]);
 }
 
+/**Given a field name, it determines which column  it corresponds to. Returns -1
+ * if field doesn't exist*/
 ssize_t whereis_field(TABLE table, char *field_name) {
   int j;
   for (j = 0; j < table->number_fields; j++) {
@@ -135,17 +149,22 @@ GPtrArray *get_fields_table(TABLE table) {
   return fields;
 }
 
+/** Retuns header of the table as a GPtrArray*/
 GPtrArray *get_header_table(TABLE table) {
   return build_ptr_array(table->header, table->number_fields);
 }
 
+/** Retuns footer name given its index*/
 char *get_footer_name(TABLE table, size_t i) { return table->footer[i * 2]; }
 
+/** Retuns footer value given its index*/
 char *get_footer_value(TABLE table, size_t i) {
   return table->footer[i * 2 + 1];
 }
 
+/** Retuns number of footers present in the table*/
 size_t get_number_footers_table(TABLE table) { return table->number_footers; }
+/**Frees table structure*/
 
 void free_table(TABLE table) {
   free_ptr_array_deep(table->lines);

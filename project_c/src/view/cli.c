@@ -81,7 +81,7 @@ void repl(STATE state) {
 
   // Query 3
   define_function(state, "business_info", cmd_business_info, VAR_TABLE, 0, 2,
-                  CMD_BUSINESSES_INFO_HELP, VAR_SGR, VAR_STRING);
+                  CMD_BUSINESS_INFO_HELP, VAR_SGR, VAR_STRING);
 
   // Query 4
   define_function(state, "businesses_reviewed", cmd_businesses_reviewed,
@@ -117,10 +117,10 @@ void repl(STATE state) {
                   VAR_TABLE, VAR_TABLE);
   define_function(state, "avg", cmd_avg, VAR_FLOAT, 0, 2, CMD_AVG_HELP,
                   VAR_TABLE, VAR_STRING);
-  define_function(state, "max", cmd_max, VAR_TABLE, 0, 2,
-                  "Get max value of a certain column", VAR_TABLE, VAR_STRING);
-  define_function(state, "min", cmd_min, VAR_TABLE, 0, 2,
-                  "Get min value of a certain column", VAR_TABLE, VAR_STRING);
+  define_function(state, "max", cmd_max, VAR_TABLE, 0, 2, CMD_MAX_HELP,
+                  VAR_TABLE, VAR_STRING);
+  define_function(state, "min", cmd_min, VAR_TABLE, 0, 2, CMD_MIN_HELP,
+                  VAR_TABLE, VAR_STRING);
 
   // O readline devolve NULL quando chega ao EOF
   while ((line = readline(BOLD FG_CYAN "> " RESET_ALL))) {

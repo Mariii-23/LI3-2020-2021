@@ -57,6 +57,14 @@ GPtrArray *build_ptr_array(char *ptr_array[], int N) {
   return new_array;
 }
 
+char **copy_char_array(char **array, size_t n_fields) {
+  char **x = malloc(sizeof(char *) * n_fields);
+  for (int i = 0; i < n_fields; i++) {
+    x[i] = g_strdup(array[i]);
+  }
+  return x;
+}
+
 void fprint_str_array(FILE *stream, GPtrArray *arr, size_t n_fields,
                       char *delim) {
   for (int i = 0; i < arr->len; i++) {

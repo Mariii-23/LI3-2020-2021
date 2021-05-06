@@ -17,6 +17,7 @@ gpointer strdup_copy(gconstpointer src, gpointer data);
 GPtrArray *build_ptr_array(char *fields[], int N);
 void fprint_str_array(FILE *stream, GPtrArray *arr, size_t n_fields,
                       char *delim);
+char **copy_char_array(char **array, size_t n_fields);
 
 void free_ptr_array_deep(GPtrArray *arr);
 char *my_strsep(char **str, const char *delim);
