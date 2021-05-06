@@ -103,12 +103,12 @@ void free_function_call(FunctionCall f);
 const char *get_function_name(const FunctionCall f);
 const GPtrArray *get_function_args(const FunctionCall f);
 
-VarAssignment make_var_assignment(const char *variable);        // TODO
-void free_var_assignment(VarAssignment var);                    // TODO
-VarAssignment var_assignment_dup(const VarAssignment v);        // TODO
-void set_var_assignment_value(VarAssignment v, AST val);        // TODO
-const AST get_var_assignment_value(const VarAssignment v);      // TODO
-const char *get_var_assignment_variable(const VarAssignment v); // TODO
+VarAssignment make_var_assignment(const char *variable);
+void free_var_assignment(VarAssignment var);
+VarAssignment var_assignment_dup(const VarAssignment v);
+void set_var_assignment_value(VarAssignment v, AST val);
+const AST get_var_assignment_value(const VarAssignment v);
+const char *get_var_assignment_variable(const VarAssignment v);
 
 Indexed indexed_dup(const Indexed i);
 void index_expression(AST expression, AST index);

@@ -14,6 +14,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// O ficheiro de config é lido para o estado global
+// Por exemplo, para uma linha do config
+// NOME;valor
+// é criada uma variável global NOME = "valor"
 void read_config_to_state(STATE s, char *path_to_config) {
   if (path_to_config) {
     TABLE t = from_csv(path_to_config, ";");

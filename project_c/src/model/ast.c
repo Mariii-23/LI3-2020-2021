@@ -38,6 +38,8 @@ struct indexed {
   struct ast *index;
 };
 
+// A sintaxe do programa é representada numa AST - Abstract Syntax Tree. Esta
+// estrutura contém uma representação de qualquer linha válida no programa
 struct ast {
   ASTType type;
   union {
@@ -52,6 +54,8 @@ struct ast {
   } value;
 };
 
+// Antes da AST, o texto é tokenizado. Esta função converte um elemento de
+// texto num token, e devolve o resto do texto.
 const char *identify(const char *string, Token *dest) {
   const char *s;
   int i;
@@ -176,14 +180,17 @@ void free_token(Token *t) {
   free(t);
 }
 
+// Os tokens contêm a posição em que ocorreram no texto, para se poderem
+// mostrar mensagens de erro mais detalhadas
 void set_token_position(Token *t, int pos) { t->position = pos; }
-
 int get_token_position(const Token *t) { return t->position; }
 
 const char *get_token_text(const Token *t) { return t->text; }
 
 TokenType get_token_type(const Token *t) { return t->type; }
 
+// Uma TokenStream é simplesmente uma lista de tokens que representa uma linha
+// inteira
 TokenStream make_token_stream(int n) { return calloc(sizeof(Token), n); }
 
 TokenStream resize_token_stream(TokenStream t, int n) {
@@ -445,4 +452,3 @@ void print_syntax_error(SyntaxError error) {
           error->token->position, error->expected,
           get_token_text(error->token));
 }
-

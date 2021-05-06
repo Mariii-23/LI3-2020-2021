@@ -41,6 +41,10 @@ TokenStream split_line(const char *string) {
   return line;
 }
 
+// O parsing do programa é feito por recursive descent - funções que se chamam
+// umas às outras para completar uma AST. Esta função em particular procura uma
+// chamada de uma função numa TokenStream, e devolve um erro, caso exista um,
+// ou o número de tokens consumidos pela função
 SyntaxError parse_function(const TokenStream tokens, AST node, int *consumed) {
   int tok = 0;
   FunctionCall call;
@@ -94,6 +98,8 @@ SyntaxError parse_function(const TokenStream tokens, AST node, int *consumed) {
   return NULL;
 }
 
+// Tenta ler uma declaração de variável, do género
+// nome = expressão
 SyntaxError parse_assignment(const TokenStream tokens, AST node,
                              int *consumed) {
   int tok = 0;
@@ -134,6 +140,8 @@ SyntaxError parse_assignment(const TokenStream tokens, AST node,
   return NULL;
 }
 
+// Tenta ler uma expressão, que pode ser uma chamada de uma função, um valor
+// simples (e.g. um número ou uma string) ou uma referência a uma variável
 SyntaxError parse_expression(const TokenStream tokens, AST node,
                              int *consumed) {
   *consumed = 0;
@@ -194,6 +202,8 @@ SyntaxError parse_expression(const TokenStream tokens, AST node,
   return NULL;
 }
 
+// Lê um statement, que é ou uma chamada de uma função seguida de um ponto e
+// vírgula ou uma declaração de variável seguida de um ponto e vírgula.
 SyntaxError parse_statement(const TokenStream tokens, AST node, int *consumed) {
   SyntaxError e = parse_function(tokens, node, consumed);
 
@@ -218,6 +228,8 @@ SyntaxError parse_statement(const TokenStream tokens, AST node, int *consumed) {
   return NULL;
 }
 
+// Lê um array, que é uma lista de expressões, separadas por vírgulas, dentro
+// de chavetas
 SyntaxError parse_array(const TokenStream tokens, AST node, int *consumed) {
   int tok = 0;
 
@@ -257,4 +269,3 @@ SyntaxError parse_array(const TokenStream tokens, AST node, int *consumed) {
 
   return NULL;
 }
-
