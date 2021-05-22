@@ -6,7 +6,7 @@ import li3.grupo54.Controller.Controller;
 import li3.grupo54.Controller.IController;
 import li3.grupo54.View.DesktopView;
 
-public class Main extends Application {
+public class GestReviewsAppMVC extends Application {
     public static void main(String[] args) {
         launch();
     }
