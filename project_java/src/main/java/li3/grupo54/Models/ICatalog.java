@@ -15,26 +15,21 @@ public interface ICatalog<T> {
     public void add(T t);
     public T getById(String id);
     public void delete(String id);
-    public default void populateFromFile(String filename)  {
-         try {
-            BufferedReader reader = Files.newBufferedReader(Paths.get(ClassLoader.getSystemResource(filename).toURI()));
-            char delim = Leitura.determineDelimiter(reader.readLine());
-            CSVReader csvReader = new CSVReader(reader,delim);
-            String [] nextLine ;
-            while(((nextLine = csvReader.readNext()) != null)) {
-                try {
-                    this.add(callConstructor(nextLine));
-                }
-                catch(InvalidUserLineException | InvalidBusinessLineException | InvalidReviewLineExpcetion e) {
-                    // alterarar estatisticas de linhsa invalidaas
-                }
+    public default void populateFromFile(String filename) throws IOException, URISyntaxException {
+        BufferedReader reader = Files.newBufferedReader(Paths.get(ClassLoader.getSystemResource(filename).toURI()));
+        char delim = Leitura.determineDelimiter(reader.readLine());
+        CSVReader csvReader = new CSVReader(reader,delim);
+        
+        String [] nextLine ;
+        while(((nextLine = csvReader.readNext()) != null)) {
+            try {
+                this.add(callConstructor(nextLine));
             }
-            reader.close();
-            csvReader.close();
+            catch(InvalidUserLineException | InvalidBusinessLineException | InvalidReviewLineExpcetion e) {
+                // alterarar estatisticas de linhsa invalidaas
+            }
         }
-        // probably passar este try catch para outro sitio
-        catch (IOException | URISyntaxException e) {
-            System.out.println("Error reading file");
-        }
+        reader.close();
+        csvReader.close();
     }
 }

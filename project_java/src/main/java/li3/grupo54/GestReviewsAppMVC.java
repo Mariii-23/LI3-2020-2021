@@ -1,19 +1,25 @@
-package li3.grupo54;
+package main.java.li3.grupo54;
 
-import javafx.application.Application;
-import javafx.stage.Stage;
-import li3.grupo54.Controller.Controller;
-import li3.grupo54.Controller.IController;
-import li3.grupo54.View.DesktopView;
+import main.java.li3.grupo54.Models.CatalogoUsers;
 
-public class GestReviewsAppMVC extends Application {
-    public static void main(String[] args) {
-        launch();
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+public class GestReviewsAppMVC {
+    public static void main(String[] args) throws IOException, URISyntaxException {
+        CatalogoUsers c = new CatalogoUsers();
+
+        c.populateFromFile("teste.csv");
+
+
+
+
+        //launch();
     }
 
-    public void start(Stage s) {
-        IController c = new Controller();
-        DesktopView v = new DesktopView(c, s);
-        v.show();
-    }
+    //public void start(Stage s) {
+    //    IController c = new Controller();
+    //    DesktopView v = new DesktopView(c, s);
+    //    v.show();
+    //}
 }

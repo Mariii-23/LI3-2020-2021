@@ -26,7 +26,7 @@ public class User {
         this.userId = linhaSplit[0];
         this.name = linhaSplit[1];
       }
-    }
+  }
 
     public String getUserId() {
     return userId;

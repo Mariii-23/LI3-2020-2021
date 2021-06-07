@@ -1,16 +1,18 @@
 package main.java.li3.grupo54.Models;
 
+import java.time.LocalDateTime;
+
 public interface IReview {
-    public String getId();
-    public String getText();
+    public String getReviewId();
     public String getUserId();
     public String getBusinessId();
 
-    public double getStars();
+    public float getStars();
 
     public int getUseful();
     public int getFunny();
     public int getCool();
 
-    public String getDate();
+    public LocalDateTime getDate();
+    public String getText();
 }

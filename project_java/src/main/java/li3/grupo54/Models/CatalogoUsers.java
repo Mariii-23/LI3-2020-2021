@@ -8,15 +8,13 @@ import java.util.Map;
 public class CatalogoUsers implements ICatalog<User> {
     private Map<String, User> byUserId;
 
+    public CatalogoUsers() {
+        this.byUserId = new HashMap<String, User>();
+    }
     @Override
     public User callConstructor(String [] line) throws InvalidUserLineException {
         return new User(line);
 
-    }
-    public CatalogoUsers() {
-        this.byUserId = new HashMap<String, User>();
-    }
-    public CatalogoUsers(String [] line ) {
     }
     public int size() {
         return this.byUserId.size();
