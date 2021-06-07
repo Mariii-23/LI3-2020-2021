@@ -7,12 +7,10 @@
     <groupId>li3.</groupId>
     <artifactId>grupo54</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <exec.mainClass>li3.grupo54.Main</exec.mainClass>
-    </properties>
-
+<properties>
+  <maven.compiler.source>1.8</maven.compiler.source>
+  <maven.compiler.target>1.8</maven.compiler.target>
+</properties>
     <dependencies>
         <dependency>
             <groupId>com.opencsv</groupId>
