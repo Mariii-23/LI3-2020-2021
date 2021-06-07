@@ -1,4 +1,6 @@
-package main.java.li3.grupo54.Models;
+package li3.grupo54.main.java.li3.grupo54.Models;
+
+import li3.grupo54.main.java.li3.grupo54.Models.Exceptions.InvalidUserLineException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,9 +28,9 @@ public class Review implements IReview{
         this.text = text;
     }
 
-    public Review(String[] linhaSplit) throws InvalidReviewLineExpcetion {
+    public Review(String[] linhaSplit) throws InvalidUserLineException.InvalidReviewLineExpcetion {
         if(linhaSplit.length != 9) {
-             throw new InvalidReviewLineExpcetion();
+             throw new InvalidUserLineException.InvalidReviewLineExpcetion();
         }
         else {
             this.reviewId = linhaSplit[0];

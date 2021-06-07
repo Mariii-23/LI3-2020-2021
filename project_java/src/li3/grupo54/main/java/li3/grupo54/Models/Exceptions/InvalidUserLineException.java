@@ -1,10 +1,11 @@
-package main.java.li3.grupo54.Models.Exceptions;
+package li3.grupo54.main.java.li3.grupo54.Models.Exceptions;
 
 public class InvalidUserLineException extends Exception {
     public InvalidUserLineException() {
         super();
     }
-    InvalidUserLineException(String m) {
+    public InvalidUserLineException(String m) {
         super(m);
     }
+
 }

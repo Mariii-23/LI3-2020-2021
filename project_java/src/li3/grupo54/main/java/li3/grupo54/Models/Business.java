@@ -1,6 +1,6 @@
-package li3.grupo54.Models;
+package li3.grupo54.main.java.li3.grupo54.Models;
 
-import main.java.li3.grupo54.Models.InvalidBusinessLineException;
+import li3.grupo54.main.java.li3.grupo54.Models.Exceptions.InvalidBusinessLineException;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -76,8 +76,8 @@ public class Business {
      this.categories = new HashSet<>(categories);
  }
 
-  public Business clone(Business that){
-    return  new Business(that);
+  public Business clone(){
+    return  new Business(this);
   }
 
   @Override

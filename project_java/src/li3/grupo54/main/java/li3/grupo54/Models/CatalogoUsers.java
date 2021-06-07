@@ -1,6 +1,6 @@
-package main.java.li3.grupo54.Models;
+package li3.grupo54.main.java.li3.grupo54.Models;
 
-import main.java.li3.grupo54.Models.Exceptions.InvalidUserLineException;
+import li3.grupo54.main.java.li3.grupo54.Models.Exceptions.InvalidUserLineException;
 
 import java.util.HashMap;
 import java.util.Map;
