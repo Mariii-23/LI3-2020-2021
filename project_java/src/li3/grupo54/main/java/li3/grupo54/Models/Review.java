@@ -1,20 +1,20 @@
 package li3.grupo54.main.java.li3.grupo54.Models;
 
-import li3.grupo54.main.java.li3.grupo54.Models.Exceptions.InvalidUserLineException;
+import li3.grupo54.main.java.li3.grupo54.Models.Exceptions.InvalidReviewLineException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Review implements IReview{
-    String reviewId;
-    String userId;
-    String businessId;
-    float stars;
-    int useful;
-    int funny;
-    int cool;
-    LocalDateTime date;
-    String text;
+    private String reviewId;
+    private String userId;
+    private String businessId;
+    private float stars;
+    private int useful;
+    private int funny;
+    private int cool;
+    private LocalDateTime date;
+    private String text;
 
     public Review(String reviewId, String userId, String businessId, float stars, int useful, int funny, int cool, LocalDateTime date, String text) {
         this.reviewId = reviewId;
@@ -28,9 +28,21 @@ public class Review implements IReview{
         this.text = text;
     }
 
-    public Review(String[] linhaSplit) throws InvalidUserLineException.InvalidReviewLineExpcetion {
+    public Review(Review that){
+        this.reviewId = that.getReviewId();
+        this.userId = that.getUserId();
+        this.businessId = that.getBusinessId();
+        this.stars = that.getStars();
+        this.useful = that.getUseful();
+        this.funny = that.getFunny();
+        this.cool = that.getCool();
+        this.date = that.getDate();
+        this.text = that.getText();
+    }
+
+    public Review(String[] linhaSplit) throws InvalidReviewLineException{
         if(linhaSplit.length != 9) {
-             throw new InvalidUserLineException.InvalidReviewLineExpcetion();
+             throw new InvalidReviewLineException();
         }
         else {
             this.reviewId = linhaSplit[0];
@@ -88,5 +100,10 @@ public class Review implements IReview{
     @Override
     public LocalDateTime getDate() {
         return date;
+    }
+
+    @Override
+    public Review clone(){
+        return new Review(this);
     }
 }

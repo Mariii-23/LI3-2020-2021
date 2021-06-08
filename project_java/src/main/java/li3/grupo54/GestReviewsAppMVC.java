@@ -1,6 +1,8 @@
 package main.java.li3.grupo54;
 
-import main.java.li3.grupo54.Models.CatalogoUsers;
+//import main.java.li3.grupo54.Models.CatalogoUsers;
+
+import li3.grupo54.main.java.li3.grupo54.Models.CatalogoUsers;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

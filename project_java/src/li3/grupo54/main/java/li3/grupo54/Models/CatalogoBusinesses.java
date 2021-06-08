@@ -15,7 +15,14 @@ public class CatalogoBusinesses implements ICatalog<Business> {
     public Business callConstructor(String[] line) throws InvalidBusinessLineException {
         return new Business(line);
     }
+
+    //private int byId(String e1,String e2){
+    //    return e1.compareTo(e2);
+    //};
+
     public CatalogoBusinesses() {
+        //Comparable<String,Business> byId = (e1,e2)-> e1.getBusinessId() - e2.getBusinessId();
+        //Comparable<Business> byId = (e1,e2)-> e1.getBusinessId().compareTo(e2.getBusinessId()) ;
         this.negociosNuncaAvaliados = new TreeMap<>(); // ordenar alfabeticamente
         this.negociosAvaliados = new HashMap<>();
     }
@@ -27,6 +34,13 @@ public class CatalogoBusinesses implements ICatalog<Business> {
     @Override
     public void add(Business business) {
         this.negociosNuncaAvaliados.put(business.getBusinessId(),business.clone());
+    }
+
+    public void changesBusinessAvalied(String id) throws BusinessNotFoundException{
+        Business business = negociosNuncaAvaliados.remove(id);
+        if (business==null)
+            throw new BusinessNotFoundException("Business Not Found, id: "+id);
+        this.negociosAvaliados.put(id,business);
     }
 
     @Override
