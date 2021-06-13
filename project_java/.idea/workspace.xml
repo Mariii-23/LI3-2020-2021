@@ -5,8 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2d95e09-bc42-4073-afed-0066f7030081" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/project_java.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/project_java.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/BusinessStarsTuple.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/BusinessStarsTuple.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/CatalogoReviews.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/CatalogoReviews.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/StarsTuple.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/StarsTuple.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Stats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Stats.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/UserStarsTuple.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/UserStarsTuple.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -44,13 +50,26 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/trabalho-poo" />
-    <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="last_opened_file_path" value="$PATH_TO_FX$" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.pathVariables" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.GestReviewsAppMVC (1)">
+    <configuration name="GestReviewsAppMVC (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="li3.grupo54.main.java.li3.grupo54.GestReviewsAppMVC" />
+      <module name="project_java" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="li3.grupo54.main.java.li3.grupo54.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="GestReviewsAppMVC" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <module name="project_java" />
       <option name="VM_PARAMETERS" value="--module-path ${PATH_TO_FX} --add-modules javafx.fxml,javafx.controls,javafx.graphics" />
@@ -113,6 +132,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.GestReviewsAppMVC (1)" />
         <item itemvalue="Application.GestReviewsAppMVC" />
         <item itemvalue="Application.GestReviewsAppMVC" />
       </list>
@@ -130,6 +150,8 @@
       <workItem from="1621505855218" duration="1562000" />
       <workItem from="1622140628310" duration="59000" />
       <workItem from="1622219823553" duration="207000" />
+      <workItem from="1623186189316" duration="53000" />
+      <workItem from="1623585740241" duration="3062000" />
     </task>
     <servers />
   </component>

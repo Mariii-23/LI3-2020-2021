@@ -10,10 +10,10 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class CatalogoReviews implements ICatalog<Review> {
-    Map<Integer, List<Set<Review>>> anoToReviewsPerMonth;
+    private final Map<Integer, List<Set<Review>>> anoToReviewsPerMonth;
         // ano =>  array de 12 elementos => cada array tem um set de reviews
 
-    private Map<String, Review> byReviewId;
+    private final Map<String, Review> byReviewId;
 
     public CatalogoReviews()  {
         this.anoToReviewsPerMonth = new HashMap<>();

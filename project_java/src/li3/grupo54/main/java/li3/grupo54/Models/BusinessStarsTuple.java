@@ -28,8 +28,8 @@ public class BusinessStarsTuple  extends StarsTuple{
     users.add(review.getBusinessId());
   }
 
-  public double getCurrentAverrage() {
-    return super.getCurrentAverrage();
+  public double getCurrentAverage() {
+    return super.getCurrentAverage();
   }
 
   public int getReviewsNumber(){
