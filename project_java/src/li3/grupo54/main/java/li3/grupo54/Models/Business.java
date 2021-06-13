@@ -33,18 +33,18 @@ public class Business {
   }
 
   public Business(String[] linhaSplit) throws InvalidBusinessLineException {
-     if(linhaSplit.length != 5) {
-        throw new InvalidBusinessLineException();
-      }
-      else {
-        this.businessId = linhaSplit[0];
-        this.name = linhaSplit[1];
-        this.city = linhaSplit[2];
-        this.state = linhaSplit[3];
-        this.categories = Arrays.stream(linhaSplit[4].split(",")).collect(Collectors.toSet());
-     }
+    if (linhaSplit.length != 5) {
+      throw new InvalidBusinessLineException();
+    } else {
+      this.businessId = linhaSplit[0];
+      this.name = linhaSplit[1];
+      this.city = linhaSplit[2];
+      this.state = linhaSplit[3];
+      this.categories = Arrays.stream(linhaSplit[4].split(",")).collect(Collectors.toSet());
+    }
   }
-  public Business(Business that){
+
+  public Business(Business that) {
     this.businessId = that.businessId;
     this.name = that.name;
     this.city = that.city;
@@ -69,15 +69,15 @@ public class Business {
   }
 
   public Set<String> getCategories() {
-    return new HashSet<>(this.categories );
+    return new HashSet<>(this.categories);
   }
 
   public void setCategories(Set<String> categories) {
-     this.categories = new HashSet<>(categories);
- }
+    this.categories = new HashSet<>(categories);
+  }
 
-  public Business clone(){
-    return  new Business(this);
+  public Business clone() {
+    return new Business(this);
   }
 
   @Override
@@ -94,12 +94,12 @@ public class Business {
   }
 
   public String toString() {
-      return "Business{" +
-              "businessId='" + businessId + '\'' +
-              ", name='" + name + '\'' +
-              ", city='" + city + '\'' +
-              ", state='" + state + '\'' +
-              ", categories=" + categories +
-              '}';
+    return "Business{" +
+        "businessId='" + businessId + '\'' +
+        ", name='" + name + '\'' +
+        ", city='" + city + '\'' +
+        ", state='" + state + '\'' +
+        ", categories=" + categories +
+        '}';
   }
 }

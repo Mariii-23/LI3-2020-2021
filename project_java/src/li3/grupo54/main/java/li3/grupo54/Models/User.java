@@ -12,38 +12,39 @@ public class User {
     this.userId = userId;
     this.name = name;
   }
+
   public User(User that) {
     this.userId = that.getUserId();
     this.name = that.getName();
   }
 
-    public User(String[] linhaSplit) throws InvalidUserLineException {
-      // apesar de os amigos serem ignorados, o campo tem que existir
-      if(linhaSplit.length != 3) {
-        throw new InvalidUserLineException();
-      }
-      else {
-        this.userId = linhaSplit[0];
-        this.name = linhaSplit[1];
-      }
+  public User(String[] linhaSplit) throws InvalidUserLineException {
+    // apesar de os amigos serem ignorados, o campo tem que existir
+    if (linhaSplit.length != 3) {
+      throw new InvalidUserLineException();
+    } else {
+      this.userId = linhaSplit[0];
+      this.name = linhaSplit[1];
+    }
   }
 
-    public String getUserId() {
+  public String getUserId() {
     return userId;
-  }
-
-  public String getName() {
-    return name;
   }
 
   public void setUserId(String userId) {
     this.userId = userId;
   }
 
+  public String getName() {
+    return name;
+  }
+
   public void setName(String name) {
     this.name = name;
   }
-  public User clone(){
+
+  public User clone() {
     return new User(this);
   }
 
@@ -59,11 +60,12 @@ public class User {
   public int hashCode() {
     return Objects.hash(getUserId(), getName());
   }
+
   @Override
   public String toString() {
     return "User{" +
-            "userId='" + userId + '\'' +
-            ", name='" + name + '\'' +
-            '}';
+        "userId='" + userId + '\'' +
+        ", name='" + name + '\'' +
+        '}';
   }
 }

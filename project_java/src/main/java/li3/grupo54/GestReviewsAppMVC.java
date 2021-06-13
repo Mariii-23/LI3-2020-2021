@@ -8,20 +8,18 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 public class GestReviewsAppMVC {
-    public static void main(String[] args) throws IOException, URISyntaxException {
-        CatalogoUsers c = new CatalogoUsers();
+  public static void main(String[] args) throws IOException, URISyntaxException {
+    CatalogoUsers c = new CatalogoUsers();
 
-        c.populateFromFile("teste.csv");
-
-
+    c.populateFromFile("teste.csv");
 
 
-        //launch();
-    }
+    //launch();
+  }
 
-    //public void start(Stage s) {
-    //    IController c = new Controller();
-    //    DesktopView v = new DesktopView(c, s);
-    //    v.show();
-    //}
+  //public void start(Stage s) {
+  //    IController c = new Controller();
+  //    DesktopView v = new DesktopView(c, s);
+  //    v.show();
+  //}
 }

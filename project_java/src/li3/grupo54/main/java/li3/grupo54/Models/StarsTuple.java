@@ -16,8 +16,8 @@ public class StarsTuple implements Comparator<StarsTuple> {
     this.numberTotal = numberTotal;
   }
 
-  public void update(double value){
-    currentAverage = (currentAverage * numberTotal +value)/(++numberTotal);
+  public void update(double value) {
+    currentAverage = (currentAverage * numberTotal + value) / (++numberTotal);
   }
 
   public double getCurrentAverage() {
@@ -30,6 +30,6 @@ public class StarsTuple implements Comparator<StarsTuple> {
 
   @Override
   public int compare(StarsTuple starsTuple, StarsTuple t1) {
-    return (int) (starsTuple.getCurrentAverage()- t1.getCurrentAverage());
+    return (int) (starsTuple.getCurrentAverage() - t1.getCurrentAverage());
   }
 }

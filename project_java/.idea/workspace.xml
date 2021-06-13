@@ -5,15 +5,42 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2d95e09-bc42-4073-afed-0066f7030081" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jetbrains_annotations_21_0_1.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/project_java.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/project_java.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Controller/Controller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Controller/IController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Controller/IController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/GestReviewsAppMVC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/GestReviewsAppMVC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Business.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Business.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/BusinessStarsTuple.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/BusinessStarsTuple.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/CatalogoBusinesses.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/CatalogoBusinesses.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/CatalogoReviews.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/CatalogoReviews.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/CatalogoUsers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/CatalogoUsers.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Exceptions/BusinessNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Exceptions/BusinessNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Exceptions/DateNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Exceptions/DateNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Exceptions/InvalidBusinessLineException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Exceptions/InvalidBusinessLineException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Exceptions/InvalidReviewLineException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Exceptions/InvalidReviewLineException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Exceptions/InvalidUserLineException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Exceptions/InvalidUserLineException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Exceptions/NullReviewException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Exceptions/NullReviewException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Exceptions/ReviewNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Exceptions/ReviewNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Exceptions/UserNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Exceptions/UserNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/GestReviews.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/GestReviews.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/IBusiness.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/IBusiness.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/ICatalog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/ICatalog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/IReview.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/IReview.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/IUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/IUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Leitura.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Leitura.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Review.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Review.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/StarsTuple.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/StarsTuple.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Stats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/Stats.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/UserStarsTuple.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Models/UserStarsTuple.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Utils/Crono.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/Utils/Crono.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/View/DesktopView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/View/DesktopView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/View/IView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/li3/grupo54/main/java/li3/grupo54/View/IView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/GestReviewsAppMVC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/GestReviewsAppMVC.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -151,7 +178,7 @@
       <workItem from="1622140628310" duration="59000" />
       <workItem from="1622219823553" duration="207000" />
       <workItem from="1623186189316" duration="53000" />
-      <workItem from="1623585740241" duration="3062000" />
+      <workItem from="1623585740241" duration="8045000" />
     </task>
     <servers />
   </component>
