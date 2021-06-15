@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 
 public class Business {
 
-  private String businessId;
-  private String name;
-  private String city;
-  private String state;
+  private final String businessId;
+  private final String name;
+  private final String city;
+  private final String state;
   private Set<String> categories;
 
   public Business(String businessId, String name, String city, String state, Set<String> categories) {

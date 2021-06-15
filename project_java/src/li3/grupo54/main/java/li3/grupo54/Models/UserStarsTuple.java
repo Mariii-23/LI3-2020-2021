@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class UserStarsTuple extends StarsTuple {
   // possivelmente este pode ser eliminado
-  private Set<String> reviews;
+  private final Set<String> reviews;
   private Set<String> business;
 
   public UserStarsTuple() {
@@ -36,12 +36,10 @@ public class UserStarsTuple extends StarsTuple {
   }
 
   public Set<String> getReviews() {
-    Set<String> reviewsClonned = new HashSet<>(reviews);
-    return reviewsClonned;
+    return new HashSet<>(reviews);
   }
 
   public Set<String> getBusiness() {
-    Set<String> businessClonned = new HashSet<>(business);
-    return businessClonned;
+    return new HashSet<>(business);
   }
 }

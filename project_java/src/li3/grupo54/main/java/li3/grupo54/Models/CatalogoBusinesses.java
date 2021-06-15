@@ -8,19 +8,30 @@ import java.util.stream.Collectors;
 
 public class CatalogoBusinesses implements ICatalog<Business> {
   // todos os negocios  vao ser colocados aqui numa fase inicial e depois passados para o outro map  caso se encontre uma review
-  TreeMap<String, Business> negociosNuncaAvaliados; // ordenados por ordem alfabetica
-  Map<String, Business> negociosAvaliados;
+  private final TreeMap<String, Business> negociosNuncaAvaliados; // ordenados por ordem alfabetica
+  private final Map<String, Business> negociosAvaliados;
+
+  private int invalidBusiness;
 
   public CatalogoBusinesses() {
     //Comparable<String,Business> byId = (e1,e2)-> e1.getBusinessId() - e2.getBusinessId();
     //Comparable<Business> byId = (e1,e2)-> e1.getBusinessId().compareTo(e2.getBusinessId()) ;
     this.negociosNuncaAvaliados = new TreeMap<>(); // ordenar alfabeticamente
     this.negociosAvaliados = new HashMap<>();
+    this.invalidBusiness = 0;
   }
 
   //private int byId(String e1,String e2){
   //    return e1.compareTo(e2);
   //};
+
+  public void addInvalid(){
+    this.invalidBusiness++;
+  }
+
+  public int getInvalidBusiness() {
+    return invalidBusiness;
+  }
 
   @Override
   public Business callConstructor(String[] line) throws InvalidBusinessLineException {
@@ -41,7 +52,7 @@ public class CatalogoBusinesses implements ICatalog<Business> {
     Business business = negociosNuncaAvaliados.remove(id);
     if (business == null)
       throw new BusinessNotFoundException("Business Not Found, id: " + id);
-    this.negociosAvaliados.put(id, business);
+    this.negociosAvaliados.put(id, business.clone());
   }
 
   @Override

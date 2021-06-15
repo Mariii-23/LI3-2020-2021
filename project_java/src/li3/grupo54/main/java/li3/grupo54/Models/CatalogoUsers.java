@@ -6,16 +6,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CatalogoUsers implements ICatalog<User> {
-  private Map<String, User> byUserId;
+  private final Map<String, User> byUserId;
+  private int invalidUsers;
 
   public CatalogoUsers() {
-    this.byUserId = new HashMap<String, User>();
+    this.byUserId = new HashMap<>();
+    this.invalidUsers =0;
   }
 
   @Override
   public User callConstructor(String[] line) throws InvalidUserLineException {
     return new User(line);
-
   }
 
   public int size() {
@@ -32,5 +33,13 @@ public class CatalogoUsers implements ICatalog<User> {
 
   public void delete(String id) {
     byUserId.remove(id);
+  }
+
+  public void addInvalid(){
+    this.invalidUsers++;
+  }
+
+  public int getInvalidUsers() {
+    return invalidUsers;
   }
 }

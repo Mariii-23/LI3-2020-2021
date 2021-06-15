@@ -15,9 +15,14 @@ public class CatalogoReviews implements ICatalog<Review> {
 
   private final Map<String, Review> byReviewId;
 
+  private int invalidUsers;
+  private int zeroImpact;
+
   public CatalogoReviews() {
     this.anoToReviewsPerMonth = new HashMap<>();
     this.byReviewId = new HashMap<>();
+     this.invalidUsers =0;
+     this.zeroImpact=0;
   }
 
   @Override
@@ -40,9 +45,9 @@ public class CatalogoReviews implements ICatalog<Review> {
   @Override
   public void add(Review review) {
     // TODO Verificar
-    Review reviewClonne = review;
+    Review reviewClone = review.clone();
 
-    LocalDateTime date = reviewClonne.getDate();
+    LocalDateTime date = reviewClone.getDate();
     List<Set<Review>> list = this.anoToReviewsPerMonth.get(date.getYear());
     if (list == null) {
       list = new ArrayList<>(12);
@@ -53,7 +58,18 @@ public class CatalogoReviews implements ICatalog<Review> {
     }
     set.add(review);
 
-    this.byReviewId.put(reviewClonne.getReviewId(), reviewClonne);
+    if(reviewClone.impact())
+      this.zeroImpact++;
+
+    this.byReviewId.put(reviewClone.getReviewId(), reviewClone);
+  }
+
+  public Integer getInvalidUsers() {
+    return invalidUsers;
+  }
+
+  public void addInvalid(){
+    this.invalidUsers++;
   }
 
   @Override

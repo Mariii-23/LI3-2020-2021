@@ -6,15 +6,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Review implements IReview {
-  private String reviewId;
-  private String userId;
-  private String businessId;
-  private float stars;
-  private int useful;
-  private int funny;
-  private int cool;
-  private LocalDateTime date;
-  private String text;
+  private final String reviewId;
+  private final String userId;
+  private final String businessId;
+  private final float stars;
+  private final int useful;
+  private final int funny;
+  private final int cool;
+  private final LocalDateTime date;
+  private final String text;
 
   public Review(String reviewId, String userId, String businessId, float stars, int useful, int funny, int cool, LocalDateTime date, String text) {
     this.reviewId = reviewId;
@@ -54,6 +54,10 @@ public class Review implements IReview {
       this.date = LocalDateTime.parse(linhaSplit[7], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
       this.text = linhaSplit[8];
     }
+  }
+
+  public boolean impact(){
+    return this.cool +this.useful+this.funny==0;
   }
 
   @Override

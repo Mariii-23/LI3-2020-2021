@@ -1,5 +1,6 @@
 package li3.grupo54.main.java.li3.grupo54.Models;
 
+import javafx.util.Pair;
 import li3.grupo54.main.java.li3.grupo54.Models.Exceptions.NullReviewException;
 import lombok.var;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -21,7 +22,7 @@ public class Stats {
   }
 
   public void updateStats(Review review, Business business) throws NullReviewException {
-    if(review== null)
+    if(review == null)
       throw new NullReviewException("Null Review Exception");
     updateAverageBusiness(review);
     updateAverageUSer(review);

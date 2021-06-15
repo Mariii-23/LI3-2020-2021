@@ -1,6 +1,7 @@
 package li3.grupo54.main.java.li3.grupo54.Models;
 
 import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
 import li3.grupo54.main.java.li3.grupo54.Models.Exceptions.*;
 
 import java.io.BufferedReader;
@@ -10,17 +11,19 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public interface ICatalog<T> {
-  public T callConstructor(String[] line) throws InvalidUserLineException, BusinessNotFoundException, InvalidUserLineException, InvalidBusinessLineException, InvalidReviewLineExpcetion, InvalidReviewLineException;
+  T callConstructor(String[] line) throws  BusinessNotFoundException, InvalidUserLineException, InvalidBusinessLineException, InvalidReviewLineException;
 
-  public int size();
+  int size();
 
-  public void add(T t);
+  void add(T t);
 
-  public T getById(String id) throws UserNotFoundException, BusinessNotFoundException, ReviewNotFoundException;
+  T getById(String id) throws UserNotFoundException, BusinessNotFoundException, ReviewNotFoundException;
 
-  public void delete(String id) throws BusinessNotFoundException;
+  void delete(String id) throws BusinessNotFoundException;
 
-  public default void populateFromFile(String filename) throws IOException, URISyntaxException {
+  void addInvalid();
+
+  public default void populateFromFile(String filename) throws IOException, URISyntaxException, CsvValidationException {
     BufferedReader reader = Files.newBufferedReader(Paths.get(ClassLoader.getSystemResource(filename).toURI()));
     char delim = Leitura.determineDelimiter(reader.readLine());
     CSVReader csvReader = new CSVReader(reader, delim);
@@ -29,12 +32,12 @@ public interface ICatalog<T> {
     while (((nextLine = csvReader.readNext()) != null)) {
       try {
         this.add(callConstructor(nextLine));
-      } catch (InvalidUserLineException | BusinessNotFoundException | InvalidBusinessLineException e) {
+      } catch (InvalidUserLineException | BusinessNotFoundException | InvalidBusinessLineException | InvalidReviewLineException e) {
         // alterarar estatisticas de linhsa invalidaas
+        this.addInvalid();
       }
     }
     reader.close();
     csvReader.close();
   }
-
 }
