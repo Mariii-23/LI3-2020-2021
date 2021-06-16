@@ -1,24 +1,22 @@
 package li3.grupo54;
 
-import com.opencsv.exceptions.CsvValidationException;
-import li3.grupo54.Models.CatalogoUsers;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-
-public class GestReviewsAppMVC {
-  public static void main(String[] args) throws IOException, URISyntaxException, CsvValidationException {
-    CatalogoUsers c = new CatalogoUsers();
-
-    c.populateFromFile("test.csv");
+import javafx.application.Application;
+import javafx.stage.Stage;
+import li3.grupo54.Controller.Controller;
+import li3.grupo54.Controller.IController;
+import li3.grupo54.Models.GestReviews;
+import li3.grupo54.View.DesktopView;
 
 
-    //launch();
+public class GestReviewsAppMVC extends Application {
+  public static void main(String[] args) {
+    launch();
   }
 
-  //public void start(Stage s) {
-  //    IController c = new Controller();
-  //    DesktopView v = new DesktopView(c, s);
-  //    v.show();
-  //}
+  public void start(Stage s) {
+      DesktopView view = new DesktopView(s);
+      GestReviews model = new GestReviews();
+      IController controller = new Controller(model, view);
+      controller.executa();
+  }
 }
