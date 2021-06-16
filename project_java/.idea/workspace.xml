@@ -4,19 +4,31 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2d95e09-bc42-4073-afed-0066f7030081" name="Default Changelist" comment="Corrigir erros de compilação">
-      <change afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/FileTriple.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/View/OpenFileDialog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/li3/grupo54/View/main_ui.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/li3/grupo54/View/open_dialog.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test.csv" afterDir="false" />
+    <list default="true" id="f2d95e09-bc42-4073-afed-0066f7030081" name="Default Changelist" comment="Menu de abertura de ficheiros">
+      <change afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/Controller/Queries/Query1.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/Controller/ValidationCallback.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/View/Queries/IQueryView.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/View/Queries/IQueryViewFX.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/View/Queries/Query1View.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/View/Queries/Query2View.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/Controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/Controller/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/Controller/IController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/Controller/IController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/GestReviewsAppMVC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/GestReviewsAppMVC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/Business.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/Business.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/CatalogoBusinesses.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/CatalogoBusinesses.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/CatalogoReviews.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/CatalogoReviews.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/CatalogoUsers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/CatalogoUsers.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/GestReviews.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/GestReviews.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/IBusiness.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/Interfaces/IBusiness.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/ICatalog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/Interfaces/ICatalog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/IReview.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/Interfaces/IReview.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/IUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/Interfaces/IUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/Review.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/Review.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/Stats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/Stats.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/Models/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/View/DesktopView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/View/DesktopView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/li3/grupo54/View/IView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/li3/grupo54/View/IView.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/li3/grupo54/View/main_ui.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/li3/grupo54/View/main_ui.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +38,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -66,6 +79,17 @@
     </key>
   </component>
   <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="grupo54" type="MavenRunConfiguration" factoryName="Maven" nameIsGenerated="true">
       <MavenSettings>
         <option name="myGeneralSettings" />
@@ -115,7 +139,7 @@
       <updated>1620900550802</updated>
       <workItem from="1620900552475" duration="42000" />
       <workItem from="1621505855218" duration="1562000" />
-      <workItem from="1623865349424" duration="1599000" />
+      <workItem from="1623865349424" duration="11480000" />
     </task>
     <task id="LOCAL-00001" summary="Corrigir erros de compilação">
       <created>1623854631682</created>
@@ -124,7 +148,14 @@
       <option name="project" value="LOCAL" />
       <updated>1623854631682</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Menu de abertura de ficheiros">
+      <created>1623866970822</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1623866970822</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -145,6 +176,7 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Corrigir erros de compilação" />
-    <option name="LAST_COMMIT_MESSAGE" value="Corrigir erros de compilação" />
+    <MESSAGE value="Menu de abertura de ficheiros" />
+    <option name="LAST_COMMIT_MESSAGE" value="Menu de abertura de ficheiros" />
   </component>
 </project>

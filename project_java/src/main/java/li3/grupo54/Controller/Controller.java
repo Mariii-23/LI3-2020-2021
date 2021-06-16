@@ -3,7 +3,6 @@ package li3.grupo54.Controller;
 import com.opencsv.exceptions.CsvValidationException;
 import li3.grupo54.Models.FileTriple;
 import li3.grupo54.Models.GestReviews;
-import li3.grupo54.Models.ICatalog;
 import li3.grupo54.View.IView;
 
 import java.io.IOException;
@@ -20,14 +19,18 @@ public class Controller implements IController {
 
   @Override
   public void executa() {
-    this.view.show();
+    view.show();
     FileTriple triple = this.view.getFileTriple();
     if (triple != null) {
-      try {
-        this.model.load(triple.getUsersFile(), triple.getBusinessesFile(), triple.getReviewsFile());
-      } catch (IOException | URISyntaxException | CsvValidationException e) {
-        e.printStackTrace();
-      }
+      loadTriple(triple);
+    }
+  }
+
+  private void loadTriple(FileTriple triple) {
+    try {
+      model.load(triple.getUsersFile(), triple.getBusinessesFile(), triple.getReviewsFile());
+    } catch (IOException | URISyntaxException | CsvValidationException e) {
+      view.showError("Error opening file", e.getMessage());
     }
   }
 }

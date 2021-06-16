@@ -1,6 +1,7 @@
 package li3.grupo54.Models;
 
 import li3.grupo54.Models.Exceptions.InvalidUserLineException;
+import li3.grupo54.Models.Interfaces.ICatalog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class CatalogoUsers implements ICatalog<User> {
   }
 
   public void add(User user) {
-    this.byUserId.put(user.getUserId(), user.clone());
+    this.byUserId.put(user.getId(), user.clone());
   }
 
   public void delete(String id) {

@@ -1,4 +1,4 @@
-package li3.grupo54.Models;
+package li3.grupo54.Models.Interfaces;
 
 import java.util.List;
 
@@ -8,4 +8,6 @@ public interface IUser {
   public String getName();
 
   public List<String> getFriends();
+
+  public IUser clone();
 }

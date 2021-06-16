@@ -5,6 +5,7 @@ import li3.grupo54.Models.Exceptions.DateNotFoundException;
 import li3.grupo54.Models.Exceptions.InvalidBusinessLineException;
 import li3.grupo54.Models.Exceptions.InvalidReviewLineException;
 import li3.grupo54.Models.Exceptions.InvalidUserLineException;
+import li3.grupo54.Models.Interfaces.ICatalog;
 
 import java.time.LocalDateTime;
 import java.util.*;

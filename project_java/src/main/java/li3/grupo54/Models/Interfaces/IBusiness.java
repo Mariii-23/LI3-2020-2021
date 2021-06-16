@@ -1,6 +1,6 @@
-package li3.grupo54.Models;
+package li3.grupo54.Models.Interfaces;
 
-import java.util.List;
+import java.util.Set;
 
 public interface IBusiness {
   public String getId();
@@ -11,5 +11,7 @@ public interface IBusiness {
 
   public String getState();
 
-  public List<String> getCategories();
+  public Set<String> getCategories();
+
+  public IBusiness clone();
 }

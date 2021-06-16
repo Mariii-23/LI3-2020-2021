@@ -1,10 +1,11 @@
-package li3.grupo54.Models;
+package li3.grupo54.Models.Interfaces;
 
 import com.opencsv.*;
 import com.opencsv.exceptions.CsvValidationException;
 import com.opencsv.validators.LineValidatorAggregator;
 import com.opencsv.validators.RowValidatorAggregator;
 import li3.grupo54.Models.Exceptions.*;
+import li3.grupo54.Models.Leitura;
 
 import java.io.BufferedReader;
 import java.io.IOException;

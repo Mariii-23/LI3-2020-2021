@@ -1,6 +1,7 @@
 package li3.grupo54.Models;
 
 import li3.grupo54.Models.Exceptions.InvalidBusinessLineException;
+import li3.grupo54.Models.Interfaces.IBusiness;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -8,7 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Business {
+public class Business implements IBusiness {
 
   private final String businessId;
   private final String name;
@@ -52,7 +53,8 @@ public class Business {
     this.categories = new HashSet<>(that.categories);
   }
 
-  public String getBusinessId() {
+  @Override
+  public String getId() {
     return businessId;
   }
 
@@ -85,12 +87,12 @@ public class Business {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Business business = (Business) o;
-    return Objects.equals(getBusinessId(), business.getBusinessId()) && Objects.equals(getName(), business.getName()) && Objects.equals(getCity(), business.getCity()) && Objects.equals(getState(), business.getState()) && Objects.equals(getCategories(), business.getCategories());
+    return getId().equals(business.getId()) && getName().equals(business.getName()) && getCity().equals(business.getCity()) && getState().equals(business.getState()) && getCategories().equals(business.getCategories());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getBusinessId(), getName(), getCity(), getState(), getCategories());
+    return Objects.hash(getId(), getName(), getCity(), getState(), getCategories());
   }
 
   public String toString() {

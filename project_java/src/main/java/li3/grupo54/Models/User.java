@@ -1,10 +1,12 @@
 package li3.grupo54.Models;
 
 import li3.grupo54.Models.Exceptions.InvalidUserLineException;
+import li3.grupo54.Models.Interfaces.IUser;
 
+import java.util.List;
 import java.util.Objects;
 
-public class User {
+public class User implements IUser {
   private String userId;
   private String name;
 
@@ -14,7 +16,7 @@ public class User {
   }
 
   public User(User that) {
-    this.userId = that.getUserId();
+    this.userId = that.getId();
     this.name = that.getName();
   }
 
@@ -28,16 +30,22 @@ public class User {
     }
   }
 
-  public String getUserId() {
-    return userId;
-  }
-
   public void setUserId(String userId) {
     this.userId = userId;
   }
 
+  @Override
+  public String getId() {
+    return userId;
+  }
+
   public String getName() {
     return name;
+  }
+
+  @Override
+  public List<String> getFriends() {
+    return null;
   }
 
   public void setName(String name) {
@@ -53,12 +61,12 @@ public class User {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     User user = (User) o;
-    return Objects.equals(getUserId(), user.getUserId()) && Objects.equals(getName(), user.getName());
+    return this.getId().equals(user.getId()) && getName().equals(user.getName());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getUserId(), getName());
+    return Objects.hash(getId(), getName());
   }
 
   @Override

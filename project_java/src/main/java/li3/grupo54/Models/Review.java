@@ -1,6 +1,7 @@
 package li3.grupo54.Models;
 
 import li3.grupo54.Models.Exceptions.InvalidReviewLineException;
+import li3.grupo54.Models.Interfaces.IReview;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

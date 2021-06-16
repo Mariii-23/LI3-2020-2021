@@ -1,4 +1,4 @@
-package li3.grupo54.Models;
+package li3.grupo54.Models.Interfaces;
 
 import java.time.LocalDateTime;
 
@@ -21,4 +21,5 @@ public interface IReview {
 
   public String getText();
 
+  public IReview clone();
 }

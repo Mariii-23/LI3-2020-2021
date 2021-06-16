@@ -28,7 +28,7 @@
       </ToolBar>
       <SplitPane dividerPositions="0.362876254180602" prefHeight="160.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
         <items>
-            <Accordion>
+            <Accordion fx:id="queryAccordion">
               <panes>
                 <TitledPane animated="false" text="Query 1">
                      <content>

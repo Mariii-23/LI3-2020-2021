@@ -32,5 +32,37 @@ public class GestReviews {
 
     this.stats = new Stats();
   }
+
+  public CatalogoUsers getCatalogoUsers() {
+    return catalogoUsers;
+  }
+
+  public void setCatalogoUsers(CatalogoUsers catalogoUsers) {
+    this.catalogoUsers = catalogoUsers;
+  }
+
+  public CatalogoBusinesses getCatalogoBusinesses() {
+    return catalogoBusinesses;
+  }
+
+  public void setCatalogoBusinesses(CatalogoBusinesses catalogoBusinesses) {
+    this.catalogoBusinesses = catalogoBusinesses;
+  }
+
+  public CatalogoReviews getCatalogoReviews() {
+    return catalogoReviews;
+  }
+
+  public void setCatalogoReviews(CatalogoReviews catalogoReviews) {
+    this.catalogoReviews = catalogoReviews;
+  }
+
+  public Stats getStats() {
+    return stats;
+  }
+
+  public void setStats(Stats stats) {
+    this.stats = stats;
+  }
 }
 

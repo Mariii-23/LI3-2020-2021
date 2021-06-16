@@ -2,14 +2,16 @@ package li3.grupo54.Models;
 
 import li3.grupo54.Models.Exceptions.BusinessNotFoundException;
 import li3.grupo54.Models.Exceptions.InvalidBusinessLineException;
+import li3.grupo54.Models.Interfaces.IBusiness;
+import li3.grupo54.Models.Interfaces.ICatalog;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CatalogoBusinesses implements ICatalog<Business> {
+public class CatalogoBusinesses implements ICatalog<IBusiness> {
   // todos os negocios  vao ser colocados aqui numa fase inicial e depois passados para o outro map  caso se encontre uma review
-  private final TreeMap<String, Business> negociosNuncaAvaliados; // ordenados por ordem alfabetica
-  private final Map<String, Business> negociosAvaliados;
+  private final TreeMap<String, IBusiness> negociosNuncaAvaliados; // ordenados por ordem alfabetica
+  private final Map<String, IBusiness> negociosAvaliados;
 
   private int invalidBusiness;
 
@@ -44,20 +46,20 @@ public class CatalogoBusinesses implements ICatalog<Business> {
   }
 
   @Override
-  public void add(Business business) {
-    this.negociosNuncaAvaliados.put(business.getBusinessId(), business.clone());
+  public void add(IBusiness business) {
+    this.negociosNuncaAvaliados.put(business.getId(), business.clone());
   }
 
   public void changesBusinessAvalied(String id) throws BusinessNotFoundException {
-    Business business = negociosNuncaAvaliados.remove(id);
+    IBusiness business = negociosNuncaAvaliados.remove(id);
     if (business == null)
       throw new BusinessNotFoundException("Business Not Found, id: " + id);
     this.negociosAvaliados.put(id, business.clone());
   }
 
   @Override
-  public Business getById(String id) throws BusinessNotFoundException {
-    Business b;
+  public IBusiness getById(String id) throws BusinessNotFoundException {
+    IBusiness b;
     if ((b = negociosAvaliados.get(id)) != null || (b = negociosNuncaAvaliados.get(id)) != null) {
       return b.clone();
     } else {
@@ -67,7 +69,6 @@ public class CatalogoBusinesses implements ICatalog<Business> {
 
   @Override
   public void delete(String id) throws BusinessNotFoundException {
-    Business b;
     if (negociosAvaliados.get(id) != null) {
       negociosAvaliados.remove(id);
     } else if (negociosNuncaAvaliados.get(id) != null) {
@@ -99,9 +100,9 @@ public class CatalogoBusinesses implements ICatalog<Business> {
   }
 
   // para a query 1
-  public List<Business> getNegociosNuncaAvaliadosOrdered() {
+  public List<IBusiness> getNegociosNuncaAvaliadosOrdered() {
     // acho que devolve ordenado mas preciso de confirmar
-    return this.negociosNuncaAvaliados.values().stream().map(Business::clone).collect(Collectors.toList());
+    return this.negociosNuncaAvaliados.values().stream().map(IBusiness::clone).collect(Collectors.toList());
   }
 
 }
