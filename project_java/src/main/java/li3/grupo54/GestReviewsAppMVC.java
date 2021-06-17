@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import li3.grupo54.Controller.Controller;
 import li3.grupo54.Controller.IController;
+import li3.grupo54.Controller.Queries.Query1;
 import li3.grupo54.Models.GestReviews;
 import li3.grupo54.View.DesktopView;
 import li3.grupo54.View.Queries.Query1View;
@@ -17,10 +18,11 @@ public class GestReviewsAppMVC extends Application {
 
   public void start(Stage s) {
       DesktopView view = new DesktopView(s);
-      view.addQuery(new Query1View());
-      view.addQuery(new Query2View());
       GestReviews model = new GestReviews();
       IController controller = new Controller(model, view);
+
+      controller.addQuery(new Query1(model, new Query1View()));
+//      view.addQuery(new Query2View());
       controller.executa();
   }
 }

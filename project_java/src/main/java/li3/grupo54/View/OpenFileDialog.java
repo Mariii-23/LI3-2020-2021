@@ -86,7 +86,8 @@ public class OpenFileDialog {
             count++;
         }
 
-        btnOpen.setDisable(count != 3);
+        ok = count == 3;
+        btnOpen.setDisable(!ok);
     }
 
     @FXML

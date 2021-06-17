@@ -2,7 +2,9 @@ package li3.grupo54.View.Queries;
 
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import li3.grupo54.Controller.NodeCallback;
 import li3.grupo54.Controller.ValidationCallback;
+import li3.grupo54.Models.Queries.IQueryResults;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +14,7 @@ public class Query2View implements IQueryViewFX {
     private TextField yearInput;
 
     private ValidationCallback callback;
+    private NodeCallback resultsCallback;
 
     private boolean validAno;
     private boolean validMes;
@@ -87,5 +90,15 @@ public class Query2View implements IQueryViewFX {
     @Override
     public ValidationCallback getValidationCallback() {
         return callback;
+    }
+
+    @Override
+    public void showResults(IQueryResults results) {
+
+    }
+
+    @Override
+    public void addShowResultsCallback(NodeCallback callback) {
+        this.resultsCallback = callback;
     }
 }
