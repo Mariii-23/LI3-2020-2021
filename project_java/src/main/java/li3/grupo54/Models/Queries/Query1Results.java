@@ -7,6 +7,7 @@ import java.util.List;
 public class Query1Results implements IQueryResults {
     private List<IBusiness> businesses;
 
+    // ver clone
     public Query1Results(List<IBusiness> businesses) {
         this.businesses = businesses;
     }

@@ -9,6 +9,11 @@ public class Pair<T,R> {
     this.y = y;
   }
 
+  public Pair (Pair<T,R> that){
+    this.x = that.getX();
+    this.y = that.getY();
+  }
+
   public T getX() {
     return x;
   }

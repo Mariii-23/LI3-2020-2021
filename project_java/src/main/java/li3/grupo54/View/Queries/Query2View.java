@@ -1,10 +1,20 @@
 package li3.grupo54.View.Queries;
 
+import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import li3.grupo54.Controller.NodeCallback;
 import li3.grupo54.Controller.ValidationCallback;
 import li3.grupo54.Models.Queries.IQueryResults;
+import li3.grupo54.Models.Queries.Query2Results;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +29,19 @@ public class Query2View implements IQueryViewFX {
     private boolean validAno;
     private boolean validMes;
 
+    private Integer ano;
+    private Integer mes;
+
+public Integer getAno(){
+    return ano;
+}
+
+    public Integer getMes(){
+        return mes;
+    }
     public Query2View() {
+        ano=-1;
+        mes=-1;
         monthInput = new TextField();
         yearInput = new TextField();
 
@@ -31,6 +53,7 @@ public class Query2View implements IQueryViewFX {
             try {
                 int v = Integer.parseInt(monthInput.getText());
                 if (v > 0 && v <= 12) {
+                    mes=v;
                     validMes = true;
                     setValid(validAno);
                 } else {
@@ -51,6 +74,7 @@ public class Query2View implements IQueryViewFX {
             try {
                 int v = Integer.parseInt(yearInput.getText());
                 if (v > 0) {
+                    ano=v;
                     validAno = true;
                     setValid(validMes);
                 } else {
@@ -94,9 +118,17 @@ public class Query2View implements IQueryViewFX {
 
     @Override
     public void showResults(IQueryResults results) {
+            // TODO
+        Query2Results res = (Query2Results) results;
 
+        var pair = res.getResults();
+
+        VBox panel = new VBox();
+        panel.setPadding(new Insets(5));
+
+        panel.setSpacing(5);
+        panel.getChildren().add(new Label("Total reviews: " +pair.getX()+" Total users distintos: "+pair.getY()));
     }
-
     @Override
     public void addShowResultsCallback(NodeCallback callback) {
         this.resultsCallback = callback;

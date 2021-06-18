@@ -1,6 +1,8 @@
 package li3.grupo54.Models;
 
 
+import lombok.SneakyThrows;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -27,10 +29,13 @@ public class GestReviews {
     this.catalogoReviews = new CatalogoReviews();
     try {
       catalogoUsers.populateFromFile(users);
+      System.out.println("Finished reading users\n");
       catalogoBusinesses.populateFromFile(businesses);
+      System.out.println("Finished reading businesses\n");
       catalogoReviews.populateFromFile(reviews);
+      System.out.println("Finished reading reviews\n");
     }
-    catch (Exception e){
+   catch (Exception e){
 
     }
 
@@ -67,6 +72,11 @@ public class GestReviews {
 
   public void setStats(Stats stats) {
     this.stats = stats;
+  }
+
+  public Pair<Integer,Integer> getNumberReviewsAndDistinctUsers(Integer year, Integer month){
+       //return catalogoReviews.getNumberReviewsAndDistinctUsers(year,month);
+    return new Pair<>(0,0);
   }
 }
 

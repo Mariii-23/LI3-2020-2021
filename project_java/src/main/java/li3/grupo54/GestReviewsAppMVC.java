@@ -22,7 +22,7 @@ public class GestReviewsAppMVC extends Application {
       IController controller = new Controller(model, view);
 
       controller.addQuery(new Query1(model, new Query1View()));
-//      view.addQuery(new Query2View());
+      //view.addQuery(new Query2View());
       controller.executa();
   }
 }

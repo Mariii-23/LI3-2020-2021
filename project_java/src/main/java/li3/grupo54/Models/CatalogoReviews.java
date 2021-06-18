@@ -8,6 +8,7 @@ import li3.grupo54.Models.Exceptions.InvalidUserLineException;
 import li3.grupo54.Models.Interfaces.ICatalog;
 
 import java.time.LocalDateTime;
+import java.time.Year;
 import java.util.*;
 
 public class CatalogoReviews implements ICatalog<Review> {
@@ -45,24 +46,36 @@ public class CatalogoReviews implements ICatalog<Review> {
 
   @Override
   public void add(Review review) {
-    // TODO Verificar
-    Review reviewClone = review.clone();
+      LocalDateTime data = review.getDate();
+      int ano = data.getYear();
+      int mes = data.getMonthValue() - 1;
 
-    LocalDateTime date = reviewClone.getDate();
-    List<Set<Review>> list = this.anoToReviewsPerMonth.get(date.getYear());
-    if (list == null) {
-      list = new ArrayList<>(12);
-    }
-    Set<Review> set = list.get(date.getMonthValue() - 1);
-    if (set == null) {
-      set = new HashSet<>();
-    }
-    set.add(review);
+      List<Set<Review>> listaAnos = this.anoToReviewsPerMonth.get(ano);
+      // a lista nunca e vazia por isso se e  null e porque a key nao existe
+    Set <Review> s =  null;
+      if( listaAnos== null ) {
+          listaAnos = new ArrayList<>(12);
+          for (int i = 0; i < 12; i++) {
+              if(i == mes ) {
+                s = new HashSet<>();
+                listaAnos.add(i,s);
+              }
+              else {
+                listaAnos.add(i,null);
+              }
+          }
+          this.anoToReviewsPerMonth.put(ano,listaAnos);
+      }
+      else {
+          s = listaAnos.get(mes);
+      }
 
-    if(reviewClone.impact())
-      this.zeroImpact++;
+      Review reviewClone = review.clone();
+      if(s != null) s.add(reviewClone);
+      if(review.impact())
+        this.zeroImpact++;
 
-    this.byReviewId.put(reviewClone.getReviewId(), reviewClone);
+      this.byReviewId.put(review.getReviewId(), reviewClone);
   }
 
   public Integer getInvalidUsers() {
@@ -121,6 +134,8 @@ public class CatalogoReviews implements ICatalog<Review> {
   private int getNumberDistinctUsers(Integer year, Integer month) throws DateNotFoundException {
     Set<String> distintUsers = new HashSet<>();
     Set<Review> reviews = this.getReviews(year, month);
+    if(reviews==null)
+      throw  new DateNotFoundException("Date Not Found -> year: "+year+" month "+month );
     for (Review review : reviews)
       distintUsers.add(review.getUserId());
     return distintUsers.size();

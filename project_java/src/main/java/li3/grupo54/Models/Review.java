@@ -5,6 +5,7 @@ import li3.grupo54.Models.Interfaces.IReview;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 public class Review implements IReview {
   private final String reviewId;
@@ -110,4 +111,20 @@ public class Review implements IReview {
   public Review clone() {
     return new Review(this);
   }
+
+  @Override
+  public String toString() {
+    return "Review{" +
+            "reviewId='" + reviewId + '\'' +
+            ", userId='" + userId + '\'' +
+            ", businessId='" + businessId + '\'' +
+            ", stars=" + stars +
+            ", useful=" + useful +
+            ", funny=" + funny +
+            ", cool=" + cool +
+            ", date=" + date +
+            ", text='" + text + '\'' +
+            '}';
+  }
 }
+
