@@ -6,6 +6,7 @@ import li3.grupo54.Models.Interfaces.IReview;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Review implements IReview {
   private final String reviewId;
@@ -125,6 +126,19 @@ public class Review implements IReview {
             ", date=" + date +
             ", text='" + text + '\'' +
             '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Review review = (Review) o;
+    return Float.compare(review.stars, stars) == 0 && useful == review.useful && funny == review.funny && cool == review.cool && Objects.equals(reviewId, review.reviewId) && Objects.equals(userId, review.userId) && Objects.equals(businessId, review.businessId) && Objects.equals(date, review.date) && Objects.equals(text, review.text);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(reviewId, userId, businessId, stars, useful, funny, cool, date, text);
   }
 }
 

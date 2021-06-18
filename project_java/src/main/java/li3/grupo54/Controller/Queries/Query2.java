@@ -24,10 +24,6 @@ public class Query2 implements IQueryController{
 
     @Override
     public IQueryResults execute() {
-        try {
             return new Query2Results(model.getCatalogoReviews().getNumberReviewsAndDistinctUsers(view.getAno(),view.getMes()));
-        } catch (DateNotFoundException e) {
-            return new Query2Results(new MyPair<>(0, 0));
-        }
     }
 }

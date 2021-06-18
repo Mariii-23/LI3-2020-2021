@@ -66,6 +66,11 @@ public class CatalogoReviews implements ICatalog<Review> {
 
       Review reviewClone = review.clone();
       if(s != null) s.add(reviewClone);
+      else{
+        s = new HashSet<>();
+        s.add((reviewClone));
+        listaAnos.add(mes,s);
+      }
       if(review.impact())
         this.zeroImpact++;
 
@@ -105,13 +110,32 @@ public class CatalogoReviews implements ICatalog<Review> {
  // }
 
   public Integer getNumberReviewsDate(Integer year, Integer month) throws DateNotFoundException {
+    if(this.anoToReviewsPerMonth.size()==0)
+      return 0;
+    List<Set<Review>> listOfReviews = null;
+    if ((listOfReviews = this.anoToReviewsPerMonth.get(year)) != null) {
+      Set<Review> reviews = null;
+      if ((reviews = listOfReviews.get(month - 1)) == null)
+        throw new DateNotFoundException("Date not found. Year: " + year + " month: " + month);
+      return reviews.size();
+    } else {
+      throw new DateNotFoundException("Date not found. Year: " + year + " month: " + month);
+    }
+  }
+
+  public Integer getNumberDistinctUsers(Integer year,Integer month) throws DateNotFoundException {
     List<Set<Review>> listOfReviews = null;
     if ((listOfReviews = this.anoToReviewsPerMonth.get(year)) == null)
       throw new DateNotFoundException("Date not found. Year: " + year + " month: " + month);
     Set<Review> reviews = null;
     if ((reviews = listOfReviews.get(month - 1)) == null)
       throw new DateNotFoundException("Date not found. Year: " + year + " month: " + month);
-    return reviews.size();
+
+    HashSet<String> users = new HashSet<>();
+    for(Review review:reviews)
+      users.add(review.getUserId());
+
+    return users.size();
   }
 
   private int getNumberDistinctUsers() {
@@ -124,7 +148,6 @@ public class CatalogoReviews implements ICatalog<Review> {
             distintUsers.add(review.getUserId());
         }
     }
-    System.out.println(distintUsers.size() + "\n");
     return distintUsers.size();
   }
 
@@ -140,11 +163,16 @@ public class CatalogoReviews implements ICatalog<Review> {
 
   // numero total de reviews e quantos users distintos as realizaram
   // para a query 2
-  public MyPair<Integer, Integer> getNumberReviewsAndDistinctUsers(Integer year, Integer month) throws DateNotFoundException {
-      System.out.println(year + " " + month);
-      return new MyPair<>(getNumberReviewsDate(year, month), getNumberDistinctUsers());
+  public MyPair<Integer, Integer> getNumberReviewsAndDistinctUsers(Integer year, Integer month) {
+    int reviews = 0;
+    int users = 0;
+    try {
+      reviews = getNumberReviewsDate(year, month);
+      users =  getNumberDistinctUsers(year,month);
     }
-
-    //return new Pair<>(size(),getNumberDistinctUsers());
-
+    catch (DateNotFoundException ignored) {
+      System.out.println("Data not found year: "+year+" month: "+month);
+    }
+    return new MyPair<>(reviews,users);
+    }
 }
