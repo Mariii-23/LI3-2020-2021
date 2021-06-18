@@ -1,13 +1,13 @@
 package li3.grupo54.Models.Queries;
-import li3.grupo54.Models.Pair;
+import li3.grupo54.Models.MyPair;
 public class Query2Results implements IQueryResults {
-    Pair<Integer,Integer> result;
+    MyPair<Integer,Integer> result;
 
-    public Query2Results(Pair<Integer,Integer> result){
+    public Query2Results(MyPair<Integer,Integer> result){
         this.result = result;
     }
 
-    public Pair<Integer,Integer> getResults() {
-        return new Pair<>(result);
+    public MyPair<Integer,Integer> getResults() {
+        return new MyPair<>(result);
     }
 }

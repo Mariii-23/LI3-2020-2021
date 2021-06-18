@@ -128,6 +128,9 @@ public Integer getAno(){
 
         panel.setSpacing(5);
         panel.getChildren().add(new Label("Total reviews: " +pair.getX()+" Total users distintos: "+pair.getY()));
+                if (this.resultsCallback != null)
+            resultsCallback.run(panel);
+
     }
     @Override
     public void addShowResultsCallback(NodeCallback callback) {

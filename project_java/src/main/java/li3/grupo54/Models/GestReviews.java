@@ -1,6 +1,9 @@
 package li3.grupo54.Models;
 
 
+import javafx.util.Pair;
+import li3.grupo54.Models.Exceptions.DateNotFoundException;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -73,9 +76,5 @@ public class GestReviews {
     this.stats = stats;
   }
 
-  public Pair<Integer,Integer> getNumberReviewsAndDistinctUsers(Integer year, Integer month){
-       //return catalogoReviews.getNumberReviewsAndDistinctUsers(year,month);
-    return new Pair<>(0,0);
-  }
 }
 

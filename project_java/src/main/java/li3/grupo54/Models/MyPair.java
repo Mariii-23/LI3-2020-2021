@@ -1,15 +1,15 @@
 package li3.grupo54.Models;
 
-public class Pair<T,R> {
+public class MyPair<T,R> {
   private T x;
   private R y;
 
-  public Pair(T x, R y) {
+  public MyPair(T x, R y) {
     this.x = x;
     this.y = y;
   }
 
-  public Pair (Pair<T,R> that){
+  public MyPair(MyPair<T,R> that){
     this.x = that.getX();
     this.y = that.getY();
   }

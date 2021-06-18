@@ -4,6 +4,7 @@ import javafx.util.Pair;
 import li3.grupo54.Models.Exceptions.*;
 import li3.grupo54.Models.Interfaces.ICatalog;
 
+import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.*;
@@ -32,12 +33,6 @@ public class CatalogoReviews implements ICatalog<Review> {
   @Override
   public int size() {
     // TODO Verificar
-    // int count=0;
-    // for(Map.Entry<Integer,List<Set<Review>>> elem : anoToReviewsPerMonth.entrySet()){
-    //     for (Set<Review> reviews : elem.getValue())
-    //         count+= reviews.size();
-    // }
-    // return count;
     return this.byReviewId.size();
   }
 
@@ -47,6 +42,8 @@ public class CatalogoReviews implements ICatalog<Review> {
       int ano = data.getYear();
       int mes = data.getMonthValue() - 1;
 
+
+      // ver se o ano existe
       List<Set<Review>> listaAnos = this.anoToReviewsPerMonth.get(ano);
       // a lista nunca e vazia por isso se e  null e porque a key nao existe
     Set <Review> s =  null;
@@ -94,18 +91,18 @@ public class CatalogoReviews implements ICatalog<Review> {
 
   }
 
-  public Set<Review> getReviews(Integer year, Integer month) throws DateNotFoundException {
-    List<Set<Review>> listOfReviews = null;
-    if ((listOfReviews = this.anoToReviewsPerMonth.get(year)) == null)
-      throw new DateNotFoundException("Date not found. Year: " + year + " month: " + month);
-    Set<Review> reviews = null;
-    if ((reviews = listOfReviews.get(month - 1)) == null)
-      throw new DateNotFoundException("Date not found. Year: " + year + " month: " + month);
-    Set<Review> result = new HashSet<>();
-    for (Review review : reviews)
-      result.add(review.clone());
-    return result;
-  }
+ // public Set<Review> getReviews(Integer year, Integer month) throws DateNotFoundException {
+ //   List<Set<Review>> listOfReviews = null;
+ //   if ((listOfReviews = this.anoToReviewsPerMonth.get(year)) == null)
+ //     throw new DateNotFoundException("Date not found. Year: " + year + " month: " + month);
+ //   Set<Review> reviews = null;
+ //   if ((reviews = listOfReviews.get(month - 1)) == null)
+ //     throw new DateNotFoundException("Date not found. Year: " + year + " month: " + month);
+ //   Set<Review> result = new HashSet<>();
+ //   for (Review review : reviews)
+ //     result.add(review.clone());
+ //   return result;
+ // }
 
   public Integer getNumberReviewsDate(Integer year, Integer month) throws DateNotFoundException {
     List<Set<Review>> listOfReviews = null;
@@ -122,27 +119,32 @@ public class CatalogoReviews implements ICatalog<Review> {
     Set<String> distintUsers = new HashSet<>();
     for (Map.Entry<Integer, List<Set<Review>>> elem : anoToReviewsPerMonth.entrySet()) {
       for (Set<Review> reviews : elem.getValue())
-        for (Review review : reviews)
-          distintUsers.add(review.getUserId());
+        if(reviews != null) {
+          for (Review review : reviews)
+            distintUsers.add(review.getUserId());
+        }
     }
+    System.out.println(distintUsers.size() + "\n");
     return distintUsers.size();
   }
 
-  private int getNumberDistinctUsers(Integer year, Integer month) throws DateNotFoundException {
-    Set<String> distintUsers = new HashSet<>();
-    Set<Review> reviews = this.getReviews(year, month);
-    if(reviews==null)
-      throw  new DateNotFoundException("Date Not Found -> year: "+year+" month "+month );
-    for (Review review : reviews)
-      distintUsers.add(review.getUserId());
-    return distintUsers.size();
-  }
+  //private int getNumberDistinctUsers(Integer year, Integer month) throws DateNotFoundException {
+  //  Set<String> distintUsers = new HashSet<>();
+  //  Set<Review> reviews = this.getReviews(year, month);
+  //  if(reviews==null)
+  //    throw  new DateNotFoundException("Date Not Found -> year: "+year+" month "+month );
+  //  for (Review review : reviews)
+  //    distintUsers.add(review.getUserId());
+  //  return distintUsers.size();
+  //}
 
   // numero total de reviews e quantos users distintos as realizaram
   // para a query 2
-  public Pair<Integer, Integer> getNumberReviewsAndDistinctUsers(Integer year, Integer month) throws DateNotFoundException {
-    return new Pair<>(getNumberReviewsDate(year, month), getNumberDistinctUsers());
+  public MyPair<Integer, Integer> getNumberReviewsAndDistinctUsers(Integer year, Integer month) throws DateNotFoundException {
+      System.out.println(year + " " + month);
+      return new MyPair<>(getNumberReviewsDate(year, month), getNumberDistinctUsers());
+    }
+
     //return new Pair<>(size(),getNumberDistinctUsers());
-  }
 
 }

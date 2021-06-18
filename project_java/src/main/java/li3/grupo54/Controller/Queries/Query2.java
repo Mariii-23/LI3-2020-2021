@@ -1,6 +1,8 @@
 package li3.grupo54.Controller.Queries;
 
+import li3.grupo54.Models.Exceptions.DateNotFoundException;
 import li3.grupo54.Models.GestReviews;
+import li3.grupo54.Models.MyPair;
 import li3.grupo54.Models.Queries.IQueryResults;
 import li3.grupo54.Models.Queries.Query2Results;
 import li3.grupo54.View.Queries.IQueryView;
@@ -22,6 +24,10 @@ public class Query2 implements IQueryController{
 
     @Override
     public IQueryResults execute() {
-        return new Query2Results(model.getNumberReviewsAndDistinctUsers(view.getAno(),view.getMes()));
+        try {
+            return new Query2Results(model.getCatalogoReviews().getNumberReviewsAndDistinctUsers(view.getAno(),view.getMes()));
+        } catch (DateNotFoundException e) {
+            return new Query2Results(new MyPair<>(0, 0));
+        }
     }
 }

@@ -51,6 +51,7 @@ public class Query1View implements IQueryViewFX {
 
     @Override
     public void showResults(IQueryResults results) {
+
         Query1Results res = (Query1Results) results;
 
         VBox panel = new VBox();

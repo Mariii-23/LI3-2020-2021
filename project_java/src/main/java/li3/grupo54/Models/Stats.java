@@ -100,8 +100,8 @@ public class Stats {
 
   // query 5
   // Lista de pares business Id e os seus pares de reviews correspondentes
-  List<Pair<String, Set<String>>> pairBusinessIdAndTheirReviews(String userId) {
-    List<Pair<String, Set<String>>> list = new ArrayList<>();
+  List<MyPair<String, Set<String>>> pairBusinessIdAndTheirReviews(String userId) {
+    List<MyPair<String, Set<String>>> list = new ArrayList<>();
     Set<UserStarsTuple> userStarsTuples = new HashSet<>();
     // guardar todos os id's dos business correspondestes a esse user
     Set<String> businessID = new HashSet<>();
@@ -113,7 +113,7 @@ public class Stats {
     businessID.forEach(e -> {
       Set<String> reviews = new HashSet<>();
       this.averageByBusinessId.get(e).forEach(l-> reviews.addAll(l.getReviews()));
-      list.add(new Pair<>(e, reviews));
+      list.add(new MyPair<>(e, reviews));
     });
     return list;
   }
