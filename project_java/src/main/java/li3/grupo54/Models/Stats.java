@@ -64,7 +64,7 @@ public class Stats {
 
   public void updateAverageUSer(Review review) {
     String userId = review.getUserId();
-    Integer month = review.getDate().getMonthValue() - 1;
+    int month = review.getDate().getMonthValue() - 1;
     List<UserStarsTuple> list = null;
 
     if ((list = this.averageByUserId.get(userId)) == null) {
@@ -82,7 +82,7 @@ public class Stats {
 
   public void updateAverageBusiness(Review review) {
     String businessId = review.getBusinessId();
-    Integer month = review.getDate().getMonthValue() - 1;
+    int month = review.getDate().getMonthValue() - 1;
     List<BusinessStarsTuple> list = null;
 
     if ((list = this.averageByBusinessId.get(businessId)) == null) {
