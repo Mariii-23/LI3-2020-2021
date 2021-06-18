@@ -1,6 +1,7 @@
 package li3.grupo54.Models;
 
 import li3.grupo54.Models.Exceptions.InvalidUserLineException;
+import li3.grupo54.Models.Exceptions.UserNotFoundException;
 import li3.grupo54.Models.Interfaces.ICatalog;
 
 import java.util.HashMap;
@@ -32,8 +33,11 @@ public class CatalogoUsers implements ICatalog<User> {
     this.byUserId.put(user.getId(), user.clone());
   }
 
-  public void delete(String id) {
-    byUserId.remove(id);
+  public void delete(String id) throws UserNotFoundException {
+    if (this.byUserId.get(id) == null ) throw new UserNotFoundException();
+    else {
+      byUserId.remove(id);
+    }
   }
 
   public void addInvalid(){

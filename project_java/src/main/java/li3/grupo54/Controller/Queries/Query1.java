@@ -27,6 +27,6 @@ public class Query1 implements IQueryController {
 
     @Override
     public IQueryResults execute() {
-        return new Query1Results(model.getCatalogoBusinesses().getNegociosNuncaAvaliadosOrdered());
+        return new Query1Results(model.getStats().getNegociosNuncaAvaliadosOrdered());
     }
 }

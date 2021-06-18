@@ -1,8 +1,6 @@
 package li3.grupo54.Models;
 
 
-import lombok.SneakyThrows;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -24,22 +22,23 @@ public class GestReviews {
   }
 
   public void load(String users, String businesses, String reviews) throws IOException, URISyntaxException {
-    this.catalogoUsers = new CatalogoUsers();
-    this.catalogoBusinesses = new CatalogoBusinesses();
-    this.catalogoReviews = new CatalogoReviews();
+    this.stats = new Stats();
     try {
-      catalogoUsers.populateFromFile(users);
+      this.catalogoUsers = new CatalogoUsers();
+      catalogoUsers.populateFromFile(stats,users);
       System.out.println("Finished reading users\n");
-      catalogoBusinesses.populateFromFile(businesses);
+      this.catalogoBusinesses = new CatalogoBusinesses();
+      catalogoBusinesses.populateFromFile(stats,businesses);
       System.out.println("Finished reading businesses\n");
-      catalogoReviews.populateFromFile(reviews);
+      this.catalogoReviews = new CatalogoReviews();
+      // atualiza negocios nao avaliados e tal
+      catalogoReviews.populateFromFile(stats,reviews);
       System.out.println("Finished reading reviews\n");
     }
    catch (Exception e){
 
     }
 
-    this.stats = new Stats();
   }
 
   public CatalogoUsers getCatalogoUsers() {

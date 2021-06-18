@@ -3,6 +3,7 @@ package li3.grupo54.Controller;
 import li3.grupo54.Controller.Queries.IQueryController;
 import li3.grupo54.Models.FileTriple;
 import li3.grupo54.Models.GestReviews;
+import li3.grupo54.Models.Stats;
 import li3.grupo54.View.IView;
 
 import java.io.IOException;

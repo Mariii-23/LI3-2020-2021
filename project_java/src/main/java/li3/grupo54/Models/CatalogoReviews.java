@@ -1,10 +1,7 @@
 package li3.grupo54.Models;
 
 import javafx.util.Pair;
-import li3.grupo54.Models.Exceptions.DateNotFoundException;
-import li3.grupo54.Models.Exceptions.InvalidBusinessLineException;
-import li3.grupo54.Models.Exceptions.InvalidReviewLineException;
-import li3.grupo54.Models.Exceptions.InvalidUserLineException;
+import li3.grupo54.Models.Exceptions.*;
 import li3.grupo54.Models.Interfaces.ICatalog;
 
 import java.time.LocalDateTime;
@@ -92,7 +89,7 @@ public class CatalogoReviews implements ICatalog<Review> {
   }
 
   @Override
-  public void delete(String id) {
+  public void delete(String id) throws ReviewNotFoundException {
     // TODO
 
   }

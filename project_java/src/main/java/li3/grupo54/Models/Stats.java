@@ -1,21 +1,28 @@
 package li3.grupo54.Models;
 
 import li3.grupo54.Models.Exceptions.NullReviewException;
+import li3.grupo54.Models.Interfaces.IBusiness;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Stats {
   // User id ->  mes a mes -> UserStarsTuple
-  Map<String, List<UserStarsTuple>> averageByUserId;
+  private Map<String, List<UserStarsTuple>> averageByUserId;
   // Business id ->  mes a mes -> BusinessStarsTuple
-  Map<String, List<BusinessStarsTuple>> averageByBusinessId;
+  private Map<String, List<BusinessStarsTuple>> averageByBusinessId;
   // State -> City -> BusinessId -> Average
-  Map<String, Map<String, Map<String, StarsTuple>>> averageByStateBusiness;
+  private Map<String, Map<String, Map<String, StarsTuple>>> averageByStateBusiness;
+  private TreeMap<String, IBusiness> negociosNuncaAvaliados; // ordenados por ordem alfabetica
+  private Map<String, IBusiness> negociosAvaliados;
+
 
   public Stats() {
     averageByUserId = new HashMap<>();
     averageByBusinessId = new HashMap<>();
     averageByStateBusiness = new HashMap<>();
+    negociosAvaliados = new HashMap<>();
+    negociosNuncaAvaliados = new TreeMap<>();
   }
 
   public void updateStats(Review review, Business business) throws NullReviewException {
@@ -110,4 +117,61 @@ public class Stats {
     });
     return list;
   }
+
+  public <T> void atualiza(T newEntity) {
+    if(newEntity instanceof Business) {
+      // inicializar a lista de businesses nunca avaliados
+      this.negociosNuncaAvaliados.put(((Business) newEntity).getId(), ((Business) newEntity).clone());
+    }
+    else if (newEntity instanceof Review) {
+        String businessId = ((Review) newEntity).getBusinessId();
+        IBusiness b;
+        if((b = this.negociosNuncaAvaliados.remove(businessId)) != null) {
+            this.negociosAvaliados.put(businessId,b);
+        }
+
+      }
+        // TODO
+        // atualizar medias
+    }
+  // para a query 1
+  public List<IBusiness> getNegociosNuncaAvaliadosOrdered() {
+    return this.negociosNuncaAvaliados.values().stream().map(IBusiness::clone).collect(Collectors.toList());
+  }
+
+  //@Override
+  //public void add(IBusiness business) {
+  //  this.negociosNuncaAvaliados.put(business.getId(), business.clone());
+  //}
+
+  //public void changesBusinessAvalied(String id) throws BusinessNotFoundException {
+  //  IBusiness business = negociosNuncaAvaliados.remove(id);
+  //  if (business == null)
+  //    throw new BusinessNotFoundException("Business Not Found, id: " + id);
+  //  this.negociosAvaliados.put(id, business.clone());
+  //}
+
+  //@Override
+  //public IBusiness getById(String id) throws BusinessNotFoundException {
+  //  IBusiness b;
+  //  if ((b = negociosAvaliados.get(id)) != null || (b = negociosNuncaAvaliados.get(id)) != null) {
+  //    return b.clone();
+  //  } else {
+  //    throw new BusinessNotFoundException();
+  //  }
+  //}
+
+  //@Override
+  //public void delete(String id) throws BusinessNotFoundException {
+  //  if (negociosAvaliados.get(id) != null) {
+  //    negociosAvaliados.remove(id);
+  //  } else if (negociosNuncaAvaliados.get(id) != null) {
+  //    negociosNuncaAvaliados.remove(id);
+  //  } else {
+  //    throw new BusinessNotFoundException();
+  //  }
+  //}
+
+
 }
+
