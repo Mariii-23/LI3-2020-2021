@@ -2,10 +2,9 @@ package li3.grupo54.Models;
 
 import li3.grupo54.Models.Exceptions.*;
 import li3.grupo54.Models.Interfaces.ICatalog;
+import li3.grupo54.Utils.MyPair;
 
-import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.time.LocalDateTime;
-import java.time.Year;
 import java.util.*;
 
 public class CatalogoReviews implements ICatalog<Review> {

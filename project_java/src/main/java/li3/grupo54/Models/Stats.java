@@ -2,6 +2,7 @@ package li3.grupo54.Models;
 
 import li3.grupo54.Models.Exceptions.NullReviewException;
 import li3.grupo54.Models.Interfaces.IBusiness;
+import li3.grupo54.Utils.MyPair;
 
 import java.util.*;
 import java.util.stream.Collectors;

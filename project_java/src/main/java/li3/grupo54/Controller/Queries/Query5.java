@@ -3,9 +3,7 @@ package li3.grupo54.Controller.Queries;
 import li3.grupo54.Models.GestReviews;
 import li3.grupo54.Models.Queries.*;
 import li3.grupo54.View.Queries.IQueryView;
-import li3.grupo54.View.Queries.Query2View;
-
-    import li3.grupo54.Models.Queries.IQueryResults;
+import li3.grupo54.Models.Queries.IQueryResults;
 import li3.grupo54.View.Queries.Query5View;
 
 public class Query5 implements IQueryController{

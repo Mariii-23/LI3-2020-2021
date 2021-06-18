@@ -1,5 +1,5 @@
 package li3.grupo54.Models.Queries;
-import li3.grupo54.Models.MyPair;
+import li3.grupo54.Utils.MyPair;
 public class Query2Results implements IQueryResults {
     MyPair<Integer,Integer> result;
 

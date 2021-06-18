@@ -1,4 +1,4 @@
-package li3.grupo54.Models;
+package li3.grupo54.Utils;
 
 public class MyPair<T,R> {
   private T x;

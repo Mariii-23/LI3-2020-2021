@@ -11,7 +11,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="project_java" target="1.8" />
+      <module name="project_java" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
