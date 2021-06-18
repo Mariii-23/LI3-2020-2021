@@ -41,7 +41,7 @@ public class DesktopView implements IView {
   public DesktopView(Stage s) {
     this.stage = s;
     this.queries = new ArrayList<>();
-    loader = new FXMLLoader(getClass().getResource("main_ui.fxml"));
+    loader = new FXMLLoader(getClass().getResource("/main_ui.fxml"));
     loader.setController(this);
     nQueries = 0;
   }

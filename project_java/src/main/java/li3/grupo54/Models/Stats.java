@@ -2,8 +2,6 @@ package li3.grupo54.Models;
 
 import javafx.util.Pair;
 import li3.grupo54.Models.Exceptions.NullReviewException;
-import lombok.var;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.*;
 
@@ -96,8 +94,8 @@ public class Stats {
 
   // query 5
   // Lista de pares business Id e os seus pares de reviews correspondentes
-  List<ImmutablePair<String, Set<String>>> pairBusinessIdAndTheirReviews(String userId) {
-    List<ImmutablePair<String, Set<String>>> list = new ArrayList<>();
+  List<Pair<String, Set<String>>> pairBusinessIdAndTheirReviews(String userId) {
+    List<Pair<String, Set<String>>> list = new ArrayList<>();
     Set<UserStarsTuple> userStarsTuples = new HashSet<>();
     // guardar todos os id's dos business correspondestes a esse user
     Set<String> businessID = new HashSet<>();
@@ -109,7 +107,7 @@ public class Stats {
     businessID.forEach(e -> {
       Set<String> reviews = new HashSet<>();
       this.averageByBusinessId.get(e).forEach(l-> reviews.addAll(l.getReviews()));
-      list.add(new ImmutablePair<>(e, reviews));
+      list.add(new Pair<>(e, reviews));
     });
     return list;
   }

@@ -1,9 +1,7 @@
 package li3.grupo54.Models.Interfaces;
 
 import com.opencsv.*;
-import com.opencsv.exceptions.CsvValidationException;
-import com.opencsv.validators.LineValidatorAggregator;
-import com.opencsv.validators.RowValidatorAggregator;
+import com.opencsv.exceptions.*;
 import li3.grupo54.Models.Exceptions.*;
 import li3.grupo54.Models.Leitura;
 
@@ -15,7 +13,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
 
-import static com.opencsv.CSVReader.DEFAULT_MULTILINE_LIMIT;
 import static com.opencsv.CSVReader.DEFAULT_VERIFY_READER;
 
 public interface ICatalog<T> {
@@ -31,7 +28,7 @@ public interface ICatalog<T> {
 
   void addInvalid();
 
-  public default void populateFromFile(String filename) throws IOException, URISyntaxException, CsvValidationException {
+  public default void populateFromFile(String filename) throws IOException, URISyntaxException , CsvValidationException {
     BufferedReader reader = Files.newBufferedReader(Paths.get(filename));
     char delim = Leitura.determineDelimiter(reader.readLine());
     CSVParserBuilder parserBuilder = new CSVParserBuilder().withSeparator(delim);
@@ -41,7 +38,7 @@ public interface ICatalog<T> {
     while (((nextLine = csvReader.readNext()) != null)) {
       try {
         this.add(callConstructor(nextLine));
-      } catch (InvalidUserLineException | BusinessNotFoundException | InvalidBusinessLineException | InvalidReviewLineException e) {
+      } catch (InvalidUserLineException | BusinessNotFoundException | InvalidBusinessLineException | InvalidReviewLineException  e) {
         // alterarar estatisticas de linhsa invalidaas
         this.addInvalid();
       }

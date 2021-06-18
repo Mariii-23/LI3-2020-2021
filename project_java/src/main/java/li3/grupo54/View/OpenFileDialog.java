@@ -39,7 +39,7 @@ public class OpenFileDialog {
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner(parent);
         stage.setTitle("Abrir ficheiros");
-        loader = new FXMLLoader(getClass().getResource("open_dialog.fxml"));
+        loader = new FXMLLoader(getClass().getResource("/open_dialog.fxml"));
         loader.setController(this);
         ok = false;
     }
