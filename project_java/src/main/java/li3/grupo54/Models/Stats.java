@@ -1,6 +1,5 @@
 package li3.grupo54.Models;
 
-import javafx.util.Pair;
 import li3.grupo54.Models.Exceptions.NullReviewException;
 
 import java.util.*;
