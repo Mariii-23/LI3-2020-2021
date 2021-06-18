@@ -1,11 +1,8 @@
 package li3.grupo54.Models;
 
-
-import javafx.util.Pair;
-import li3.grupo54.Models.Exceptions.DateNotFoundException;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 
 public class GestReviews {
   private CatalogoUsers catalogoUsers;
@@ -76,5 +73,10 @@ public class GestReviews {
     this.stats = stats;
   }
 
+  public List<MyPair<String,Integer>> query5(String userId){
+    List<MyPair<String,Integer>> resul = null;
+
+    return resul;
+  }
 }
 

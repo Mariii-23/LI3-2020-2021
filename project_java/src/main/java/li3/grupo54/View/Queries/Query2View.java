@@ -3,16 +3,11 @@ package li3.grupo54.View.Queries;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import li3.grupo54.Controller.NodeCallback;
 import li3.grupo54.Controller.ValidationCallback;
+import li3.grupo54.Models.MyPair;
 import li3.grupo54.Models.Queries.IQueryResults;
 import li3.grupo54.Models.Queries.Query2Results;
 
@@ -121,7 +116,7 @@ public Integer getAno(){
             // TODO
         Query2Results res = (Query2Results) results;
 
-        var pair = res.getResults();
+         MyPair<Integer,Integer> pair = res.getResults();
 
         VBox panel = new VBox();
         panel.setPadding(new Insets(5));
