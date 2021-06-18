@@ -37,8 +37,8 @@ public class Stats {
   public void updateAveragebySate(Review review, Business business) {
     if (!review.getBusinessId().equals(business.getId()))
       return;
-    var state = business.getState();
-    var city = business.getCity();
+    String state = business.getState();
+    String city = business.getCity();
     Map<String, Map<String, StarsTuple>> map;
     if ((map = this.averageByStateBusiness.get(state)) == null) {
       map = new HashMap<>();
@@ -53,7 +53,7 @@ public class Stats {
         mapCity.put(business.getId(), new BusinessStarsTuple(review));
         map.put(city, mapCity);
       } else {
-        var starTuple = mapCity.get(business.getId());
+        StarsTuple starTuple = mapCity.get(business.getId());
         if (starTuple == null)
           mapCity.put(business.getId(), new BusinessStarsTuple(review));
         else
@@ -64,7 +64,7 @@ public class Stats {
 
   public void updateAverageUSer(Review review) {
     String userId = review.getUserId();
-    Integer month = review.getDate().getMonthValue() - 1;
+    int month = review.getDate().getMonthValue() - 1;
     List<UserStarsTuple> list = null;
 
     if ((list = this.averageByUserId.get(userId)) == null) {
@@ -82,7 +82,7 @@ public class Stats {
 
   public void updateAverageBusiness(Review review) {
     String businessId = review.getBusinessId();
-    Integer month = review.getDate().getMonthValue() - 1;
+    int month = review.getDate().getMonthValue() - 1;
     List<BusinessStarsTuple> list = null;
 
     if ((list = this.averageByBusinessId.get(businessId)) == null) {
