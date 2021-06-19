@@ -26,7 +26,7 @@ public class CatalogoReviews implements ICatalog<Review> {
   /**
    * Representa o número de users inválidos aquando a leitura das reviews.
    */
-  private int invalidUsers;
+  private int invalidReviews;
   /**
    * Representa o número das reviews com zero impacto.
    * Ou seja, todas as reviews em que o somatório dos campos cool, funny ou useful dá 0.
@@ -36,7 +36,7 @@ public class CatalogoReviews implements ICatalog<Review> {
   public CatalogoReviews() {
     this.anoToReviewsPerMonth = new HashMap<>();
     this.byReviewId = new HashMap<>();
-    this.invalidUsers = 0;
+    this.invalidReviews = 0;
     this.zeroImpact = 0;
   }
 
@@ -89,12 +89,12 @@ public class CatalogoReviews implements ICatalog<Review> {
 
   }
 
-  public Integer getInvalidUsers() {
-    return invalidUsers;
+  public Integer getInvalidReviews() {
+    return invalidReviews;
   }
 
   public void addInvalid() {
-    this.invalidUsers++;
+    this.invalidReviews++;
   }
 
   @Override
@@ -107,6 +107,7 @@ public class CatalogoReviews implements ICatalog<Review> {
     // TODfizemos com O
 
   }
+
 
   public Integer getNumberReviewsDate(Integer year, Integer month) throws DateNotFoundException {
     if (this.anoToReviewsPerMonth.size() == 0)

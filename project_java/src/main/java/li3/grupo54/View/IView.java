@@ -4,6 +4,7 @@ import li3.grupo54.Controller.CallbackFileTriple;
 import li3.grupo54.Controller.EmptyCallback;
 import li3.grupo54.Controller.ExecuteCallback;
 import li3.grupo54.Models.FileTriple;
+import li3.grupo54.Models.GestReviews;
 import li3.grupo54.View.Queries.IQueryView;
 
 import java.io.File;
@@ -20,6 +21,8 @@ public interface IView {
   public void addQuery(IQueryView query, ExecuteCallback callback);
 
   public void setOnSave(EmptyCallback callback);
+
+  public void setStatus(GestReviews self);
 
   public File getSaveLocation();
 }

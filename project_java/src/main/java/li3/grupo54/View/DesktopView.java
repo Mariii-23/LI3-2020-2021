@@ -16,6 +16,7 @@ import li3.grupo54.Controller.CallbackFileTriple;
 import li3.grupo54.Controller.EmptyCallback;
 import li3.grupo54.Controller.ExecuteCallback;
 import li3.grupo54.Models.FileTriple;
+import li3.grupo54.Models.GestReviews;
 import li3.grupo54.View.Queries.IQueryView;
 import li3.grupo54.View.Queries.IQueryViewFX;
 
@@ -36,6 +37,9 @@ public class DesktopView implements IView {
   private Accordion queryAccordion;
   @FXML
   private TabPane resultsTabs;
+
+  @FXML
+  private Tab statsTab;
 
   private int nQueries;
 
@@ -185,4 +189,8 @@ public class DesktopView implements IView {
 
   }
 
+  @Override
+  public void setStatus(GestReviews self) {
+    //TODO
+  }
 }

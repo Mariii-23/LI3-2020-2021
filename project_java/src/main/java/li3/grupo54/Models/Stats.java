@@ -3,14 +3,20 @@ package li3.grupo54.Models;
 import li3.grupo54.Models.Exceptions.NullReviewException;
 import li3.grupo54.Models.Interfaces.IBusiness;
 import li3.grupo54.Models.Interfaces.IStats;
+import li3.grupo54.Utils.MyFive;
 import li3.grupo54.Utils.MyPair;
 import li3.grupo54.Utils.MyTriple;
 
+import java.time.Month;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Stats implements IStats {
   // User id ->  mes a mes -> UserStarsTuple
+
+  private List<ReviewStarsTuple> averageReviewByMonth;
+
+
   /**
    * Um Hash Map que irá de user id para uma lista de 12 elementos em que a cada índice irá corresponder um dado mês e
    * o seu elemento corresponderá um UsersStarsTuple
@@ -49,6 +55,7 @@ public class Stats implements IStats {
    */
   private Map<String, IBusiness> negociosAvaliados;
 
+
   public Stats() {
     averageByUserId = new HashMap<>();
     averageByBusinessId = new HashMap<>();
@@ -56,6 +63,9 @@ public class Stats implements IStats {
     averageByReviewID = new HashMap<>();
     negociosAvaliados = new HashMap<>();
     negociosNuncaAvaliados = new TreeMap<>();
+    averageReviewByMonth = new ArrayList<>(12);
+    for(int i=0; i<12;i++)
+    averageReviewByMonth.add(null);
   }
 
   public void updateStats(Review review, Business business) throws NullReviewException {
@@ -65,7 +75,9 @@ public class Stats implements IStats {
     updateAverageUser(review);
     updateAverageReview(review);
     updateAveragebyState(review, business);
+    updateAverageReviewsByMonth(review);
   }
+
 
   public void updateAveragebyState(Review review, IBusiness business) {
     if (!review.getBusinessId().equals(business.getId()))
@@ -96,6 +108,17 @@ public class Stats implements IStats {
       }
     }
   }
+
+  public void updateAverageReviewsByMonth(Review review){
+    int month = review.getDate().getMonthValue()-1;
+    ReviewStarsTuple tuple = this.averageReviewByMonth.get(month);
+    if(tuple == null ){
+      tuple = new ReviewStarsTuple();
+    }
+    tuple.updateAverage(review);
+    this.averageReviewByMonth.set(month,tuple);
+  }
+
 
   public void updateAverageUser(Review review) {
     String userId = review.getUserId();
@@ -352,7 +375,7 @@ public class Stats implements IStats {
   /**
    * Query 8
    * @param x Número
-   * @return Devolve uma Lista  de X pares, contedo o user id e o número de negócios distintos, oredenado pela ordem
+   * @return Devolve uma Lista  de X pares, contedo o user id e o número de negócios distintos, ordenado pela ordem
    * decrescente do número de negócios.
    */
   public List<MyPair<String, Integer>> query8(Integer x) {
@@ -373,6 +396,37 @@ public class Stats implements IStats {
       int size = r.size();
       for (int i = size - 1; i >= x; i--)
         r.remove(i);
+    }
+    return r;
+  }
+
+  public int getUsersNaoAvaliados(){
+    return negociosNuncaAvaliados.size();
+  }
+  public List<MyTriple<Month,Integer,Float>> getAverageByMonthReview(){
+    List<MyTriple<Month,Integer, Float>> r = new ArrayList<>();
+    for(int i =0; i<12;i++){
+      ReviewStarsTuple tuple = this.averageReviewByMonth.get(i);
+      if (tuple==null){
+        r.add(i, new MyTriple<>( Month.of(i+1), 0,(float) 0.0));
+      }else{
+        r.add(i,new MyTriple<>( Month.of(i+1),tuple.getNumberTotal() ,(float) tuple.getCurrentAverage()));
+      }
+    }
+    return r;
+  }
+
+
+  public List<MyFive<Month,Integer,Float,Integer,Integer>> getAverageByMonthReviewAndMore(){
+    List<MyFive<Month,Integer, Float,Integer,Integer>> r = new ArrayList<>();
+    for(int i =0; i<12;i++){
+      ReviewStarsTuple tuple = this.averageReviewByMonth.get(i);
+      if (tuple==null){
+        r.add(i, new MyFive<Month,Integer,Float,Integer,Integer>( Month.of(i+1), 0,(float) 0.0,0,0));
+      }else{
+        r.add(i,new MyFive<Month,Integer,Float,Integer,Integer>( Month.of(i+1),tuple.getNumberTotal() ,(float) tuple.getCurrentAverage(),
+            tuple.getBusinessDistints(),tuple.getUserDistints()));
+      }
     }
     return r;
   }

@@ -73,7 +73,7 @@
                 </Accordion>
                 <TabPane fx:id="resultsTabs" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="ALL_TABS">
                     <tabs>
-                        <Tab closable="false" text="Estatisticas">
+                        <Tab fx:id="statsTab" closable="false" text="Estatisticas">
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
                             </content>
