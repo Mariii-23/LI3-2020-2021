@@ -93,18 +93,17 @@ public class Query8View implements IQueryViewFX {
     panel.getChildren().add(new Label("Query Time: " +time ));
 
     TableView<MyPair<String,Integer>> tableView = new TableView<>();
-    TableColumn<MyPair<String,Integer>,String> reviewsIdColumn = new TableColumn<>("User id");
-    reviewsIdColumn.setCellValueFactory(new PropertyValueFactory<>("x"));
-
-    tableView.getColumns().add(reviewsIdColumn);
-
-    TableColumn<MyPair<String,Integer>,String> column1 = new TableColumn<>("Business Number");
-    column1.setCellValueFactory(new PropertyValueFactory<>("y"));
+    TableColumn<MyPair<String,Integer>,String> column1 = new TableColumn<>("User id");
+    column1.setCellValueFactory(new PropertyValueFactory<>("x"));
 
     tableView.getColumns().add(column1);
 
+    TableColumn<MyPair<String,Integer>,String> column2 = new TableColumn<>("Business Number");
+    column2.setCellValueFactory(new PropertyValueFactory<>("y"));
+
+    tableView.getColumns().add(column2);
+
     tableView.getItems().addAll(res.getResults());
-    //panel.getChildren().add(new Label("Total reviews: " +pair.getX()+" Total users distintos: "+pair.getY()));
 
     VBox.setVgrow(tableView, Priority.ALWAYS);
     panel.getChildren().add(tableView);

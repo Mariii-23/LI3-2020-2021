@@ -96,30 +96,30 @@ public class Query4View implements IQueryViewFX {
 
     panel.getChildren().add(new Label("Query Time: " +time ));
 
-    TableView<MyFour<Month,Integer,Integer,Float>> reviewsTableView = new TableView<>();
+    TableView<MyFour<Month,Integer,Integer,Float>> tableView = new TableView<>();
 
     TableColumn<MyFour<Month,Integer,Integer,Float>,String> mesesColumn = new TableColumn<>("Mes");
     mesesColumn.setCellValueFactory(new PropertyValueFactory<>("first"));
-    reviewsTableView.getColumns().add(mesesColumn);
+    tableView.getColumns().add(mesesColumn);
 
-    TableColumn<MyFour<Month,Integer,Integer,Float>,String> reviewsIdColumn = new TableColumn<>("Number business total");
-    reviewsIdColumn.setCellValueFactory(new PropertyValueFactory<>("left"));
+    TableColumn<MyFour<Month,Integer,Integer,Float>,String> column2 = new TableColumn<>("Number business total");
+    column2.setCellValueFactory(new PropertyValueFactory<>("left"));
 
-    reviewsTableView.getColumns().add(reviewsIdColumn);
+    tableView.getColumns().add(column2);
 
-  TableColumn<MyFour<Month,Integer,Integer,Float>,String> businessIdColumn = new TableColumn<>("Number users distinct");
-    businessIdColumn.setCellValueFactory(new PropertyValueFactory<>("middle"));
+  TableColumn<MyFour<Month,Integer,Integer,Float>,String> column3 = new TableColumn<>("Number users distinct");
+    column3.setCellValueFactory(new PropertyValueFactory<>("middle"));
 
-    reviewsTableView.getColumns().add(businessIdColumn);
+    tableView.getColumns().add(column3);
 
     TableColumn<MyFour<Month,Integer,Integer,Float>, String> meanIdColumn = new TableColumn<>("Average");
     meanIdColumn.setCellValueFactory(new PropertyValueFactory<>("right"));
-    reviewsTableView.getColumns().add(meanIdColumn);
+    tableView.getColumns().add(meanIdColumn);
 
-    reviewsTableView.getItems().addAll(apresentar);
+    tableView.getItems().addAll(apresentar);
 
-    VBox.setVgrow(reviewsTableView, Priority.ALWAYS);
-    panel.getChildren().add(reviewsTableView);
+    VBox.setVgrow(tableView, Priority.ALWAYS);
+    panel.getChildren().add(tableView);
 
     if (this.resultsCallback != null)
       resultsCallback.run(panel);

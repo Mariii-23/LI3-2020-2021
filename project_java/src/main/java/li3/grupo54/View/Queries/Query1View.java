@@ -64,16 +64,16 @@ public class Query1View implements IQueryViewFX {
         panel.getChildren().add(new Label("Total: " + res.getBusinesses().size()));
         panel.getChildren().add(new Label("Query Time: " +time ));
 
-        TableView<IBusiness> businessTableView = new TableView<>();
-        TableColumn<IBusiness, String> businessIdColumn = new TableColumn<>("ID");
-        businessIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        TableView<IBusiness> tableView = new TableView<>();
+        TableColumn<IBusiness, String> column1 = new TableColumn<>("ID");
+        column1.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        businessTableView.getColumns().add(businessIdColumn);
-        businessTableView.getItems().addAll(res.getBusinesses());
+        tableView.getColumns().add(column1);
+        tableView.getItems().addAll(res.getBusinesses());
 
-        VBox.setVgrow(businessTableView, Priority.ALWAYS);
+        VBox.setVgrow(tableView, Priority.ALWAYS);
 
-        panel.getChildren().add(businessTableView);
+        panel.getChildren().add(tableView);
 
         if (this.resultsCallback != null)
             resultsCallback.run(panel);
