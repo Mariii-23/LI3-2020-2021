@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class UserStarsTuple extends StarsTuple {
-  // possivelmente este pode ser eliminado
   private final Set<String> reviews;
   private Set<String> business;
 

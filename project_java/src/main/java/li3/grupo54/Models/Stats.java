@@ -13,6 +13,10 @@ public class Stats {
   private Map<String, List<UserStarsTuple>> averageByUserId;
   // Business id ->  mes a mes -> BusinessStarsTuple
   private Map<String, List<BusinessStarsTuple>> averageByBusinessId;
+
+  // Review Id -> mes a mes -> ReviewStarsTuple
+  private Map<String,List<ReviewStarsTuple>> averageByReviewID;
+
   // State -> City -> BusinessId -> Average
   private Map<String, Map<String, Map<String, StarsTuple>>> averageByStateBusiness;
   private TreeMap<String, IBusiness> negociosNuncaAvaliados; // ordenados por ordem alfabetica
@@ -24,6 +28,7 @@ public class Stats {
     averageByUserId = new HashMap<>();
     averageByBusinessId = new HashMap<>();
     averageByStateBusiness = new HashMap<>();
+    averageByReviewID = new HashMap<>();
     negociosAvaliados = new HashMap<>();
     negociosNuncaAvaliados = new TreeMap<>();
   }
@@ -33,6 +38,7 @@ public class Stats {
       throw new NullReviewException("Null Review Exception");
     updateAverageBusiness(review);
     updateAverageUser(review);
+    updateAverageReview(review);
     updateAveragebyState(review, business);
   }
 
@@ -108,6 +114,28 @@ public class Stats {
         userStarsTuple = new BusinessStarsTuple();
       userStarsTuple.updateAverage(review);
       list.set(month,userStarsTuple);
+    }
+  }
+
+  public void updateAverageReview(Review review) {
+    String reviewId = review.getReviewId();
+    int month = review.getDate().getMonthValue() - 1;
+    List<ReviewStarsTuple> list = null;
+
+    if ((list = this.averageByReviewID.get(reviewId)) == null) {
+      list = new ArrayList<>(12);
+      for (int i = 0; i < 12 ; i++ ) {
+        list.add(null);
+      }
+      list.set(month, new ReviewStarsTuple(review));
+      this.averageByReviewID.put(reviewId,list);
+
+    } else {
+      ReviewStarsTuple starsTuple = list.get(month);
+      if (starsTuple == null)
+        starsTuple = new ReviewStarsTuple();
+      starsTuple.updateAverage(review);
+      list.set(month,starsTuple);
     }
   }
 
