@@ -10,6 +10,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import li3.grupo54.Controller.NodeCallback;
 import li3.grupo54.Controller.ValidationCallback;
+import li3.grupo54.Models.FileTriple;
 import li3.grupo54.Models.GestReviews;
 import li3.grupo54.Models.Queries.IQueryResults;
 import li3.grupo54.Models.Queries.Query10Results;
@@ -28,6 +29,16 @@ public class StatsView implements IQueryViewFX {
 
   private ValidationCallback callback;
   private NodeCallback resultsCallback;
+
+  private String userFilename;
+  private String businessFilename;
+  private String reviewsFilename;
+
+  public StatsView(FileTriple fileTriple) {
+   userFilename= fileTriple.getUsersFile();
+   businessFilename = fileTriple.getBusinessesFile();
+   reviewsFilename = fileTriple.getReviewsFile();
+  }
 
   @Override
   public String getName() {
@@ -62,25 +73,29 @@ public class StatsView implements IQueryViewFX {
     GestReviews self = res.getResults();
 
     VBox panel = new VBox();
-    panel.setPadding(new Insets(5));
+    panel.setPadding(new Insets(10));
 
-    panel.setSpacing(5);
+    panel.setSpacing(10);
 
     int lidos =self.getCatalogoReviews().size();
     int invalidos =self.getCatalogoReviews().getInvalidReviews();
 
     panel.getChildren().add(new Label("REVIEWS: "));
+    panel.getChildren().add(new Label("\tFile Path: "+reviewsFilename));
     panel.getChildren().add(new Label("\tTotal lidas: " +(lidos+invalidos) + "\n\tInválidas: "+invalidos));
     panel.getChildren().add(new Label("\tReviews com zero impacto: "+self.getCatalogoReviews().getZeroImpact()));
 
     lidos = self.getCatalogoBusinesses().size();
     invalidos = self.getCatalogoBusinesses().getInvalidBusinesses();
     panel.getChildren().add(new Label("\nBUSINESS: "));
+    panel.getChildren().add(new Label("\tFile Path: "+businessFilename));
     panel.getChildren().add(new Label("\tTotal lidas: " +(lidos+invalidos) + "\n\tInválidas: "+invalidos));
+    panel.getChildren().add(new Label("\tBusiness com reviews: " +self.getStats().getBusinessWithReviews()));
 
     lidos= self.getCatalogoUsers().size();
     invalidos = self.getCatalogoUsers().getInvalidUsers();;
     panel.getChildren().add(new Label("\nUSERS: "));
+    panel.getChildren().add(new Label("\tFile Path: "+userFilename));
     panel.getChildren().add(new Label("\tTotal lidas: " +(lidos+invalidos) + "\n\tInválidas: "+invalidos));
     panel.getChildren().add(new Label("\tUsers inativos: "+self.getStats().getUsersNaoAvaliados()));
 

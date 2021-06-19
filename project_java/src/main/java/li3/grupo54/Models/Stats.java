@@ -15,11 +15,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Stats implements IStats, Serializable  {
+
+  /**
+   * Lista de 12 elementos, em que cada indice correspoderá a um mês e cada conteúdo será um ReviewStarsTuple
+   */
+  private final List<ReviewStarsTuple> averageReviewByMonth;
+
+
   // User id ->  mes a mes -> UserStarsTuple
-
-  private List<ReviewStarsTuple> averageReviewByMonth;
-
-
   /**
    * Um Hash Map que irá de user id para uma lista de 12 elementos em que a cada índice irá corresponder um dado mês e
    * o seu elemento corresponderá um UsersStarsTuple
@@ -429,6 +432,10 @@ public class Stats implements IStats, Serializable  {
       }
     }
     return r;
+  }
+
+  public int getBusinessWithReviews(){
+    return this.averageByBusinessId.values().size();
   }
 }
 

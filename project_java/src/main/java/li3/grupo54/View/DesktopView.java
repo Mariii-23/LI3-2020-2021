@@ -40,9 +40,6 @@ public class DesktopView implements IView {
   @FXML
   private TabPane resultsTabs;
 
-//  @FXML
-//  private Tab statsTab;
-
   private int nQueries;
 
   private CallbackFileTriple callback;

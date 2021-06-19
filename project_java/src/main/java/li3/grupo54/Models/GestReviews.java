@@ -100,6 +100,11 @@ public class GestReviews implements Serializable {
     return stats;
   }
 
+
+  public int getBusinessWithReviews(){
+    return this.stats.getBusinessWithReviews();
+  }
+
   /**
    * Query 5
    * Devolve uma lista de nomes de negocios por orden decrescente de numero de avaliações que o user fez e quantos
