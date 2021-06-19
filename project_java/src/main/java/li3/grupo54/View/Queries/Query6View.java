@@ -1,44 +1,38 @@
 package li3.grupo54.View.Queries;
 
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.geometry.Insets;
-import javafx.scene.control.TextField;
 import li3.grupo54.Controller.NodeCallback;
 import li3.grupo54.Controller.ValidationCallback;
 import li3.grupo54.Models.Queries.IQueryResults;
 import li3.grupo54.Models.Queries.Query3Results;
-import li3.grupo54.Controller.NodeCallback;
-import li3.grupo54.Controller.ValidationCallback;
-import li3.grupo54.Models.Interfaces.IBusiness;
-
-import java.util.List;
-
-import li3.grupo54.Utils.MyPair;
 import li3.grupo54.Utils.MyTriple;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class Query3View implements IQueryViewFX {
-    private TextField userId;
+public class Query6View implements IQueryViewFX {
+  private TextField numeroNegocios;
 
-    private ValidationCallback callback;
-    private NodeCallback resultsCallback;
+  private ValidationCallback callback;
+  private NodeCallback resultsCallback;
+
+  private int x;
 
 
-    private String userIdString;
-
-    public Query3View() {
-        userId = new TextField();
-
-        userId.textProperty().addListener((o, oldVal, newVal) -> {
-            userIdString = userId.getText();
-            setValid(true);
+    public Query6View() {
+        numeroNegocios = new TextField();
+        numeroNegocios.textProperty().addListener((o, oldVal, newVal) -> {
+        x = Integer.parseInt(numeroNegocios.getText());
+        setValid(true);
         });
     }
 
@@ -56,7 +50,7 @@ public class Query3View implements IQueryViewFX {
     @Override
     public Map<String, Node> getConfigOptionsNode() {
         Map<String, Node> map = new HashMap<>();
-        map.put("User Id", userId);
+        map.put("Id",numeroNegocios );
         //map.put("Mês", monthInput);
         return map;
     }
@@ -73,29 +67,31 @@ public class Query3View implements IQueryViewFX {
 
     @Override
     public void showResults(IQueryResults results) {
+            // TODO
         Query3Results res = (Query3Results) results;
 
         List<MyTriple<Integer,Integer,Float>> list = res.getResults();
+        System.out.println(list);
 
         VBox panel = new VBox();
         panel.setPadding(new Insets(5));
 
         panel.setSpacing(5);
-        panel.getChildren().add(new Label("Query 3"));
+        panel.getChildren().add(new Label("Query 6"));
 
 
         TableView<MyTriple<Integer,Integer,Float>> reviewsTableView = new TableView<>();
-        TableColumn<MyTriple<Integer,Integer,Float>,String> reviewsIdColumn = new TableColumn<>("Number reviews total");
+        TableColumn<MyTriple<Integer,Integer,Float>,String> reviewsIdColumn = new TableColumn<>("Number reviews");
         reviewsIdColumn.setCellValueFactory(new PropertyValueFactory<>("left"));
 
         reviewsTableView.getColumns().add(reviewsIdColumn);
 
-        TableColumn<MyTriple<Integer,Integer,Float>,String> businessIdColumn = new TableColumn<>("Number business distinct");
+        TableColumn<MyTriple<Integer,Integer,Float>,String> businessIdColumn = new TableColumn<>("Number business");
         businessIdColumn.setCellValueFactory(new PropertyValueFactory<>("middle"));
 
         reviewsTableView.getColumns().add(businessIdColumn);
 
-        TableColumn<MyTriple<Integer,Integer,Float>, String> meanIdColumn = new TableColumn<>("Average");
+        TableColumn<MyTriple<Integer,Integer,Float>, String> meanIdColumn = new TableColumn<>("Mean");
         meanIdColumn.setCellValueFactory(new PropertyValueFactory<>("right"));
         reviewsTableView.getColumns().add(meanIdColumn);
 
@@ -113,7 +109,7 @@ public class Query3View implements IQueryViewFX {
         this.resultsCallback = callback;
     }
 
-    public String getUserID(){
-        return this.userIdString;
+    public int getX() {
+        return this.x;
     }
 }

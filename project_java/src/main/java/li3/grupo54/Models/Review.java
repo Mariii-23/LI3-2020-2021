@@ -45,6 +45,7 @@ public class Review implements IReview {
 
   public Review(String[] linhaSplit) throws InvalidReviewLineException {
     if (linhaSplit.length != 9) {
+      System.out.println("Invalid review: " + Arrays.toString(linhaSplit) + " :: " + linhaSplit.length);
       throw new InvalidReviewLineException();
     } else {
       this.reviewId = linhaSplit[0];
@@ -140,5 +141,6 @@ public class Review implements IReview {
   public int hashCode() {
     return Objects.hash(reviewId, userId, businessId, stars, useful, funny, cool, date, text);
   }
+
 }
 

@@ -1,5 +1,7 @@
 package li3.grupo54.Utils;
 
+import java.util.Objects;
+
 public class MyPair<T,R> {
   private T x;
   private R y;
@@ -28,5 +30,18 @@ public class MyPair<T,R> {
 
   public void setY(R y) {
     this.y = y;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    MyPair<?, ?> myPair = (MyPair<?, ?>) o;
+    return Objects.equals(getX(), myPair.getX()) && Objects.equals(getY(), myPair.getY());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getX(), getY());
   }
 }

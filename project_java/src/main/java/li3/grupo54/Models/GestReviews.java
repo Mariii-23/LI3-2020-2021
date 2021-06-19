@@ -2,6 +2,7 @@ package li3.grupo54.Models;
 
 
 import li3.grupo54.Models.Exceptions.BusinessNotFoundException;
+import li3.grupo54.Models.Interfaces.IBusiness;
 import li3.grupo54.Utils.MyPair;
 import li3.grupo54.Utils.MyTriple;
 
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GestReviews {
   private CatalogoUsers catalogoUsers;
@@ -100,6 +102,10 @@ public class GestReviews {
     }).sorted(c).collect(Collectors.toList());
   }
 
+ public int getNumberReviewsInYearBusiness(String businessId, int ano) {
+    return Math.toIntExact(this.stats.getAllReviews(businessId).stream().map(r -> catalogoReviews.getReviewById(r)).filter(r -> r.getDate().getYear() == ano).count());
+  }
+
   public List<MyTriple<Integer,Integer,Float>> query3(String userId){
     return  this.stats.query3(userId);
   }
@@ -110,6 +116,28 @@ public class GestReviews {
 
   public List<MyTriple<String,String,Integer>> query7(){
     return stats.query7();
+  }
+
+    public Map<Integer,List<MyPair<Business,Integer>>> query6 (int n) {
+    Map<Integer,List<MyPair<Business,Integer>>>  r  = new HashMap<>();
+    for(int ano : this.catalogoReviews.getAnoToReviewsPerMonth().keySet() ) {
+        List<IBusiness> negociosOrdenados = catalogoBusinesses.getBusinessesById().entrySet().stream().sorted((a,b) -> {
+          return getNumberReviewsInYearBusiness(b.getValue().getId(), ano) - getNumberReviewsInYearBusiness(a.getValue().getId(), ano);
+        }).limit(n).map(Map.Entry::getValue).collect(Collectors.toList());
+      //Integer distinctUsers = negociosOrdenados.stream().map(
+
+       //r.put(ano,new MyPair<>(negociosOrdenados,distinctUsers));
+    }
+
+
+      return null;
+  }
+
+  public Stream<Review> getReviewsOfBusiness(String businessId) {
+    return this.catalogoReviews.getByReviewId()
+            .values()
+            .stream()
+            .filter(r -> r.getBusinessId().equals(businessId));
   }
 }
 

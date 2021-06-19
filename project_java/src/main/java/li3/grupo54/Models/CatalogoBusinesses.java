@@ -91,4 +91,12 @@ public class CatalogoBusinesses implements ICatalog<IBusiness> {
   public int hashCode() {
     return Objects.hash(businessesById, getInvalidBusinesses());
   }
+
+  public TreeMap<String, IBusiness> getBusinessesById() {
+    return businessesById;
+  }
+
+  public void setInvalidBusinesses(int invalidBusinesses) {
+    this.invalidBusinesses = invalidBusinesses;
+  }
 }

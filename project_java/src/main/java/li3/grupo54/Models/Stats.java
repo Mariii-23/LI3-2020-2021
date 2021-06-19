@@ -46,6 +46,7 @@ public class Stats {
    return r;
   }
 
+
   public Stats() {
     averageByUserId = new HashMap<>();
     averageByBusinessId = new HashMap<>();
@@ -201,6 +202,45 @@ public class Stats {
     return this.negociosNuncaAvaliados.values().stream().map(IBusiness::clone).collect(Collectors.toList());
   }
 
+  // para a query 10
+  public Map<String, Map<String, Map<String, StarsTuple>>> getAverageByStateBusiness() {
+    return this.averageByStateBusiness;
+  }
+
+  //@Override
+  //public void add(IBusiness business) {
+  //  this.negociosNuncaAvaliados.put(business.getId(), business.clone());
+  //}
+
+  //public void changesBusinessAvalied(String id) throws BusinessNotFoundException {
+  //  IBusiness business = negociosNuncaAvaliados.remove(id);
+  //  if (business == null)
+  //    throw new BusinessNotFoundException("Business Not Found, id: " + id);
+  //  this.negociosAvaliados.put(id, business.clone());
+  //}
+
+  //@Override
+  //public IBusiness getById(String id) throws BusinessNotFoundException {
+  //  IBusiness b;
+  //  if ((b = negociosAvaliados.get(id)) != null || (b = negociosNuncaAvaliados.get(id)) != null) {
+  //    return b.clone();
+  //  } else {
+  //    throw new BusinessNotFoundException();
+  //  }
+  //}
+
+  //@Override
+  //public void delete(String id) throws BusinessNotFoundException {
+  //  if (negociosAvaliados.get(id) != null) {
+  //    negociosAvaliados.remove(id);
+  //  } else if (negociosNuncaAvaliados.get(id) != null) {
+  //    negociosNuncaAvaliados.remove(id);
+  //  } else {
+  //    throw new BusinessNotFoundException();
+  //  }
+  //}
+
+
   public List<MyTriple<Integer,Integer,Float>> query3(String userId){
     if(this.averageByUserId == null)
       return null;
@@ -259,5 +299,6 @@ public class Stats {
     }
     return result;
   }
+
 }
 

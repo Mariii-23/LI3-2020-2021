@@ -5,6 +5,7 @@ import li3.grupo54.Models.Interfaces.IUser;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Arrays;
 
 public class User implements IUser {
   private String userId;
@@ -23,6 +24,7 @@ public class User implements IUser {
   public User(String[] linhaSplit) throws InvalidUserLineException {
     // apesar de os amigos serem ignorados, o campo tem que existir
     if (linhaSplit.length != 3) {
+      System.out.println("Invalid user: " + Arrays.toString(linhaSplit) + " :: " + linhaSplit.length);
       throw new InvalidUserLineException();
     } else {
       this.userId = linhaSplit[0];

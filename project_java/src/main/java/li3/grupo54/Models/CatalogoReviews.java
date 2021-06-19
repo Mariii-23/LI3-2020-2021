@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 public class CatalogoReviews implements ICatalog<Review> {
   // ano =>  array de 12 elementos => cada array tem um set de reviews
   private final Map<Integer, List<Set<Review>>> anoToReviewsPerMonth;
-
   private final Map<String, Review> byReviewId;
 
   private int invalidUsers;
@@ -173,7 +172,27 @@ public class CatalogoReviews implements ICatalog<Review> {
     return new MyPair<>(reviews,users);
     }
 
+  public Map<Integer, List<Set<Review>>> getAnoToReviewsPerMonth() {
+    return anoToReviewsPerMonth;
+  }
 
+  public Review getReviewById (String id) {
+    return this.byReviewId.get(id).clone();
+  }
+  public Map<String, Review> getByReviewId() {
+    return byReviewId;
+  }
 
+  public void setInvalidUsers(int invalidUsers) {
+    this.invalidUsers = invalidUsers;
+  }
+
+  public int getZeroImpact() {
+    return zeroImpact;
+  }
+
+  public void setZeroImpact(int zeroImpact) {
+    this.zeroImpact = zeroImpact;
+  }
 }
 
