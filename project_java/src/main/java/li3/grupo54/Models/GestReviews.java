@@ -194,7 +194,7 @@ public class GestReviews implements Serializable {
   }
 
   public Stream<Review> getReviewsOfBusiness(String businessId) throws BusinessNotFoundException {
-    this.catalogoBusinesses.getById(businessId);
+    this.catalogoBusinesses.getById(businessId); // assert that business exists
     return this.catalogoReviews.getByReviewId()
         .values()
         .stream()
