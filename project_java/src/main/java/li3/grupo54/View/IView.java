@@ -1,7 +1,7 @@
 package li3.grupo54.View;
 
 import li3.grupo54.Controller.CallbackFileTriple;
-import li3.grupo54.Controller.EmptyCallback;
+import li3.grupo54.Controller.SaveCallback;
 import li3.grupo54.Controller.ExecuteCallback;
 import li3.grupo54.Models.FileTriple;
 import li3.grupo54.View.Queries.IQueryView;
@@ -19,7 +19,11 @@ public interface IView {
 
   public void addQuery(IQueryView query, ExecuteCallback callback);
 
-  public void setOnSave(EmptyCallback callback);
+  public void setOnSave(SaveCallback callback);
 
   public File getSaveLocation();
+
+  public void disableQueries(boolean disable);
+
+  void setOnRestore(SaveCallback callback);
 }

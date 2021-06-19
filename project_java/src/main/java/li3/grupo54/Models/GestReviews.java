@@ -2,15 +2,13 @@ package li3.grupo54.Models;
 
 
 import li3.grupo54.Models.Exceptions.BusinessNotFoundException;
+import li3.grupo54.Models.Exceptions.UserNotFoundException;
 import li3.grupo54.Models.Interfaces.IBusiness;
 import li3.grupo54.Utils.Crono;
 import li3.grupo54.Utils.MyPair;
 import li3.grupo54.Utils.MyTriple;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.ToIntFunction;
@@ -36,15 +34,19 @@ public class GestReviews implements Serializable {
   private Stats stats;
 
   public GestReviews() {
-  }
-
-  public GestReviews(FileTriple triple) throws IOException, URISyntaxException {
-    this(triple.getUsersFile(), triple.getBusinessesFile(), triple.getReviewsFile());
+    this.stats = new Stats();
+    this.catalogoUsers = new CatalogoUsers();
+    this.catalogoBusinesses = new CatalogoBusinesses();
+    this.catalogoReviews = new CatalogoReviews();
   }
 
   public GestReviews(String users, String businesses, String reviews) throws IOException, URISyntaxException {
     this();
     this.load(users, businesses, reviews);
+  }
+
+  public GestReviews(FileTriple triple) throws IOException, URISyntaxException {
+    this(triple.getUsersFile(), triple.getBusinessesFile(), triple.getReviewsFile());
   }
 
   /**
@@ -56,37 +58,29 @@ public class GestReviews implements Serializable {
    * @throws URISyntaxException
    */
   public void load(String users, String businesses, String reviews) throws IOException, URISyntaxException {
-    this.stats = new Stats();
-    try {
-      this.catalogoUsers = new CatalogoUsers();
-      this.catalogoBusinesses = new CatalogoBusinesses();
-      this.catalogoReviews = new CatalogoReviews();
-      Crono.start();
-      catalogoUsers.populateFromFile(stats, users, null, null);
-      double timeTotal = 0;
-      double time = Crono.stop();
-      timeTotal += time;
-      System.out.println("\nFinished reading users");
-      System.out.println("Time: " + time + "\n");
+    Crono.start();
+    catalogoUsers.populateFromFile(stats, users, null, null);
+    double timeTotal = 0;
+    double time = Crono.stop();
+    timeTotal += time;
+    System.out.println("\nFinished reading users");
+    System.out.println("Time: " + time + "\n");
 
-      Crono.start();
-      catalogoBusinesses.populateFromFile(stats, businesses, null, null);
-      time = Crono.stop();
-      timeTotal += time;
-      System.out.println("Finished reading businesses");
-      System.out.println("Time: " + time + "\n");
+    Crono.start();
+    catalogoBusinesses.populateFromFile(stats, businesses, null, null);
+    time = Crono.stop();
+    timeTotal += time;
+    System.out.println("Finished reading businesses");
+    System.out.println("Time: " + time + "\n");
 
-      // atualiza negocios nao avaliados e tal
-      Crono.start();
-      catalogoReviews.populateFromFile(stats, reviews, catalogoUsers, catalogoBusinesses);
-      time = Crono.stop();
-      timeTotal += time;
-      System.out.println("Finished reading businesses");
-      System.out.println("Time: " + time + "\n");
-      System.out.println("\nTotal Time: " + timeTotal + "\n");
-    } catch (Exception e) {
-
-    }
+    // atualiza negocios nao avaliados e tal
+    Crono.start();
+    catalogoReviews.populateFromFile(stats, reviews, catalogoUsers, catalogoBusinesses);
+    time = Crono.stop();
+    timeTotal += time;
+    System.out.println("Finished reading businesses");
+    System.out.println("Time: " + time + "\n");
+    System.out.println("\nTotal Time: " + timeTotal + "\n");
 
   }
 
@@ -94,32 +88,16 @@ public class GestReviews implements Serializable {
     return catalogoUsers;
   }
 
-  public void setCatalogoUsers(CatalogoUsers catalogoUsers) {
-    this.catalogoUsers = catalogoUsers;
-  }
-
   public CatalogoBusinesses getCatalogoBusinesses() {
     return catalogoBusinesses;
-  }
-
-  public void setCatalogoBusinesses(CatalogoBusinesses catalogoBusinesses) {
-    this.catalogoBusinesses = catalogoBusinesses;
   }
 
   public CatalogoReviews getCatalogoReviews() {
     return catalogoReviews;
   }
 
-  public void setCatalogoReviews(CatalogoReviews catalogoReviews) {
-    this.catalogoReviews = catalogoReviews;
-  }
-
   public Stats getStats() {
     return stats;
-  }
-
-  public void setStats(Stats stats) {
-    this.stats = stats;
   }
 
   /**
@@ -129,7 +107,7 @@ public class GestReviews implements Serializable {
    * @param userId User Id
    * @return Lista
    */
-  public List<MyPair<String, Integer>> query5(String userId) {
+  public List<MyPair<String, Integer>> query5(String userId) throws UserNotFoundException, BusinessNotFoundException {
     Comparator<MyPair<String, Integer>> c = (par1, par2) -> {
       if (par1.getY().equals(par2.getY())) {
         return par1.getX().compareTo(par2.getX());
@@ -137,18 +115,17 @@ public class GestReviews implements Serializable {
         return par1.getY().compareTo(par2.getY());
       }
     };
-    return stats.pairBusinessIdAndTheirReviews(userId).stream().map(par -> {
-      try {
+    List<MyPair<String, Integer>> r = new ArrayList<>();
+    for(final var par : stats.pairBusinessIdAndTheirReviews(userId)) {
         par.setX(this.catalogoBusinesses.getName(par.getX()));
-      } catch (BusinessNotFoundException e) {
-        e.printStackTrace();
-      }
-      return new MyPair<String, Integer>(par);
-    }).sorted(c).collect(Collectors.toList());
+        r.add(par);
+    }
+    r.sort(c);
+    return r;
   }
 
   public int getNumberReviewsInYearBusiness(String businessId, int ano) {
-    return Math.toIntExact(this.stats.getAllReviews(businessId).stream().map(r -> catalogoReviews.getReviewById(r)).filter(r -> r.getDate().getYear() == ano).count());
+    return Math.toIntExact(this.stats.getAllReviews(businessId).stream().map(catalogoReviews::getReviewById).filter(r -> r.getDate().getYear() == ano).count());
   }
 
   /**
@@ -156,7 +133,7 @@ public class GestReviews implements Serializable {
    * @param userId user id
    * @return Devolve a informação relacionada com a query 3
    */
-  public List<MyTriple<Integer, Integer, Float>> query3(String userId) {
+  public List<MyTriple<Integer, Integer, Double>> query3(String userId) throws UserNotFoundException {
     return this.stats.query3(userId);
   }
 
@@ -165,7 +142,8 @@ public class GestReviews implements Serializable {
    * @param businessId Business Id
    * @return Devolve a informação relacionada com a query 4
    */
-  public List<MyTriple<Integer, Integer, Float>> query4(String businessId) {
+
+  public List<MyTriple<Integer, Integer, Double>> query4(String businessId) throws BusinessNotFoundException {
     return this.stats.query4(businessId);
   }
 
@@ -231,11 +209,35 @@ public class GestReviews implements Serializable {
     return stats.query8(x);
   }
 
+  // save to object file
   public void onSave(String filename) throws IOException {
-    FileOutputStream fos = new FileOutputStream(filename);
-    ObjectOutputStream oos = new ObjectOutputStream(fos);
-    oos.writeObject(this);
-    oos.close();
+    BufferedOutputStream fos = null;
+    ObjectOutputStream oos = null;
+    try {
+       fos = new BufferedOutputStream(new FileOutputStream(filename));
+       oos = new ObjectOutputStream(fos);
+       oos.writeObject(this);
+    } finally {
+       if (fos != null) fos.flush();
+       if (oos != null) oos.close();
+    }
+  }
+
+  // read from object file
+  public void onRestore(String filename) throws IOException, ClassNotFoundException {
+    FileInputStream fos = null;
+    ObjectInputStream oos = null;
+    try{
+      fos = new FileInputStream(filename);
+      oos = new ObjectInputStream(fos);
+      GestReviews r = (GestReviews) oos.readObject();
+      this.catalogoBusinesses = r.catalogoBusinesses;
+      this.catalogoUsers = r.catalogoUsers;
+      this.catalogoReviews = r.catalogoReviews;
+      this.stats = r.stats;
+    } finally {
+      if (oos != null) oos.close();
+    }
   }
 }
 

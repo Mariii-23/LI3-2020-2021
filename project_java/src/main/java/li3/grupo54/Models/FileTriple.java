@@ -1,9 +1,11 @@
 package li3.grupo54.Models;
 
+import java.io.Serializable;
+
 /**
  * Contém os nomes dos 3 ficheiros necessários para usar o programa
  */
-public class FileTriple {
+public class FileTriple implements Serializable {
   /**
    * Nome do ficehiro dos users.
    */

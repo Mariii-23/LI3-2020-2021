@@ -5,8 +5,9 @@ import li3.grupo54.Models.Interfaces.IUser;
 
 import java.util.List;
 import java.util.Objects;
+import java.io.Serializable;
 
-public class User implements IUser {
+public class User implements IUser, Serializable {
   private String userId;
   private String name;
 

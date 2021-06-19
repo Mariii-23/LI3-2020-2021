@@ -13,7 +13,7 @@ import javafx.scene.layout.VBox;
 import li3.grupo54.Controller.NodeCallback;
 import li3.grupo54.Controller.ValidationCallback;
 import li3.grupo54.Models.Queries.IQueryResults;
-import li3.grupo54.Models.Queries.Query3Results;
+import li3.grupo54.Models.Queries.Query4Results;
 import li3.grupo54.Utils.Crono;
 import li3.grupo54.Utils.MyFour;
 import li3.grupo54.Utils.MyTriple;
@@ -74,14 +74,14 @@ public class Query4View implements IQueryViewFX {
   @Override
   public void showResults(IQueryResults results) {
     Crono.start();
-    Query3Results res = (Query3Results) results;
+    Query4Results res = (Query4Results) results;
     double time = Crono.stop();
 
-    List<MyTriple<Integer, Integer, Float>> res1 = ((Query3Results) results).getResults();
+    List<MyTriple<Integer, Integer, Double>> res1 = res.getResults();
 
-    List<MyFour<Month, Integer, Integer, Float>> apresentar = new ArrayList<>(12);
+    List<MyFour<Month, Integer, Integer, Double>> apresentar = new ArrayList<>(12);
     int i = 1;
-    for (MyTriple<Integer, Integer, Float> triple : res1) {
+    for (MyTriple<Integer, Integer, Double> triple : res1) {
       apresentar.add(i - 1, new MyFour<>(Month.of(i), triple));
       i++;
     }
@@ -94,23 +94,23 @@ public class Query4View implements IQueryViewFX {
 
     panel.getChildren().add(new Label("Query Time: " + time));
 
-    TableView<MyFour<Month, Integer, Integer, Float>> tableView = new TableView<>();
+    TableView<MyFour<Month, Integer, Integer, Double>> tableView = new TableView<>();
 
-    TableColumn<MyFour<Month, Integer, Integer, Float>, String> mesesColumn = new TableColumn<>("Mes");
+    TableColumn<MyFour<Month, Integer, Integer, Double>, String> mesesColumn = new TableColumn<>("Mes");
     mesesColumn.setCellValueFactory(new PropertyValueFactory<>("first"));
     tableView.getColumns().add(mesesColumn);
 
-    TableColumn<MyFour<Month, Integer, Integer, Float>, String> column2 = new TableColumn<>("Number business total");
+    TableColumn<MyFour<Month, Integer, Integer, Double>, String> column2 = new TableColumn<>("Number business total");
     column2.setCellValueFactory(new PropertyValueFactory<>("left"));
 
     tableView.getColumns().add(column2);
 
-    TableColumn<MyFour<Month, Integer, Integer, Float>, String> column3 = new TableColumn<>("Number users distinct");
+    TableColumn<MyFour<Month, Integer, Integer, Double>, String> column3 = new TableColumn<>("Number users distinct");
     column3.setCellValueFactory(new PropertyValueFactory<>("middle"));
 
     tableView.getColumns().add(column3);
 
-    TableColumn<MyFour<Month, Integer, Integer, Float>, String> meanIdColumn = new TableColumn<>("Average");
+    TableColumn<MyFour<Month, Integer, Integer, Double>, String> meanIdColumn = new TableColumn<>("Average");
     meanIdColumn.setCellValueFactory(new PropertyValueFactory<>("right"));
     tableView.getColumns().add(meanIdColumn);
 

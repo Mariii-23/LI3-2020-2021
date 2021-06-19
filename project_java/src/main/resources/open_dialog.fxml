@@ -74,6 +74,7 @@
         </GridPane>
         <ButtonBar prefHeight="40.0" prefWidth="200.0">
             <buttons>
+                <Button fx:id="btnDefault" disable="false" mnemonicParsing="false" onAction="#defaultBt" text="Default"/>
                 <Button fx:id="btnOpen" disable="true" mnemonicParsing="false" onAction="#open" text="Abrir"/>
             </buttons>
         </ButtonBar>

@@ -22,7 +22,8 @@ public class Controller implements IController {
     this.view = view;
     this.queries = new ArrayList<>();
     this.view.setOpenCallback(this::loadTriple);
-    this.view.setOnSave(this::saveObject);
+    this.view.setOnSave(this::saveObjectFile);
+    this.view.setOnRestore(this::readObjectFile);
   }
 
   @Override
@@ -40,16 +41,27 @@ public class Controller implements IController {
     //}
   }
 
-  public void saveObject(File file) throws IOException {
-    System.out.println("get path: " + file);
+  public void saveObjectFile(File file) throws IOException {
     this.model.onSave(file.getAbsolutePath());
   }
 
   private void loadTriple(FileTriple triple) {
     try {
       model.load(triple.getUsersFile(), triple.getBusinessesFile(), triple.getReviewsFile());
-    } catch (IOException | URISyntaxException | NullPointerException e) {
+      view.disableQueries(false);
+    } catch (IOException | URISyntaxException e) {
+      view.disableQueries(true);
       view.showError("Error opening file", e.getMessage());
     }
   }
+   private void readObjectFile(File file) {
+     try {
+       this.model.onRestore(file.getAbsolutePath());
+       view.disableQueries(false);
+     } catch (IOException | ClassNotFoundException e) {
+       view.disableQueries(true);
+       view.showError("Error opening file", e.getMessage());
+     }
+
+   }
 }

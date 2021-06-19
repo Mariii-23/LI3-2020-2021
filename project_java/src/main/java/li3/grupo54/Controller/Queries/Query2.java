@@ -21,7 +21,7 @@ public class Query2 implements IQueryController {
   }
 
   @Override
-  public IQueryResults execute() {
+  public IQueryResults execute() throws Exception {
     return new Query2Results(model.getCatalogoReviews().getNumberReviewsAndDistinctUsers(view.getAno(), view.getMes()));
   }
 }
