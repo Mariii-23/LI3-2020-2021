@@ -34,9 +34,16 @@ public interface ICatalog<T> {
         parsedLine  = nextLine.split(String.valueOf(delim));
         // constructor vai validar e lancar excecao se der erro
         T newEntity = callConstructor(parsedLine);
-        this.add(newEntity);
-        stats.atualiza(newEntity,catalogoUsers,catalogoBusinesses);
 
+        if( newEntity instanceof IReview ){
+         if(catalogoBusinesses.containsBusinessById(((IReview) newEntity).getBusinessId())  &&
+            catalogoUsers.containsUserById(((IReview) newEntity).getUserId())){
+          this.add(newEntity);
+          stats.atualiza(newEntity,catalogoUsers,catalogoBusinesses);}
+        }else {
+          this.add(newEntity);
+          stats.atualiza(newEntity,catalogoUsers,catalogoBusinesses);
+        }
 
       } catch (InvalidUserLineException | BusinessNotFoundException | InvalidBusinessLineException | InvalidReviewLineException  e) {
         // alterarar estatisticas de linhsa invalidaas

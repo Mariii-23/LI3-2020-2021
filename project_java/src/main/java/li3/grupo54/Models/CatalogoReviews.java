@@ -146,7 +146,6 @@ public class CatalogoReviews implements ICatalog<Review> {
   }
 
   private int getNumberDistinctUsers() {
-    // TODO Verificar
     Set<String> distintUsers = new HashSet<>();
     for (Map.Entry<Integer, List<Set<Review>>> elem : anoToReviewsPerMonth.entrySet()) {
       for (Set<Review> reviews : elem.getValue())
@@ -194,16 +193,8 @@ public class CatalogoReviews implements ICatalog<Review> {
     return byReviewId;
   }
 
-  public void setInvalidUsers(int invalidUsers) {
-    this.invalidUsers = invalidUsers;
-  }
-
   public int getZeroImpact() {
     return zeroImpact;
-  }
-
-  public void setZeroImpact(int zeroImpact) {
-    this.zeroImpact = zeroImpact;
   }
 }
 

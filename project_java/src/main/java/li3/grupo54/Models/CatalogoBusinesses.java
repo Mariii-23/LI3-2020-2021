@@ -14,12 +14,6 @@ public class CatalogoBusinesses implements ICatalog<IBusiness> {
   private final TreeMap<String, IBusiness> businessesById; // ordenados por ordem alfabetica
   private int invalidBusinesses;
 
-  public String getName(String businessId) throws  BusinessNotFoundException{
-    IBusiness business=null;
-    if(( business = businessesById.get(businessId))==null)
-      throw new BusinessNotFoundException("Business Not Found Id: "+businessId);
-    return business.getName();
-  }
 
   //public static PrintWriter p;
   //static {
@@ -108,5 +102,16 @@ public class CatalogoBusinesses implements ICatalog<IBusiness> {
 
   public void setInvalidBusinesses(int invalidBusinesses) {
     this.invalidBusinesses = invalidBusinesses;
+  }
+
+  public String getName(String businessId) throws  BusinessNotFoundException{
+    IBusiness business=null;
+    if(( business = businessesById.get(businessId))==null)
+      throw new BusinessNotFoundException("Business Not Found Id: "+businessId);
+    return business.getName();
+  }
+
+  public boolean containsBusinessById(String businessId){
+    return this.businessesById!=null && this.businessesById.containsKey(businessId);
   }
 }

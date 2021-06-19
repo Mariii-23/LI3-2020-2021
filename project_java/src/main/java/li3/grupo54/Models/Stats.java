@@ -22,8 +22,6 @@ public class Stats {
   private TreeMap<String, IBusiness> negociosNuncaAvaliados; // ordenados por ordem alfabetica
   private Map<String, IBusiness> negociosAvaliados;
 
-
-
   public Stats() {
     averageByUserId = new HashMap<>();
     averageByBusinessId = new HashMap<>();
@@ -42,7 +40,6 @@ public class Stats {
     updateAveragebyState(review, business);
   }
 
-  // TODO rever
   public void updateAveragebyState(Review review, IBusiness business) {
     if (!review.getBusinessId().equals(business.getId()))
         return;

@@ -49,4 +49,8 @@ public class CatalogoUsers implements ICatalog<User> {
   public int getInvalidUsers() {
     return invalidUsers;
   }
+
+  public boolean containsUserById(String userId){
+    return this.byUserId!=null && this.byUserId.containsKey(userId);
+  }
 }
