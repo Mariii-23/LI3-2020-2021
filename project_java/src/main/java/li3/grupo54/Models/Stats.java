@@ -11,16 +11,42 @@ import java.util.stream.Collectors;
 
 public class Stats implements IStats {
   // User id ->  mes a mes -> UserStarsTuple
+  /**
+   * Um Hash Map que irá de user id para uma lista de 12 elementos em que a cada índice irá corresponder um dado mês e
+   * o seu elemento corresponderá um UsersStarsTuple
+   */
   private Map<String, List<UserStarsTuple>> averageByUserId;
+
   // Business id ->  mes a mes -> BusinessStarsTuple
+  /**
+   * Um Hash Map que irá de business id para uma lista de 12 elementos em que a cada índice irá corresponder um dado mês e
+   * o seu elemento corresponderá a um BusinessStasrTuple
+   */
   private Map<String, List<BusinessStarsTuple>> averageByBusinessId;
 
   // Review Id -> mes a mes -> ReviewStarsTuple
+  /**
+   * Um Hash Map que irá de review id para uma lista de 12 elementos em que a cada índice irá corresponder um dado mês e
+   * o seu elemento corresponderá a um ReviewStarsTuple.
+   */
   private Map<String, List<ReviewStarsTuple>> averageByReviewID;
 
   // State -> City -> BusinessId -> Average
+  /**
+   * Um Hash Map que irá de um Estado para um outro Hash Map. Aqui este irá de cidade para um outro Hash Map, business
+   * id para StarsTuple.
+   */
   private Map<String, Map<String, Map<String, StarsTuple>>> averageByStateBusiness;
-  private TreeMap<String, IBusiness> negociosNuncaAvaliados; // ordenados por ordem alfabetica
+
+  /**
+   * Aqui serão guardados todos os negócios que nunca foram avalidados, ordenados por ordem alfabética.
+   * Business Id para Business
+   */
+  private TreeMap<String, IBusiness> negociosNuncaAvaliados;
+  /**
+   * Um Hash Map que armazenará apenas os negócios que foram avalidados.
+   * Businees Id para Business.
+   */
   private Map<String, IBusiness> negociosAvaliados;
 
   public Stats() {
@@ -137,8 +163,13 @@ public class Stats implements IStats {
     }
   }
 
-  // query 5
-  // Lista de pares business Id e os seus pares de reviews correspondentes
+  /**
+   * Query 5
+   * Devolve uma lista com pares, sendo que cada par conterá um Business Id e quantas reviews é que avaliou. Isto em
+   * função de um dado user ID.
+   * @param userId User Id
+   * @return List
+   */
   List<MyPair<String, Integer>> pairBusinessIdAndTheirReviews(String userId) {
     List<MyPair<String, Integer>> list = new ArrayList<>();
     Set<UserStarsTuple> userStarsTuples = new HashSet<>();
@@ -196,6 +227,11 @@ public class Stats implements IStats {
   }
 
   // para a query 1
+
+  /**
+   * Query 1
+   * @return Devolve uma lista de todos os Business que nunca foram avalidos, clonando-os.
+   */
   public List<IBusiness> getNegociosNuncaAvaliadosOrdered() {
     return this.negociosNuncaAvaliados.values().stream().map(IBusiness::clone).collect(Collectors.toList());
   }
@@ -205,40 +241,13 @@ public class Stats implements IStats {
     return this.averageByStateBusiness;
   }
 
-  //@Override
-  //public void add(IBusiness business) {
-  //  this.negociosNuncaAvaliados.put(business.getId(), business.clone());
-  //}
-
-  //public void changesBusinessAvalied(String id) throws BusinessNotFoundException {
-  //  IBusiness business = negociosNuncaAvaliados.remove(id);
-  //  if (business == null)
-  //    throw new BusinessNotFoundException("Business Not Found, id: " + id);
-  //  this.negociosAvaliados.put(id, business.clone());
-  //}
-
-  //@Override
-  //public IBusiness getById(String id) throws BusinessNotFoundException {
-  //  IBusiness b;
-  //  if ((b = negociosAvaliados.get(id)) != null || (b = negociosNuncaAvaliados.get(id)) != null) {
-  //    return b.clone();
-  //  } else {
-  //    throw new BusinessNotFoundException();
-  //  }
-  //}
-
-  //@Override
-  //public void delete(String id) throws BusinessNotFoundException {
-  //  if (negociosAvaliados.get(id) != null) {
-  //    negociosAvaliados.remove(id);
-  //  } else if (negociosNuncaAvaliados.get(id) != null) {
-  //    negociosNuncaAvaliados.remove(id);
-  //  } else {
-  //    throw new BusinessNotFoundException();
-  //  }
-  //}
-
-
+  /**
+   * Query 3
+   * Este método, consoante um user id devolve uma lista de 12 elementos, em que cada índice corresponderá a um més, e a cada posicão,
+   * corresponderá um triplo com quantas reviews fez, quantosa negócios distintos avaliou e a sua nota média.
+   * @param userId User id
+   * @return Lista
+   */
   public List<MyTriple<Integer, Integer, Float>> query3(String userId) {
     if (this.averageByUserId == null)
       return null;
@@ -269,6 +278,13 @@ public class Stats implements IStats {
   }
 
 
+  /**
+   * Query 4
+   * Este método, consoante um business id devolve uma lista de 12 elementos, em que cada índice corresponderá a um més, e a cada posicão,
+   * corresponderá um triplo com quantas reviews fez, quantos users distintos avaliou e a sua nota média.
+   * @param businessId business id
+   * @return Lista
+   */
   public List<MyTriple<Integer, Integer, Float>> query4(String businessId) {
     if (this.averageByUserId == null)
       return null;
@@ -299,6 +315,13 @@ public class Stats implements IStats {
   }
 
   // cidade | id negocio | numero de reviews
+
+  /**
+   * Query 7
+   * Método que devolve uma lista com os três maiores negócios em termos de números de reviews em cada cidade.
+   * @return Devolve um lista com um triplo, em que cada informação corresponderá à cidade, id do negócio e o número
+   * de reviews efetuadas.
+   */
   public List<MyTriple<String, String, Integer>> query7() {
     List<MyTriple<String, String, Integer>> r = new ArrayList<>();
 
@@ -326,6 +349,12 @@ public class Stats implements IStats {
     return r;
   }
 
+  /**
+   * Query 8
+   * @param x Número
+   * @return Devolve uma Lista  de X pares, contedo o user id e o número de negócios distintos, oredenado pela ordem
+   * decrescente do número de negócios.
+   */
   public List<MyPair<String, Integer>> query8(Integer x) {
     List<MyPair<String, Integer>> r = new ArrayList<>();
 

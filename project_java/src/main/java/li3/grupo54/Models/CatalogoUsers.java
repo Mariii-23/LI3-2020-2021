@@ -7,7 +7,14 @@ import li3.grupo54.Models.Interfaces.ICatalog;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Classe responsável por armazenar um conjunto de Users
+ */
 public class CatalogoUsers implements ICatalog<User> {
+
+  /**
+   * Hash Map de user id para o seu respetivo User.
+   */
   private final Map<String, User> byUserId;
   private int invalidUsers;
 
@@ -48,6 +55,11 @@ public class CatalogoUsers implements ICatalog<User> {
     return invalidUsers;
   }
 
+  /**
+   * Verifica se um determinado user existe consoante o seu id.
+   * @param userId User id
+   * @return Caso exista retorna true, caso contrário false.
+   */
   public boolean containsUserById(String userId) {
     return this.byUserId != null && this.byUserId.containsKey(userId);
   }

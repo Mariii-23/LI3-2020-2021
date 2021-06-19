@@ -4,8 +4,17 @@ package li3.grupo54.Models;
  * Contém os nomes dos 3 ficheiros necessários para usar o programa
  */
 public class FileTriple {
+  /**
+   * Nome do ficehiro dos users.
+   */
   private String usersFile;
+  /**
+   * Nome do ficheiro dos business.
+   */
   private String businessesFile;
+  /**
+   * Noe dos ficheiros das reviews.
+   */
   private String reviewsFile;
 
   public FileTriple(String usersFile, String businessesFile, String reviewsFile) {

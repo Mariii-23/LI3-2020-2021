@@ -9,8 +9,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
+/**
+ * Esta classe contém todas as informações de um conjuto de business.
+ */
 public class CatalogoBusinesses implements ICatalog<IBusiness> {
-  // todos os negocios  vao ser colocados aqui numa fase inicial e depois passados para o outro map  caso se encontre uma review
+  /**
+   * Todos os negócios são colocados aqui numa fase inicial e depois, passados para um outro map no caso que se encontre
+   * uma review com o seu id.
+   */
   private final TreeMap<String, IBusiness> businessesById; // ordenados por ordem alfabetica
   private int invalidBusinesses;
 
@@ -20,22 +26,6 @@ public class CatalogoBusinesses implements ICatalog<IBusiness> {
     this.invalidBusinesses = 0;
   }
 
-  public CatalogoBusinesses(TreeMap<String, IBusiness> businesses, int invalidBusinesses) {
-    this.businessesById = new TreeMap<>();
-    for (Map.Entry<String, IBusiness> entry : businesses.entrySet()) {
-      this.businessesById.put(entry.getKey(), entry.getValue().clone());
-    }
-    this.invalidBusinesses = invalidBusinesses;
-  }
-
-  //public static PrintWriter p;
-  //static {
-  //  try {
-  //    p = new PrintWriter(new FileOutputStream("IBUSINESS"));
-  //  } catch (Exception e) {
-  //    e.printStackTrace();
-  //  }
-  //}
   public IBusiness getBusiness(String businessId) {
     return businessesById.get(businessId);
   }
@@ -48,25 +38,63 @@ public class CatalogoBusinesses implements ICatalog<IBusiness> {
     return invalidBusinesses;
   }
 
-  public void setInvalidBusinesses(int invalidBusinesses) {
-    this.invalidBusinesses = invalidBusinesses;
+  /**
+   * Devolve o nome de um business a partir do seu business id.
+   * @param businessId Business ID
+   * @return Nome do business
+   * @throws BusinessNotFoundException Devolve excepcao no caso de não existir esse business.
+   */
+  public String getName(String businessId) throws BusinessNotFoundException {
+    IBusiness business = null;
+    if ((business = businessesById.get(businessId)) == null)
+      throw new BusinessNotFoundException("Business Not Found Id: " + businessId);
+    return business.getName();
   }
 
+  /**
+   * Verifica se um determinado business encontra-se no catálogo a partir do seu id.
+   * @param businessId Business Id
+   * @return Retorna true no caso de existir, e no contrário retornará falso
+   */
+  public boolean containsBusinessById(String businessId) {
+    return this.businessesById.containsKey(businessId);
+  }
+
+  /**
+   * Devolve um determinado business obtido através do parsing de uma determinada string
+   * @param line Linha a ser analisada
+   * @return Business
+   * @throws InvalidBusinessLineException
+   */
   @Override
   public Business callConstructor(String[] line) throws InvalidBusinessLineException {
     return new Business(line);
   }
 
+  /**
+   *  Delvolve o número total de business contidas.
+   * @return Inteiro
+   */
   @Override
   public int size() {
     return businessesById.size();
   }
 
+  /**
+   * Adiciona um determinado business ao catálogo.
+   * @param iBusiness Business a ser adicionado.
+   */
   @Override
   public void add(IBusiness iBusiness) {
     this.businessesById.put(iBusiness.getId(), iBusiness.clone());
   }
 
+  /**
+   * Devolve um determinado business a partir do seu business id
+   * @param id Business id
+   * @return Business
+   * @throws BusinessNotFoundException Lança uma exceção no caso desse business não existir
+   */
   @Override
   public IBusiness getById(String id) throws BusinessNotFoundException {
     var biz = this.businessesById.get(id);
@@ -106,18 +134,4 @@ public class CatalogoBusinesses implements ICatalog<IBusiness> {
     return Objects.hash(businessesById, getInvalidBusinesses());
   }
 
-  public TreeMap<String, IBusiness> getBusinessesById() {
-    return businessesById;
-  }
-
-  public String getName(String businessId) throws BusinessNotFoundException {
-    IBusiness business = null;
-    if ((business = businessesById.get(businessId)) == null)
-      throw new BusinessNotFoundException("Business Not Found Id: " + businessId);
-    return business.getName();
-  }
-
-  public boolean containsBusinessById(String businessId) {
-    return this.businessesById != null && this.businessesById.containsKey(businessId);
-  }
 }

@@ -18,9 +18,21 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GestReviews implements Serializable {
+  /**
+   * catálogo de todos os users lidos.
+   */
   private CatalogoUsers catalogoUsers;
+  /**
+   * catálogo de todos os users lidos.
+   */
   private CatalogoBusinesses catalogoBusinesses;
+  /**
+   * catálogo de todos os users lidos.
+   */
   private CatalogoReviews catalogoReviews;
+  /**
+   * Estatísticas dos dados analisados.
+   */
   private Stats stats;
 
   public GestReviews() {
@@ -35,6 +47,14 @@ public class GestReviews implements Serializable {
     this.load(users, businesses, reviews);
   }
 
+  /**
+   * Carregamento de 3 ficheiros dados para a classe pretendida
+   * @param users Ficheiro do users
+   * @param businesses Ficheiros dos business
+   * @param reviews FIcheiros das reviews
+   * @throws IOException
+   * @throws URISyntaxException
+   */
   public void load(String users, String businesses, String reviews) throws IOException, URISyntaxException {
     this.stats = new Stats();
     try {
@@ -102,8 +122,13 @@ public class GestReviews implements Serializable {
     this.stats = stats;
   }
 
-  // nomes de negocios por ordem decrescente de numero de avaliacoes que o user fez e quantos no total
-  // para quantidades iguais, ordem alfabetica de negocios
+  /**
+   * Query 5
+   * Devolve uma lista de nomes de negocios por orden decrescente de numero de avaliações que o user fez e quantos
+   * no total para quantidades iguais, por ordem alfabética de nomes dos negócios.
+   * @param userId User Id
+   * @return Lista
+   */
   public List<MyPair<String, Integer>> query5(String userId) {
     Comparator<MyPair<String, Integer>> c = (par1, par2) -> {
       if (par1.getY().equals(par2.getY())) {
@@ -126,18 +151,39 @@ public class GestReviews implements Serializable {
     return Math.toIntExact(this.stats.getAllReviews(businessId).stream().map(r -> catalogoReviews.getReviewById(r)).filter(r -> r.getDate().getYear() == ano).count());
   }
 
+  /**
+   * Query 3
+   * @param userId user id
+   * @return Devolve a informação relacionada com a query 3
+   */
   public List<MyTriple<Integer, Integer, Float>> query3(String userId) {
     return this.stats.query3(userId);
   }
 
+  /**
+   * Query 4
+   * @param businessId Business Id
+   * @return Devolve a informação relacionada com a query 4
+   */
   public List<MyTriple<Integer, Integer, Float>> query4(String businessId) {
     return this.stats.query4(businessId);
   }
 
+  /**
+   * Query 7
+   * @return Devolve a informação relacionada com a query 7
+   */
   public List<MyTriple<String, String, Integer>> query7() {
     return stats.query7();
   }
 
+  /**
+   * Query 6
+   * Devolve um Map de anos para lista de pares. Sendo que esses pares vão conter os X negócios mais avaliados, contendo
+   * o Business em questao e o número total de utilizadores distintos que o avaliaram.
+   * @param n
+   * @return
+   */
   public Map<Integer, List<MyPair<IBusiness, Integer>>> query6(int n) {
     Map<Integer, Map<String, List<Review>>> b = this.catalogoReviews.getAnoToReviewsPerMonth().entrySet().stream()
         .collect(
@@ -176,6 +222,11 @@ public class GestReviews implements Serializable {
         .filter(r -> r.getBusinessId().equals(businessId));
   }
 
+  /**
+   * Query 8
+   * @param x Número
+   * @return Devolve informaçao relacionada com a query8
+   */
   public List<MyPair<String, Integer>> query8(Integer x) {
     return stats.query8(x);
   }

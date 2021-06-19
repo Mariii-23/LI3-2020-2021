@@ -9,11 +9,28 @@ import li3.grupo54.Utils.MyPair;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * Catálogo responsável por armazenar um conjunto de reviews.
+ */
 public class CatalogoReviews implements ICatalog<Review> {
   // ano =>  array de 12 elementos => cada array tem um set de reviews
+  /**
+   * Um hashMap que vai de um determinado ano para uma lista de 12 elementos (cada indice dessa mesma lista
+   * corresponderá a um mês). Em que cada posição conterá um set de reviews efetuadas nesse mesmo ano e mês.
+   */
   private final Map<Integer, List<Set<Review>>> anoToReviewsPerMonth;
+  /**
+   * Um hash Map que irá de business id para business.
+   */
   private final Map<String, Review> byReviewId;
+  /**
+   * Representa o número de users inválidos aquando a leitura das reviews.
+   */
   private int invalidUsers;
+  /**
+   * Representa o número das reviews com zero impacto.
+   * Ou seja, todas as reviews em que o somatório dos campos cool, funny ou useful dá 0.
+   */
   private int zeroImpact;
 
   public CatalogoReviews() {
@@ -22,6 +39,7 @@ public class CatalogoReviews implements ICatalog<Review> {
     this.invalidUsers = 0;
     this.zeroImpact = 0;
   }
+
 
   @Override
   public Review callConstructor(String[] line) throws InvalidReviewLineException {
@@ -90,19 +108,6 @@ public class CatalogoReviews implements ICatalog<Review> {
 
   }
 
-  // public Set<Review> getReviews(Integer year, Integer month) throws DateNotFoundException {
-  //   List<Set<Review>> listOfReviews = null;
-  //   if ((listOfReviews = this.anoToReviewsPerMonth.get(year)) == null)
-  //     throw new DateNotFoundException("Date not found. Year: " + year + " month: " + month);
-  //   Set<Review> reviews = null;
-  //   if ((reviews = listOfReviews.get(month - 1)) == null)
-  //     throw new DateNotFoundException("Date not found. Year: " + year + " month: " + month);
-  //   Set<Review> result = new HashSet<>();
-  //   for (Review review : reviews)
-  //     result.add(review.clone());
-  //   return result;
-  // }
-
   public Integer getNumberReviewsDate(Integer year, Integer month) throws DateNotFoundException {
     if (this.anoToReviewsPerMonth.size() == 0)
       return 0;
@@ -144,18 +149,13 @@ public class CatalogoReviews implements ICatalog<Review> {
     return distintUsers.size();
   }
 
-  //private int getNumberDistinctUsers(Integer year, Integer month) throws DateNotFoundException {
-  //  Set<String> distintUsers = new HashSet<>();
-  //  Set<Review> reviews = this.getReviews(year, month);
-  //  if(reviews==null)
-  //    throw  new DateNotFoundException("Date Not Found -> year: "+year+" month "+month );
-  //  for (Review review : reviews)
-  //    distintUsers.add(review.getUserId());
-  //  return distintUsers.size();
-  //}
-
-  // numero total de reviews e quantos users distintos as realizaram
-  // para a query 2
+  /**
+   * Auxílicio -> Query 2
+   * Retorna um par com o número total de reviews e o número de users distintos que as realizaram.
+   * @param year Ano
+   * @param month Mês
+   * @return Par obtido
+   */
   public MyPair<Integer, Integer> getNumberReviewsAndDistinctUsers(Integer year, Integer month) {
     int reviews = 0;
     int users = 0;
@@ -172,6 +172,11 @@ public class CatalogoReviews implements ICatalog<Review> {
     return anoToReviewsPerMonth;
   }
 
+  /**
+   * Devolve o clone de uma review a partir do seu id
+   * @param id Review Id
+   * @return Review
+   */
   public Review getReviewById(String id) {
     return this.byReviewId.get(id).clone();
   }
@@ -180,6 +185,10 @@ public class CatalogoReviews implements ICatalog<Review> {
     return byReviewId;
   }
 
+  /**
+   * Devolve o número de reviews com zero impacto.
+   * @return Inteiro.
+   */
   public int getZeroImpact() {
     return zeroImpact;
   }
