@@ -6,7 +6,6 @@ import li3.grupo54.Controller.Controller;
 import li3.grupo54.Controller.IController;
 import li3.grupo54.Controller.Queries.*;
 import li3.grupo54.Models.GestReviews;
-import li3.grupo54.Models.Queries.Query8;
 import li3.grupo54.View.DesktopView;
 import li3.grupo54.View.Queries.*;
 
@@ -27,10 +26,10 @@ public class GestReviewsAppMVC extends Application {
       controller.addQuery(new Query4(model, new Query4View()));
       controller.addQuery(new Query5(model, new Query5View()));
       controller.addQuery(new Query6(model, new Query6View()));
-     controller.addQuery(new Query7(model, new Query7View()));
+      controller.addQuery(new Query7(model, new Query7View()));
       controller.addQuery(new Query8(model, new Query8View()));
       controller.addQuery(new Query9(model, new Query9View()));
       controller.addQuery(new Query10(model, new Query10View()));
-      controller.executa();
+    controller.executa();
   }
 }

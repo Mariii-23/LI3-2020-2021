@@ -4,6 +4,8 @@ import li3.grupo54.Models.Exceptions.InvalidUserLineException;
 import li3.grupo54.Models.Exceptions.UserNotFoundException;
 import li3.grupo54.Models.Interfaces.ICatalog;
 
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 

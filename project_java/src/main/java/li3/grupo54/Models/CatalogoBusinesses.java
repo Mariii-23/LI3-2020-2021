@@ -5,6 +5,8 @@ import li3.grupo54.Models.Exceptions.InvalidBusinessLineException;
 import li3.grupo54.Models.Interfaces.IBusiness;
 import li3.grupo54.Models.Interfaces.ICatalog;
 
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.*;
 
 public class CatalogoBusinesses implements ICatalog<IBusiness> {
@@ -19,6 +21,14 @@ public class CatalogoBusinesses implements ICatalog<IBusiness> {
     return business.getName();
   }
 
+  //public static PrintWriter p;
+  //static {
+  //  try {
+  //    p = new PrintWriter(new FileOutputStream("IBUSINESS"));
+  //  } catch (Exception e) {
+  //    e.printStackTrace();
+  //  }
+  //}
   public IBusiness getBusiness(String businessId){
     return businessesById.get(businessId);
   }

@@ -13,7 +13,6 @@ public interface ICatalog<T> {
           InvalidReviewLineException;
 
   int size();
-
   void add(T t);
 
   T getById(String id) throws UserNotFoundException, BusinessNotFoundException, ReviewNotFoundException;

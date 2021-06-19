@@ -3,6 +3,9 @@ package li3.grupo54.Models;
 import li3.grupo54.Models.Exceptions.InvalidUserLineException;
 import li3.grupo54.Models.Interfaces.IUser;
 
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Arrays;
@@ -10,6 +13,15 @@ import java.util.Arrays;
 public class User implements IUser {
   private String userId;
   private String name;
+
+  //private static PrintWriter p;
+  //static {
+  //  try {
+  //    p = new PrintWriter(new FileOutputStream("IUSER"));
+  //  } catch (Exception e) {
+  //    e.printStackTrace();
+  //  }
+  //}
 
   public User(String userId, String name) {
     this.userId = userId;
@@ -24,7 +36,6 @@ public class User implements IUser {
   public User(String[] linhaSplit) throws InvalidUserLineException {
     // apesar de os amigos serem ignorados, o campo tem que existir
     if (linhaSplit.length != 3) {
-      System.out.println("Invalid user: " + Arrays.toString(linhaSplit) + " :: " + linhaSplit.length);
       throw new InvalidUserLineException();
     } else {
       this.userId = linhaSplit[0];

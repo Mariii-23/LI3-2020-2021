@@ -4,6 +4,8 @@ import li3.grupo54.Models.Exceptions.*;
 import li3.grupo54.Models.Interfaces.ICatalog;
 import li3.grupo54.Utils.MyPair;
 
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,6 +23,15 @@ public class CatalogoReviews implements ICatalog<Review> {
     this.byReviewId = new HashMap<>();
      this.invalidUsers =0;
      this.zeroImpact=0;
+  }
+
+  public static PrintWriter p;
+  static {
+    try {
+      p = new PrintWriter(new FileOutputStream("IBUSINESS"));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @Override

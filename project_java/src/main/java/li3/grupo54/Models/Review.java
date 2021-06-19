@@ -3,6 +3,8 @@ package li3.grupo54.Models;
 import li3.grupo54.Models.Exceptions.InvalidReviewLineException;
 import li3.grupo54.Models.Interfaces.IReview;
 
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -18,6 +20,16 @@ public class Review implements IReview {
   private final int cool;
   private final LocalDateTime date;
   private final String text;
+
+
+  //private static PrintWriter p;
+  //static {
+  //  try {
+  //    p = new PrintWriter(new FileOutputStream("IREVIEW"));
+  //  } catch (Exception e) {
+  //    e.printStackTrace();
+  //  }
+  //}
 
   public Review(String reviewId, String userId, String businessId, float stars, int useful, int funny, int cool, LocalDateTime date, String text) {
     this.reviewId = reviewId;
@@ -45,7 +57,6 @@ public class Review implements IReview {
 
   public Review(String[] linhaSplit) throws InvalidReviewLineException {
     if (linhaSplit.length != 9) {
-      System.out.println("Invalid review: " + Arrays.toString(linhaSplit) + " :: " + linhaSplit.length);
       throw new InvalidReviewLineException();
     } else {
       this.reviewId = linhaSplit[0];

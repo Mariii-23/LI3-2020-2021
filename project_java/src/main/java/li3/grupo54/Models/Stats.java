@@ -18,33 +18,6 @@ public class Stats {
   private TreeMap<String, IBusiness> negociosNuncaAvaliados; // ordenados por ordem alfabetica
   private Map<String, IBusiness> negociosAvaliados;
 
-// cidade | id negocio | numero de reviews
-  public List<MyTriple<String,String,Integer>> query7(){
-   List<MyTriple<String,String,Integer>> r = new ArrayList<>();
-
-   for (Map<String, Map<String, StarsTuple>> entry : averageByStateBusiness.values() ){
-     if(entry== null) continue;
-     for(Map.Entry<String,Map<String,StarsTuple>>entryCity : entry.entrySet()){
-       if(entryCity == null) continue;
-        String city = entryCity.getKey();
-        List<MyTriple<String,String,Integer>> aux = new ArrayList<>();
-        for(Map.Entry<String,StarsTuple> elem : entryCity.getValue().entrySet()){
-          if(elem==null) continue;
-           aux.add(new MyTriple<String,String,Integer>(city,elem.getKey(), elem.getValue().getNumberTotal()));
-        }
-       Comparator<MyTriple<String,String,Integer>> c = (e1,e2)->  e2.getRight()-e1.getRight();
-       aux.sort(c);
-
-       for(int i=0; i<aux.size() && i<3;i++){
-         MyTriple<String,String,Integer>  elem = aux.get(i);
-         if(elem!=null){
-           r.add(elem);
-         }
-       }
-     }
-   }
-   return r;
-  }
 
 
   public Stats() {
@@ -300,5 +273,54 @@ public class Stats {
     return result;
   }
 
+  // cidade | id negocio | numero de reviews
+  public List<MyTriple<String,String,Integer>> query7(){
+    List<MyTriple<String,String,Integer>> r = new ArrayList<>();
+
+    for (Map<String, Map<String, StarsTuple>> entry : averageByStateBusiness.values() ){
+      if(entry== null) continue;
+      for(Map.Entry<String,Map<String,StarsTuple>>entryCity : entry.entrySet()){
+        if(entryCity == null) continue;
+        String city = entryCity.getKey();
+        List<MyTriple<String,String,Integer>> aux = new ArrayList<>();
+        for(Map.Entry<String,StarsTuple> elem : entryCity.getValue().entrySet()){
+          if(elem==null) continue;
+          aux.add(new MyTriple<String,String,Integer>(city,elem.getKey(), elem.getValue().getNumberTotal()));
+        }
+        Comparator<MyTriple<String,String,Integer>> c = (e1,e2)->  e2.getRight()-e1.getRight();
+        aux.sort(c);
+
+        for(int i=0; i<aux.size() && i<3;i++){
+          MyTriple<String,String,Integer>  elem = aux.get(i);
+          if(elem!=null){
+            r.add(elem);
+          }
+        }
+      }
+    }
+    return r;
+  }
+
+  public List<MyPair<String,Integer>> query8(Integer x){
+    List<MyPair<String,Integer>> r = new ArrayList<>();
+
+    for(Map.Entry<String,List<UserStarsTuple>> entry : averageByUserId.entrySet()){
+      if(entry== null) continue;
+      for(UserStarsTuple elem : entry.getValue()){
+        if(elem!=null)
+          r.add(new MyPair<>(entry.getKey(), elem.getBusinessNumberDistint()));
+      }
+    }
+
+    Comparator<MyPair<String,Integer>> c = (e1,e2)->  e2.getY()-e1.getY();
+    r.sort(c);
+
+    if(x<r.size()){
+      int size=r.size();
+      for(int i=size-1;i>=x;i--)
+        r.remove(i);
+    }
+    return r;
+  }
 }
 

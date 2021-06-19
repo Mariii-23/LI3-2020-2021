@@ -134,7 +134,7 @@ public class DesktopView implements IView {
       queries.add(new AbstractMap.SimpleEntry<>((IQueryViewFX) query, callback));
       ((IQueryViewFX) query).addShowResultsCallback(node -> {
         nQueries++;
-        Tab tab = new Tab("Results query " + nQueries);
+        Tab tab = new Tab("Results query. " + nQueries);
         tab.setContent(node);
         tab.setClosable(true);
         resultsTabs.getTabs().add(tab);

@@ -3,6 +3,8 @@ package li3.grupo54.Models;
 import li3.grupo54.Models.Exceptions.InvalidBusinessLineException;
 import li3.grupo54.Models.Interfaces.IBusiness;
 
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
@@ -17,6 +19,15 @@ public class Business implements IBusiness {
   private final String state;
   private Set<String> categories;
 
+
+  //private static PrintWriter p;
+  //static {
+  //  try {
+  //    p = new PrintWriter(new FileOutputStream("IBusiness"));
+  //  } catch (Exception e) {
+  //    e.printStackTrace();
+  //  }
+  //}
   public Business(String businessId, String name, String city, String state, Set<String> categories) {
     this.businessId = businessId;
     this.name = name;

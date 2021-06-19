@@ -139,5 +139,9 @@ public class GestReviews {
             .stream()
             .filter(r -> r.getBusinessId().equals(businessId));
   }
+
+  public List<MyPair<String,Integer>>  query8(Integer x){
+    return stats.query8(x);
+  }
 }
 

@@ -38,13 +38,14 @@ public class Query6View implements IQueryViewFX {
 
     @Override
     public String getName() {
-        return "Query 3";
+        return "Query 6";
     }
 
     @Override
     public String getDescription() {
-        return "Dado um código de utilizador, determinar, para cada mês, quantas reviews fez, quantos " +
-                "negócios distintos avaliou e que nota média atribuiu";
+        return "Determinar o conjunto dos X negócios mais avaliados (com mais reviews) em " +
+            "cada ano, indicando o número total de distintos utilizadores que o avaliaram " +
+            "( X é um inteiro dado pelo utilizador)";
     }
 
     @Override
