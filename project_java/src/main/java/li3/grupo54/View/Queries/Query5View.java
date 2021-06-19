@@ -86,11 +86,9 @@ public class Query5View implements IQueryViewFX {
     reviewsTableView.getColumns().add(reviewsIdColumn);
 
     TableColumn<MyPair<String,Integer>, String> numberIdColumn = new TableColumn<>("Mean");
-    numberIdColumn.setCellValueFactory(new PropertyValueFactory<>("mean"));
-
+    numberIdColumn.setCellValueFactory(new PropertyValueFactory<>("y"));
     reviewsTableView.getColumns().add(numberIdColumn);
 
-    numberIdColumn.getColumns().add(numberIdColumn);
     reviewsTableView.getItems().addAll(res.getResults());
 
     VBox.setVgrow(reviewsTableView, Priority.ALWAYS);

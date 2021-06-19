@@ -115,14 +115,19 @@ public class Stats {
     Set<UserStarsTuple> userStarsTuples = new HashSet<>();
     // guardar todos os id's dos business correspondestes a esse user
     Set<String> businessID = new HashSet<>();
-    this.averageByUserId.get(userId).forEach(e -> businessID.addAll(e.getBusiness()));
+    this.averageByUserId.get(userId).forEach(e -> {
+      if(e!=null)
+      businessID.addAll(e.getBusiness());
+    });
 
     // ir a cada business id e ir buscar o set de reviews
     // colocar isso num par (id,set)
     // assim depois pra query 5, bast trocar o id pelo nome e ordenar
     businessID.forEach(e -> {
       Set<String> reviews = new HashSet<>();
-      this.averageByBusinessId.get(e).forEach(l-> reviews.addAll(l.getReviews()));
+      this.averageByBusinessId.get(e).forEach(l->{
+       if(l!=null) reviews.addAll(l.getReviews());
+      });
       list.add(new MyPair<>(e, reviews.size()));
       // devolve uma listade de (business_id, numero reviews=
     });
