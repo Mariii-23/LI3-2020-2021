@@ -103,5 +103,9 @@ public class GestReviews {
   public List<MyTriple<Integer,Integer,Float>> query3(String userId){
     return  this.stats.query3(userId);
   }
+
+  public List<MyTriple<Integer,Integer,Float>> query4(String businessId){
+    return this.stats.query4(businessId);
+  }
 }
 

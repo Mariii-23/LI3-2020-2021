@@ -23,8 +23,8 @@ public class GestReviewsAppMVC extends Application {
       controller.addQuery(new Query1(model, new Query1View()));
       controller.addQuery(new Query2(model, new Query2View()));
       controller.addQuery(new Query3(model, new Query3View()));
+      controller.addQuery(new Query4(model, new Query4View()));
       controller.addQuery(new Query5(model, new Query5View()));
-      //view.addQuery(new Query2View());
       controller.executa();
   }
 }

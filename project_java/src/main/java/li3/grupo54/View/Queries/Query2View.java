@@ -85,7 +85,7 @@ public Integer getAno(){
 
     @Override
     public String getName() {
-        return "Reviews num mês";
+        return "Query 2 -> Reviews num mês";
     }
 
     @Override

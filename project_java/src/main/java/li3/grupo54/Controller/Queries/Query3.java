@@ -24,5 +24,4 @@ public class Query3 implements IQueryController{
     public IQueryResults execute() {
         return new Query3Results(model.query3(view.getUserID()));
     }
-
 }

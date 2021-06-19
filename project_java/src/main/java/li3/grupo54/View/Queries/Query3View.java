@@ -73,11 +73,9 @@ public class Query3View implements IQueryViewFX {
 
     @Override
     public void showResults(IQueryResults results) {
-            // TODO
         Query3Results res = (Query3Results) results;
 
         List<MyTriple<Integer,Integer,Float>> list = res.getResults();
-        System.out.println(list);
 
         VBox panel = new VBox();
         panel.setPadding(new Insets(5));
@@ -87,17 +85,17 @@ public class Query3View implements IQueryViewFX {
 
 
         TableView<MyTriple<Integer,Integer,Float>> reviewsTableView = new TableView<>();
-        TableColumn<MyTriple<Integer,Integer,Float>,String> reviewsIdColumn = new TableColumn<>("Number reviews");
+        TableColumn<MyTriple<Integer,Integer,Float>,String> reviewsIdColumn = new TableColumn<>("Number reviews total");
         reviewsIdColumn.setCellValueFactory(new PropertyValueFactory<>("left"));
 
         reviewsTableView.getColumns().add(reviewsIdColumn);
 
-        TableColumn<MyTriple<Integer,Integer,Float>,String> businessIdColumn = new TableColumn<>("Number business");
+        TableColumn<MyTriple<Integer,Integer,Float>,String> businessIdColumn = new TableColumn<>("Number business distinct");
         businessIdColumn.setCellValueFactory(new PropertyValueFactory<>("middle"));
 
         reviewsTableView.getColumns().add(businessIdColumn);
 
-        TableColumn<MyTriple<Integer,Integer,Float>, String> meanIdColumn = new TableColumn<>("Mean");
+        TableColumn<MyTriple<Integer,Integer,Float>, String> meanIdColumn = new TableColumn<>("Average");
         meanIdColumn.setCellValueFactory(new PropertyValueFactory<>("right"));
         reviewsTableView.getColumns().add(meanIdColumn);
 

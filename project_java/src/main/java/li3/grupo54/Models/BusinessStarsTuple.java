@@ -35,13 +35,17 @@ public class BusinessStarsTuple extends StarsTuple {
     return super.getNumberTotal();
   }
 
-  public Set<String> getReviews() {
-    Set<String> reviewsClonned = new HashSet<>(reviews);
-    return reviewsClonned;
+  public int getUsersNumber() {
+    return users.size();
   }
 
-  public Set<String> getBusiness() {
-    Set<String> businessClonned = new HashSet<>(users);
-    return businessClonned;
+  public Set<String> getReviews() {
+    Set<String> reviewsClone = new HashSet<>(reviews);
+    return reviewsClone;
+  }
+
+  public Set<String> getUsers() {
+    Set<String> usersClone = new HashSet<>(users);
+    return usersClone;
   }
 }

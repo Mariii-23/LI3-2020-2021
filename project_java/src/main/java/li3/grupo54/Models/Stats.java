@@ -226,5 +226,35 @@ public class Stats {
     }
     return result;
   }
+
+
+  public List<MyTriple<Integer,Integer,Float>> query4(String businessId){
+    if(this.averageByUserId == null)
+      return null;
+    List<BusinessStarsTuple> list = this.averageByBusinessId.get(businessId);
+
+    if(list==null)
+      return null;
+
+    List<MyTriple<Integer,Integer,Float>> result = new ArrayList<>(12);
+    for(int i = 0; i < 12; i++) {
+      result.add(i,null);
+    }
+    int i=0;
+    for(BusinessStarsTuple tuple : list){
+      int numReviews=0;
+      int userDist =0;
+      float mean =0;
+      if(tuple!=null) {
+        numReviews = tuple.getReviewsNumber();
+        userDist = tuple.getUsersNumber();
+        mean = (float) tuple.getCurrentAverage();
+      }
+      //if(numReviews!=-1 && businessDist!= -1 && mean!=-1)
+      result.set(i,new MyTriple<>(numReviews,userDist,mean));
+      i++;
+    }
+    return result;
+  }
 }
 
