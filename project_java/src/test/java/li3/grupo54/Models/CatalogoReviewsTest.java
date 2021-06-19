@@ -12,7 +12,7 @@ public class CatalogoReviewsTest extends AbstractBenchmark {
 
     @Test
     public void testOne() throws Exception {
-        final var r = new Review("id", "userid", "businessId", 4.2f, 0, 0, 0, LocalDateTime.now(), "text");
+        final Review r = new Review("id", "userid", "businessId", 4.2f, 0, 0, 0, LocalDateTime.now(), "text");
         catalog.add(r);
         Assert.assertEquals(r, catalog.getById("id"));
     }

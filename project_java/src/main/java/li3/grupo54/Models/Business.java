@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * BUSINESS
  */
-public class Business implements IBusiness , Serializable {
+public final class Business implements IBusiness , Serializable {
   /**
    * Business id
    */
@@ -33,7 +33,7 @@ public class Business implements IBusiness , Serializable {
   /**
    * Categorias a que esse business pode ser enquadrado.
    */
-  private Set<String> categories;
+  private final Set<String> categories;
 
   /**
    * Construtor de um business
@@ -48,12 +48,12 @@ public class Business implements IBusiness , Serializable {
     this.name = name;
     this.city = city;
     this.state = state;
-    this.categories = new HashSet<>();
+    this.categories = new HashSet<>(categories);
     this.categories.addAll(categories);
   }
 
   /**
-   * Controí um business a partir de uma dada string.
+   * Constroí um business a partir de uma dada string.
    * @param linhaSplit String a ser analisada
    * @throws InvalidBusinessLineException A String recebida pode ser inválida
    */
@@ -70,7 +70,7 @@ public class Business implements IBusiness , Serializable {
   }
 
   /**
-   * Contruí um business a partir de um outro dado.
+   * Construí um business a partir de um outro dado.
    * @param that Business a ser copiado.
    */
   public Business(Business that) {
@@ -81,11 +81,11 @@ public class Business implements IBusiness , Serializable {
     this.categories = new HashSet<>(that.categories);
   }
 
-  @Override
   /**
    * Devolve o seu Id.
    * @return ID
    */
+  @Override
   public String getId() {
     return businessId;
   }
@@ -99,7 +99,7 @@ public class Business implements IBusiness , Serializable {
   }
 
   /**
-   * Devolve a cidada à qual pertence.
+   * Devolve a cidade à qual pertence.
    * @return Cidade
    */
   public String getCity() {
@@ -133,7 +133,7 @@ public class Business implements IBusiness , Serializable {
   /**
    * Verifica se o objeto em questão é igual a um dado.
    * @param o Objeto a ser analisado.
-   * @return Returna true se forem iguais, falso caso contrário.
+   * @return Retorna true se forem iguais, falso caso contrário.
    */
   @Override
   public boolean equals(Object o) {

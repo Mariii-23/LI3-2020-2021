@@ -42,18 +42,27 @@ public class BusinessStarsTuple extends StarsTuple  implements Serializable {
     users.add(review.getUserId());
   }
 
+   /**
+   * Retorna a média de estrelas atualmente associada  com um negocio
+   */
   public double getCurrentAverage() {
     return super.getCurrentAverage();
   }
-
+  /**
+   * Retorna numero de avaliações atualmente associados com um negocio
+   */
   public int getReviewsNumber() {
     return super.getNumberTotal();
   }
-
+  /**
+   * Retorna numero de users que avaliaram o negovio em questão
+   */
   public int getUsersNumber() {
     return users.size();
   }
-
+  /**
+   * Retorna o set de reviews de um dado negócio
+   */
   public Set<String> getReviews() {
     return new HashSet<>(reviews);
   }

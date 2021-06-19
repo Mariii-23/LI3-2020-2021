@@ -14,6 +14,7 @@ import java.util.*;
  * Catálogo responsável por armazenar um conjunto de reviews.
  */
 public class CatalogoReviews implements ICatalog<Review>, Serializable {
+  private String inputFileName = "reviews.csv";
   // ano =>  array de 12 elementos => cada array tem um set de reviews
   /**
    * Um hashMap que vai de um determinado ano para uma lista de 12 elementos (cada indice dessa mesma lista
@@ -50,6 +51,11 @@ public class CatalogoReviews implements ICatalog<Review>, Serializable {
   @Override
   public int size() {
     return this.byReviewId.size();
+  }
+
+  @Override
+  public int getInvalidCount() {
+    return invalidReviews;
   }
 
   @Override
@@ -187,6 +193,15 @@ public class CatalogoReviews implements ICatalog<Review>, Serializable {
    */
   public int getZeroImpact() {
     return zeroImpact;
+  }
+
+  @Override
+  public String getInputFileName() {
+    return inputFileName;
+  }
+
+  public void setInputFileName(String inputFileName) {
+    this.inputFileName = inputFileName;
   }
 }
 

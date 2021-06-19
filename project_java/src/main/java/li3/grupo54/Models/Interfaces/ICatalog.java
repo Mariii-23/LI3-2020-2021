@@ -10,12 +10,16 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 public interface ICatalog<T> extends Serializable {
+  String getInputFileName();
+  void setInputFileName(String inputFileName);
   T callConstructor(String[] line) throws BusinessNotFoundException, InvalidUserLineException,
       InvalidBusinessLineException, InvalidReviewLineException,
       InvalidUserLineException, InvalidBusinessLineException,
       InvalidReviewLineException;
 
   int size();
+
+  int getInvalidCount();
 
   void add(T t);
 
@@ -26,6 +30,7 @@ public interface ICatalog<T> extends Serializable {
   void addInvalid();
 
   public default void populateFromFile(Stats stats, String filename, CatalogoUsers catalogoUsers, CatalogoBusinesses catalogoBusinesses) throws IOException {
+    setInputFileName(filename);
     File file = new File(filename);
     InputStream is = new FileInputStream(file);
     BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));

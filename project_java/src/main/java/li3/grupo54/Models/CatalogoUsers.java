@@ -17,7 +17,15 @@ public class CatalogoUsers implements ICatalog<User>, Serializable {
    * Hash Map de user id para o seu respetivo User.
    */
   private final Map<String, User> byUserId;
+  /**
+   * Number of invalid users received so far
+   */
   private int invalidUsers;
+
+  /**
+   * The last input file used
+   */
+  private String inputFileName = "users.csv";
 
   public CatalogoUsers() {
     this.byUserId = new HashMap<>();
@@ -31,6 +39,11 @@ public class CatalogoUsers implements ICatalog<User>, Serializable {
 
   public int size() {
     return this.byUserId.size();
+  }
+
+  @Override
+  public int getInvalidCount() {
+    return invalidUsers;
   }
 
   public User getById(String id) {
@@ -63,5 +76,13 @@ public class CatalogoUsers implements ICatalog<User>, Serializable {
    */
   public boolean containsUserById(String userId) {
     return this.byUserId != null && this.byUserId.containsKey(userId);
+  }
+
+  public String getInputFileName() {
+    return inputFileName;
+  }
+
+  public void setInputFileName(String inputFileName) {
+    this.inputFileName = inputFileName;
   }
 }

@@ -6,7 +6,7 @@ public class UserNotFoundException extends Exception {
   }
 
   public UserNotFoundException(String s) {
-    super("User com id: " + s + " nao existe");
+    super("Utilizador com id '" + s + "' nao existe");
   }
 }
 

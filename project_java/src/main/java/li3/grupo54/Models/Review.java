@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-public class Review implements IReview, Serializable {
+public final class Review implements IReview, Serializable {
   private final String reviewId;
   private final String userId;
   private final String businessId;

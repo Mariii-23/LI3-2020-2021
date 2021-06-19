@@ -8,37 +8,22 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import li3.grupo54.Controller.NodeCallback;
 import li3.grupo54.Controller.ValidationCallback;
-import li3.grupo54.Models.FileTriple;
-import li3.grupo54.Models.GestReviews;
 import li3.grupo54.Models.Queries.IQueryResults;
-import li3.grupo54.Models.Queries.Query10Results;
 import li3.grupo54.Models.Queries.StatsResults;
 import li3.grupo54.Utils.MyFive;
-import li3.grupo54.Utils.MyPair;
-import li3.grupo54.Utils.MyTriple;
 
 import java.time.Month;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class StatsView implements IQueryViewFX {
 
   private ValidationCallback callback;
   private NodeCallback resultsCallback;
-
-  private String userFilename;
-  private String businessFilename;
-  private String reviewsFilename;
-
-  public StatsView(FileTriple fileTriple) {
-   userFilename= fileTriple.getUsersFile();
-   businessFilename = fileTriple.getBusinessesFile();
-   reviewsFilename = fileTriple.getReviewsFile();
-  }
 
   @Override
   public String getName() {
@@ -70,40 +55,46 @@ public class StatsView implements IQueryViewFX {
   public void showResults(IQueryResults results) {
 
     StatsResults res = (StatsResults) results;
-    GestReviews self = res.getResults();
+    StatsResults.Statistics stat = res.getResults();
 
     VBox panel = new VBox();
     panel.setPadding(new Insets(10));
 
     panel.setSpacing(10);
 
-    int lidos =self.getCatalogoReviews().size();
-    int invalidos =self.getCatalogoReviews().getInvalidReviews();
-
-    panel.getChildren().add(new Label("REVIEWS: "));
-    panel.getChildren().add(new Label("\tFile Path: "+reviewsFilename));
-    panel.getChildren().add(new Label("\tTotal lidas: " +(lidos+invalidos) + "\n\tInválidas: "+invalidos));
-    panel.getChildren().add(new Label("\tReviews com zero impacto: "+self.getCatalogoReviews().getZeroImpact()));
-
-    lidos = self.getCatalogoBusinesses().size();
-    invalidos = self.getCatalogoBusinesses().getInvalidBusinesses();
-    panel.getChildren().add(new Label("\nBUSINESS: "));
-    panel.getChildren().add(new Label("\tFile Path: "+businessFilename));
-    panel.getChildren().add(new Label("\tTotal lidas: " +(lidos+invalidos) + "\n\tInválidas: "+invalidos));
-    panel.getChildren().add(new Label("\tBusiness com reviews: " +self.getStats().getBusinessWithReviews()));
-
-    lidos= self.getCatalogoUsers().size();
-    invalidos = self.getCatalogoUsers().getInvalidUsers();;
-    panel.getChildren().add(new Label("\nUSERS: "));
-    panel.getChildren().add(new Label("\tFile Path: "+userFilename));
-    panel.getChildren().add(new Label("\tTotal lidas: " +(lidos+invalidos) + "\n\tInválidas: "+invalidos));
-    panel.getChildren().add(new Label("\tUsers inativos: "+self.getStats().getUsersNaoAvaliados()));
+    {
+      final StatsResults.Statistics.ReviewCatalog s = stat.reviewCatalog;
+      final Label l = new Label("Reviews: ");
+      l.setFont(new Font("System Bold", 13));
+      panel.getChildren().add(l);
+      panel.getChildren().add(new Label("\tFile Path: " + s.inputFile));
+      panel.getChildren().add(new Label("\tTotal lidas: " + s.totalRead + "\n\tInválidas: " + s.invalid));
+      panel.getChildren().add(new Label("\tReviews com zero impacto: " + s.zeroImpact));
+    }
+    {
+      final StatsResults.Statistics.BusinessCatalog s = stat.businessCatalog;
+      final Label l = new Label("Businesses: ");
+      l.setFont(new Font("System Bold", 13));
+      panel.getChildren().add(l);
+      panel.getChildren().add(new Label("\tFile Path: " + s.inputFile));
+      panel.getChildren().add(new Label("\tTotal lidas: " + s.totalRead + "\n\tInválidas: " + s.invalid));
+      panel.getChildren().add(new Label("\tBusiness com reviews: " + s.reviewed));
+    }
+    {
+      final StatsResults.Statistics.UsersCatalog s = stat.usersCatalog;
+      final Label l = new Label("Users: ");
+      l.setFont(new Font("System Bold", 13));
+      panel.getChildren().add(l);
+      panel.getChildren().add(new Label("\tFile Path: " + s.inputFile));
+      panel.getChildren().add(new Label("\tTotal lidas: " + s.totalRead + "\n\tInválidas: " + s.invalid));
+      panel.getChildren().add(new Label("\tUsers inativos: " + s.inactive));
+    }
 
 
     panel.getChildren().add(new Label("\nReviews average by month"));
-    List<MyFive<Month,Integer,Float,Integer,Integer>> averageReviews= self.getStats().getAverageByMonthReviewAndMore();
+    List<MyFive<Month,Integer,Float,Integer,Integer>> averageReviews= stat.averageReviews;
     TableView<MyFive<Month,Integer,Float,Integer,Integer>> tableViewAverage = new TableView<>();
-    TableColumn<MyFive<Month,Integer,Float,Integer,Integer>, String> stateColumn = new TableColumn<>("Mes");
+    TableColumn<MyFive<Month,Integer,Float,Integer,Integer>, String> stateColumn = new TableColumn<>("Month");
     stateColumn.setCellValueFactory(new PropertyValueFactory<>("first"));
     tableViewAverage.getColumns().add(stateColumn);
 

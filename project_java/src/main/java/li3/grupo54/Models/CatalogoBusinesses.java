@@ -18,8 +18,25 @@ public class CatalogoBusinesses implements ICatalog<IBusiness>, Serializable {
    * uma review com o seu id.
    */
   private final TreeMap<String, IBusiness> businessesById; // ordenados por ordem alfabetica
+  /**
+   * Number of invalid businesses seen so far
+   */
   private int invalidBusinesses;
 
+  private String inputFileName = "businesses.csv";
+
+  /**
+   * @return The last input file named used
+   */
+  @Override
+  public String getInputFileName() {
+    return inputFileName;
+  }
+
+  @Override
+  public void setInputFileName(String inputFileName) {
+    this.inputFileName = inputFileName;
+  }
 
   public CatalogoBusinesses() {
     this.businessesById = new TreeMap<>();
@@ -28,6 +45,11 @@ public class CatalogoBusinesses implements ICatalog<IBusiness>, Serializable {
 
   public IBusiness getBusiness(String businessId) {
     return businessesById.get(businessId);
+  }
+
+  @Override
+  public int getInvalidCount() {
+    return invalidBusinesses;
   }
 
   public void addInvalid() {

@@ -6,7 +6,7 @@ public class ReviewNotFoundException extends Exception {
   }
 
   public ReviewNotFoundException(String s) {
-    super("Avaliacao com id " + s + " nao existe");
+    super("Avaliacao com id '" + s + "' nao existe");
   }
 }
 

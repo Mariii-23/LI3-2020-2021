@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.io.Serializable;
 
-public class User implements IUser, Serializable {
+public final class User implements IUser, Serializable {
   private String userId;
   private String name;
 

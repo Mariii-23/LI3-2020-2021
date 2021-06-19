@@ -100,6 +100,11 @@ public class GestReviews implements Serializable {
     return stats;
   }
 
+  public String getReviewsInputFileName() { return catalogoReviews.getInputFileName(); }
+
+  public String getBusinessesInputFileName() { return catalogoBusinesses.getInputFileName(); }
+
+  public String getUsersInputFileName() { return catalogoUsers.getInputFileName(); }
 
   public int getBusinessWithReviews(){
     return this.stats.getBusinessWithReviews();
