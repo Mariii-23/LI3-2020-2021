@@ -11,21 +11,40 @@ import li3.grupo54.View.Queries.Query4View;
  *
  *  Class responsible for executing Query4 and returning an IQueryResults
  */
-
 public class Query4 implements IQueryController {
+  /**
+   * Modelo
+   */
   GestReviews model;
+
+  /**
+   * View desta classe.
+   */
   Query4View view;
 
+  /**
+   * Construstor Query 4.
+   * @param model Modelo
+   * @param view View
+   */
   public Query4(GestReviews model, Query4View view) {
     this.model = model;
     this.view = view;
   }
 
+  /**
+   * Devolve a View.
+   * @return View relacionada com a query 4.
+   */
   @Override
   public IQueryView getView() {
     return view;
   }
 
+  /**
+   * Método que executa a query 4.
+   * @return Query 4
+   */
   @Override
   public IQueryResults execute() throws Exception {
     return new Query4Results(model.query4(view.getUserID()));

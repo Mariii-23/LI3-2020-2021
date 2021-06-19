@@ -50,14 +50,14 @@ public class Query1View implements IQueryViewFX {
     return callback;
   }
 
-  /** {@inheritdoc} */
+  /** Configura o callback de validacao */
   @Override
   public void setValidationCallback(ValidationCallback callback) {
     this.callback = callback;
     setValid(true);
   }
 
-  /** {@inheritdoc} */
+  /** Aprensenta os resultados desta query */
   @Override
   public void showResults(IQueryResults results) {
     Crono.start();
@@ -86,7 +86,8 @@ public class Query1View implements IQueryViewFX {
     if (this.resultsCallback != null)
       resultsCallback.run(panel);
   }
-  /** {@inheritdoc} */
+
+  /** Configura o callback usado para apresentar */
   @Override
   public void addShowResultsCallback(NodeCallback callback) {
     this.resultsCallback = callback;

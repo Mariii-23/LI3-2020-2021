@@ -10,7 +10,13 @@ import java.util.Objects;
  * @param <R> Second generic value
  */
 public class MyPair<T, R> implements Serializable  {
+  /**
+   * Primeiro elemento.
+   */
   private T x;
+  /**
+   * Segundo elemento.
+   */
   private R y;
 
   public MyPair(T x, R y) {
@@ -23,18 +29,32 @@ public class MyPair<T, R> implements Serializable  {
     this.y = that.getY();
   }
 
+  /**
+   * Retorna o primeiro elemento armazenado.
+   * @return Primeira classe
+   */
   public T getX() {
     return x;
   }
 
+  /**
+   * Altera o primeiro elemento armazenado por um outro.
+   */
   public void setX(T x) {
     this.x = x;
   }
 
+  /**
+   * Retorna o segundo elemento armazenado.
+   * @return Segunda classe
+   */
   public R getY() {
     return y;
   }
 
+  /**
+   * Altera o segundo elemento armazenado por um outro.
+   */
   public void setY(R y) {
     this.y = y;
   }

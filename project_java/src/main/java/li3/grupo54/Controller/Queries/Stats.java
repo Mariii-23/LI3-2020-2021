@@ -7,27 +7,42 @@ import li3.grupo54.View.Queries.IQueryView;
 import li3.grupo54.View.Queries.StatsView;
 
 /**
- *
- *  Class responsible for obtaining statistics related to Review Management System's database.
+ * Classe das Estatísticas.
  */
-
-
 public class Stats implements IQueryController {
-
-    GestReviews model;
+  /**
+   * Modelo
+   */
+  GestReviews model;
+  /**
+   * View relacionada com esta classe.
+   */
     StatsView view;
 
+  /**
+   * Construtor
+   * @param model Modelo
+   * @param view View
+   */
     public Stats(GestReviews model, StatsView view) {
       this.model = model;
       this.view = view;
     }
 
-    @Override
+  /**
+   * Devolve a View das estatísticas.
+    * @return
+   */
+  @Override
     public IQueryView getView() {
       return view;
     }
 
-    @Override
+  /**
+   * Método que executa as Estatísticas.
+   * @return
+   */
+  @Override
     public IQueryResults execute() {
       return new StatsResults(model);
     }
