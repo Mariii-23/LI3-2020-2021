@@ -1,5 +1,6 @@
 package li3.grupo54.Models;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 

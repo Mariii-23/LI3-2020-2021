@@ -25,7 +25,7 @@ public class Query1View implements IQueryViewFX {
 
     @Override
     public String getName() {
-        return "Query 1 -> Negócios nunca avaliados";
+        return "Query 1";
     }
 
     @Override

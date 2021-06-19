@@ -1,8 +1,9 @@
 package li3.grupo54.Models;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class StarsTuple implements Comparator<StarsTuple> {
+public class StarsTuple implements Comparator<StarsTuple> , Serializable {
   private double currentAverage;
   private int numberTotal;
 

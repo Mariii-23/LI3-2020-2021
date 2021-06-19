@@ -24,6 +24,7 @@
       <ToolBar prefHeight="40.0" prefWidth="200.0">
         <items>
           <Button mnemonicParsing="false" onAction="#openFile" text="Abrir" />
+            <Button mnemonicParsing="false" onAction="#onSave" text="Gravar" />
         </items>
       </ToolBar>
       <SplitPane dividerPositions="0.362876254180602" prefHeight="160.0" prefWidth="200.0" VBox.vgrow="ALWAYS">

@@ -12,8 +12,8 @@ import javafx.scene.layout.VBox;
 import li3.grupo54.Controller.NodeCallback;
 import li3.grupo54.Controller.ValidationCallback;
 import li3.grupo54.Models.Queries.IQueryResults;
-import li3.grupo54.Models.Queries.Query3Results;
 import li3.grupo54.Utils.Crono;
+import li3.grupo54.Models.Queries.Query6Results;
 import li3.grupo54.Utils.MyTriple;
 
 import java.util.HashMap;
@@ -21,19 +21,25 @@ import java.util.List;
 import java.util.Map;
 
 public class Query6View implements IQueryViewFX {
-  private TextField numeroNegocios;
+    private TextField numeroNegocios;
 
-  private ValidationCallback callback;
-  private NodeCallback resultsCallback;
+    private ValidationCallback callback;
+    private NodeCallback resultsCallback;
 
-  private int x;
+    private int x;
 
 
     public Query6View() {
         numeroNegocios = new TextField();
         numeroNegocios.textProperty().addListener((o, oldVal, newVal) -> {
-        x = Integer.parseInt(numeroNegocios.getText());
-        setValid(true);
+            if (!newVal.matches("\\d*"))
+                numeroNegocios.setText(newVal.replaceAll("[^\\d]", ""));
+            try {
+                x = Integer.parseInt(numeroNegocios.getText());
+                setValid(true);
+            } catch (NumberFormatException e) {
+                setValid(false);
+            }
         });
     }
 
@@ -52,7 +58,7 @@ public class Query6View implements IQueryViewFX {
     @Override
     public Map<String, Node> getConfigOptionsNode() {
         Map<String, Node> map = new HashMap<>();
-        map.put("Id",numeroNegocios );
+        map.put("N", numeroNegocios);
         //map.put("Mês", monthInput);
         return map;
     }
@@ -70,9 +76,9 @@ public class Query6View implements IQueryViewFX {
     @Override
     public void showResults(IQueryResults results) {
             // TODO
-      Crono.start();
-        Query3Results res = (Query3Results) results;
+        Crono.start();
         double time= Crono.stop();
+        Query6Results res = (Query6Results) results;
 
         VBox panel = new VBox();
         panel.setPadding(new Insets(5));
@@ -82,30 +88,30 @@ public class Query6View implements IQueryViewFX {
 
       panel.getChildren().add(new Label("Query Time: " +time ));
 
-        TableView<MyTriple<Integer,Integer,Float>> reviewsTableView = new TableView<>();
-        TableColumn<MyTriple<Integer,Integer,Float>,String> reviewsIdColumn = new TableColumn<>("Number reviews");
-        reviewsIdColumn.setCellValueFactory(new PropertyValueFactory<>("left"));
+        TableView<MyTriple<Integer, String, Integer>> tableView = new TableView<>();
 
-        reviewsTableView.getColumns().add(reviewsIdColumn);
+        TableColumn<MyTriple<Integer, String, Integer>, String> yearColumn = new TableColumn<>("Ano");
+        yearColumn.setCellValueFactory(new PropertyValueFactory<>("left"));
+        tableView.getColumns().add(yearColumn);
 
-        TableColumn<MyTriple<Integer,Integer,Float>,String> businessIdColumn = new TableColumn<>("Number business");
+        TableColumn<MyTriple<Integer, String, Integer>, String> businessIdColumn = new TableColumn<>("Business");
         businessIdColumn.setCellValueFactory(new PropertyValueFactory<>("middle"));
+        tableView.getColumns().add(businessIdColumn);
 
-        reviewsTableView.getColumns().add(businessIdColumn);
+        TableColumn<MyTriple<Integer, String, Integer>, String> distinctUsers = new TableColumn<>("Numero de utilizadores unicos");
+        distinctUsers.setCellValueFactory(new PropertyValueFactory<>("right"));
+        tableView.getColumns().add(distinctUsers);
 
-        TableColumn<MyTriple<Integer,Integer,Float>, String> meanIdColumn = new TableColumn<>("Mean");
-        meanIdColumn.setCellValueFactory(new PropertyValueFactory<>("right"));
-        reviewsTableView.getColumns().add(meanIdColumn);
+        tableView.getItems().addAll(res.getBusinesses());
 
-        reviewsTableView.getItems().addAll(res.getResults());
+        VBox.setVgrow(tableView, Priority.ALWAYS);
+        panel.getChildren().add(tableView);
 
-        VBox.setVgrow(reviewsTableView, Priority.ALWAYS);
-        panel.getChildren().add(reviewsTableView);
-
-                if (this.resultsCallback != null)
+        if (this.resultsCallback != null)
             resultsCallback.run(panel);
 
     }
+
     @Override
     public void addShowResultsCallback(NodeCallback callback) {
         this.resultsCallback = callback;

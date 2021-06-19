@@ -46,7 +46,7 @@ public class Query5View implements IQueryViewFX {
 
   @Override
   public String getDescription() {
-    return "Dado o código de um utilizador determinar a lista de nomes de negócios que mais avaliou (equantos)," +
+    return "Dado o código de um utilizador determinar a lista de nomes de negócios que mais avaliou (e quantos)," +
             "ordenada por ordem decrescente de quantidade e,para quantidades iguais, por ordem alfabética dos negócios";
   }
 

@@ -7,13 +7,17 @@ import li3.grupo54.Utils.Crono;
 import li3.grupo54.Utils.MyPair;
 import li3.grupo54.Utils.MyTriple;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class GestReviews {
+public class GestReviews implements Serializable {
   private CatalogoUsers catalogoUsers;
   private CatalogoBusinesses catalogoBusinesses;
   private CatalogoReviews catalogoReviews;
@@ -135,19 +139,34 @@ public class GestReviews {
     return stats.query7();
   }
 
-    public Map<Integer,List<MyPair<Business,Integer>>> query6 (int n) {
-    Map<Integer,List<MyPair<Business,Integer>>>  r  = new HashMap<>();
-    for(int ano : this.catalogoReviews.getAnoToReviewsPerMonth().keySet() ) {
-        List<IBusiness> negociosOrdenados = catalogoBusinesses.getBusinessesById().entrySet().stream().sorted((a,b) -> {
-          return getNumberReviewsInYearBusiness(b.getValue().getId(), ano) - getNumberReviewsInYearBusiness(a.getValue().getId(), ano);
-        }).limit(n).map(Map.Entry::getValue).collect(Collectors.toList());
-      //Integer distinctUsers = negociosOrdenados.stream().map(
-
-       //r.put(ano,new MyPair<>(negociosOrdenados,distinctUsers));
-    }
-
-
-      return null;
+    public Map<Integer,List<MyPair<IBusiness, Integer>>> query6(int n) {
+      Map<Integer, Map<String, List<Review>>> b = this.catalogoReviews.getAnoToReviewsPerMonth().entrySet().stream()
+              .collect(
+                      Collectors.toMap(
+                              Map.Entry::getKey,
+                              e -> e.getValue().stream().flatMap(Collection::stream).collect(Collectors.groupingBy(Review::getBusinessId))
+              ));
+      Map<Integer, List<MyPair<IBusiness, Integer>>> c = new HashMap<>();
+      for(final var yy: b.entrySet()) {
+        for(final var business: yy.getValue().entrySet()) {
+          final var list = c.computeIfAbsent(yy.getKey(), (k) -> new ArrayList<>());
+          try {
+            list.add(new MyPair<>(this.catalogoBusinesses.getById(business.getKey()), business.getValue().size()));
+          } catch (BusinessNotFoundException ignored) { }
+          list.sort(Comparator.comparingInt((ToIntFunction<MyPair<IBusiness, Integer>>) MyPair::getY).reversed());
+          if(list.size() > n) {
+            list.remove(list.size() - 1);
+          }
+        }
+      }
+      c.forEach((key, list) -> {
+        for(int i = 0; i < list.size(); ++i) {
+          final var oldPair = list.get(i);
+          final var distinctUsers = (int) b.get(key).get(oldPair.getX().getId()).stream().map(Review::getUserId).distinct().count();
+          list.set(i, new MyPair<>(oldPair.getX(), distinctUsers));
+        }
+      });
+      return c;
   }
 
   public Stream<Review> getReviewsOfBusiness(String businessId) {
@@ -157,8 +176,14 @@ public class GestReviews {
             .filter(r -> r.getBusinessId().equals(businessId));
   }
 
-  public List<MyPair<String,Integer>>  query8(Integer x){
+  public List<MyPair<String,Integer>>  query8(Integer x) {
     return stats.query8(x);
+  }
+  public void onSave(String filename) throws IOException{
+        FileOutputStream fos = new FileOutputStream(filename);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(this);
+        oos.close();
   }
 }
 

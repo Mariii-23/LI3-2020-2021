@@ -2,13 +2,14 @@ package li3.grupo54.Models;
 
 import li3.grupo54.Models.Exceptions.NullReviewException;
 import li3.grupo54.Models.Interfaces.IBusiness;
+import li3.grupo54.Models.Interfaces.IStats;
 import li3.grupo54.Utils.MyPair;
-
 import li3.grupo54.Utils.MyTriple;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Stats {
+public class Stats implements IStats {
   // User id ->  mes a mes -> UserStarsTuple
   private Map<String, List<UserStarsTuple>> averageByUserId;
   // Business id ->  mes a mes -> BusinessStarsTuple

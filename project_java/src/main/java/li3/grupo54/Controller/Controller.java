@@ -6,6 +6,7 @@ import li3.grupo54.Models.GestReviews;
 import li3.grupo54.Models.Stats;
 import li3.grupo54.View.IView;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class Controller implements IController {
     this.view = view;
     this.queries = new ArrayList<>();
     this.view.setOpenCallback(this::loadTriple);
+    this.view.setOnSave(this::saveObject);
   }
 
   @Override
@@ -39,10 +41,15 @@ public class Controller implements IController {
     }
   }
 
+  public void saveObject(File file) throws IOException {
+    System.out.println("get path: " + file);
+      this.model.onSave(file.getAbsolutePath());
+  }
+
   private void loadTriple(FileTriple triple) {
     try {
       model.load(triple.getUsersFile(), triple.getBusinessesFile(), triple.getReviewsFile());
-    } catch (IOException | URISyntaxException e) {
+    } catch (IOException | URISyntaxException | NullPointerException e) {
       view.showError("Error opening file", e.getMessage());
     }
   }

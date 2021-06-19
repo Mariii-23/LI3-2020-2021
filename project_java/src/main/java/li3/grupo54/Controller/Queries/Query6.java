@@ -22,8 +22,6 @@ public class Query6 implements IQueryController{
 
     @Override
     public IQueryResults execute() {
-
-      //return new Query6Results(model.query6(view.getX()));
-        return null;
+        return new Query6Results(this.model.query6(this.view.getX()));
     }
 }

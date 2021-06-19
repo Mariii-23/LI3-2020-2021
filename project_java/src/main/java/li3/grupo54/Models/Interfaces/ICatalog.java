@@ -6,7 +6,7 @@ import li3.grupo54.Models.Exceptions.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
-public interface ICatalog<T> {
+public interface ICatalog<T> extends Serializable {
   T callConstructor(String[] line) throws  BusinessNotFoundException, InvalidUserLineException,
           InvalidBusinessLineException, InvalidReviewLineException,
           InvalidUserLineException, InvalidBusinessLineException,

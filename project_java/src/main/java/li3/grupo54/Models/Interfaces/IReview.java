@@ -1,8 +1,9 @@
 package li3.grupo54.Models.Interfaces;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public interface IReview {
+public interface IReview extends Serializable {
   public String getReviewId();
 
   public String getUserId();
