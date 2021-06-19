@@ -13,20 +13,42 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Classe da Query 9
+ */
 public class Query9 implements IQueryController {
+  /**
+   * Modelo
+   */
   GestReviews model;
+  /**
+   * View desta classe.
+   */
   Query9View view;
 
+  /**
+   * Construstor da Query 9.
+   * @param model Modelo
+   * @param view View
+   */
   public Query9(GestReviews model, Query9View view) {
     this.model = model;
     this.view = view;
   }
 
+  /**
+   * Devolve a View.
+   * @return View relacionada com a query 9.
+   */
   @Override
   public IQueryView getView() {
     return view;
   }
 
+  /**
+   * Método que executa a query 9.
+   * @return Query 9
+   */
   @Override
   public IQueryResults execute() throws Exception {
     final var bid = this.view.getBusinessId();
