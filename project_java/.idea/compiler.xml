@@ -8,9 +8,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="project_java" />
+        <module name="grupo54" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="grupo54" target="11" />
       <module name="project_java" target="11" />
     </bytecodeTargetLevel>
   </component>

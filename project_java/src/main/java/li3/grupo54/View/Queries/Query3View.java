@@ -18,6 +18,8 @@ import li3.grupo54.Controller.ValidationCallback;
 import li3.grupo54.Models.Interfaces.IBusiness;
 
 import java.util.List;
+
+import li3.grupo54.Utils.MyPair;
 import li3.grupo54.Utils.MyTriple;
 import java.util.HashMap;
 import java.util.Map;
@@ -84,34 +86,25 @@ public class Query3View implements IQueryViewFX {
         panel.getChildren().add(new Label("Query 3"));
 
 
-        TableView<String> reviewsTableView = new TableView<>();
-        TableColumn<String, String> reviewsIdColumn = new TableColumn<>("Number reviews");
-        reviewsIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        TableView<MyTriple<Integer,Integer,Float>> reviewsTableView = new TableView<>();
+        TableColumn<MyTriple<Integer,Integer,Float>,String> reviewsIdColumn = new TableColumn<>("Number reviews");
+        reviewsIdColumn.setCellValueFactory(new PropertyValueFactory<>("left"));
 
         reviewsTableView.getColumns().add(reviewsIdColumn);
-        reviewsTableView.getItems().addAll(res.getNumberReviews());
 
-        //TableView<String> businessTableView = new TableView<>();
-        //TableColumn<String, String> businessIdColumn = new TableColumn<>("Number business");
-        //businessIdColumn.setCellValueFactory(new PropertyValueFactory<>("Number business"));
+        TableColumn<MyTriple<Integer,Integer,Float>,String> businessIdColumn = new TableColumn<>("Number business");
+        businessIdColumn.setCellValueFactory(new PropertyValueFactory<>("middle"));
 
-        //businessTableView.getColumns().add(businessIdColumn);
-        //businessTableView.getItems().addAll(res.getNumberBusiness());
+        reviewsTableView.getColumns().add(businessIdColumn);
 
-        //TableView<String> meanTableView = new TableView<>();
-        //TableColumn<String, String> meanIdColumn = new TableColumn<>("Mean");
-        //meanIdColumn.setCellValueFactory(new PropertyValueFactory<>("mean"));
+        TableColumn<MyTriple<Integer,Integer,Float>, String> meanIdColumn = new TableColumn<>("Mean");
+        meanIdColumn.setCellValueFactory(new PropertyValueFactory<>("right"));
+        reviewsTableView.getColumns().add(meanIdColumn);
 
-        //meanTableView.getColumns().add(meanIdColumn);
-        //meanTableView.getItems().addAll(res.getMean());
+        reviewsTableView.getItems().addAll(res.getResults());
 
-        //VBox.setVgrow(businessTableView, Priority.ALWAYS);
         VBox.setVgrow(reviewsTableView, Priority.ALWAYS);
-        //VBox.setVgrow(meanTableView, Priority.ALWAYS);
-
-        //panel.getChildren().add(businessTableView);
         panel.getChildren().add(reviewsTableView);
-        //panel.getChildren().add(meanTableView);
 
                 if (this.resultsCallback != null)
             resultsCallback.run(panel);

@@ -212,10 +212,10 @@ public class Stats {
         businessDist = tuple.getBusinessNumberDistint();
         mean = (float) tuple.getCurrentAverage();
       }
+      //if(numReviews!=-1 && businessDist!= -1 && mean!=-1)
       result.set(i,new MyTriple<>(numReviews,businessDist,mean));
       i++;
     }
-
     return result;
   }
 }

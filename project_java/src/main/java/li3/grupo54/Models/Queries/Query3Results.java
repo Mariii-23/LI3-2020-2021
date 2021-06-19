@@ -16,7 +16,7 @@ public class Query3Results implements IQueryResults{
     }
 
     public List<MyTriple<Integer,Integer,Float>> getResults() {
-        return new ArrayList(result);
+      return result;
     }
 
     public List<String> getNumberReviews(){

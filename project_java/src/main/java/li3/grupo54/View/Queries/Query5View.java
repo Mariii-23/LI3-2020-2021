@@ -79,25 +79,22 @@ public class Query5View implements IQueryViewFX {
 
     panel.setSpacing(5);
 
-    TableView<String> reviewsTableView = new TableView<>();
-    TableColumn<String, String> reviewsIdColumn = new TableColumn<>("Name reviews");
-    reviewsIdColumn.setCellValueFactory(new PropertyValueFactory<>("Name reviews"));
+    TableView<MyPair<String,Integer>> reviewsTableView = new TableView<>();
+    TableColumn<MyPair<String,Integer>, String> reviewsIdColumn = new TableColumn<>("Name reviews");
+    reviewsIdColumn.setCellValueFactory(new PropertyValueFactory<>("x"));
 
     reviewsTableView.getColumns().add(reviewsIdColumn);
-    reviewsTableView.getItems().addAll(res.allNameReviews());
 
-
-    TableView<String> numberTableView = new TableView<>();
-    TableColumn<String, String> numberIdColumn = new TableColumn<>("Mean");
+    TableColumn<MyPair<String,Integer>, String> numberIdColumn = new TableColumn<>("Mean");
     numberIdColumn.setCellValueFactory(new PropertyValueFactory<>("mean"));
 
+    reviewsTableView.getColumns().add(numberIdColumn);
+
     numberIdColumn.getColumns().add(numberIdColumn);
-    numberTableView.getItems().addAll(res.getAllNumber());
+    reviewsTableView.getItems().addAll(res.getResults());
 
     VBox.setVgrow(reviewsTableView, Priority.ALWAYS);
-    VBox.setVgrow(numberTableView, Priority.ALWAYS);
     panel.getChildren().add(reviewsTableView);
-    panel.getChildren().add(numberTableView);
     if (this.resultsCallback != null)
       resultsCallback.run(panel);
 
