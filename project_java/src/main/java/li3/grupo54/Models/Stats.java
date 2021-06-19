@@ -58,10 +58,11 @@ public class Stats {
           map.put(city, mapCity);
         } else {
           StarsTuple starTuple = mapCity.get(business.getId());
-          if (starTuple == null)
-            mapCity.put(business.getId(), new BusinessStarsTuple(review));
-          else
-            starTuple.update(review.getStars());
+          if (starTuple == null){
+            starTuple = new StarsTuple();
+          }
+          starTuple.update(review.getStars());
+          mapCity.put(business.getId(), starTuple);
         }
       }
   }
@@ -84,6 +85,7 @@ public class Stats {
       if (userStarsTuple == null)
         userStarsTuple = new UserStarsTuple();
       userStarsTuple.updateAverage(review);
+      list.set(month,userStarsTuple);
     }
   }
 
@@ -105,6 +107,7 @@ public class Stats {
       if (userStarsTuple == null)
         userStarsTuple = new BusinessStarsTuple();
       userStarsTuple.updateAverage(review);
+      list.set(month,userStarsTuple);
     }
   }
 

@@ -42,7 +42,7 @@ public class Query5View implements IQueryViewFX {
   //TODO
   @Override
   public String getName() {
-    return "Querry 5";
+    return "Query 5";
   }
 
   @Override
@@ -70,10 +70,8 @@ public class Query5View implements IQueryViewFX {
 
   @Override
   public void showResults(IQueryResults results) {
-    // TODO
     Query5Results res = (Query5Results) results;
 
-    List<MyPair<String, Integer>> coisa = res.getResults();
     VBox panel = new VBox();
     panel.setPadding(new Insets(5));
 
