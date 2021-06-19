@@ -191,7 +191,9 @@ public class DesktopView implements IView {
   private void onRestore() throws IOException {
     if(restoreCallback != null) {
         FileChooser s = new FileChooser();
-       restoreCallback.run(new File(s.showOpenDialog(stage).getAbsolutePath()));
+        final var f = s.showOpenDialog(stage);
+        if (f != null)
+           restoreCallback.run(new File(f.getAbsolutePath()));
     }
   }
 
