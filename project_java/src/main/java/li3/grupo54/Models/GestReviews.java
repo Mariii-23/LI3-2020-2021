@@ -144,7 +144,7 @@ public class GestReviews implements Serializable {
               .collect(
                       Collectors.toMap(
                               Map.Entry::getKey,
-                              e -> e.getValue().stream().flatMap(Collection::stream).collect(Collectors.groupingBy(Review::getBusinessId))
+                              e -> e.getValue().stream().filter(Objects::nonNull).flatMap(Collection::stream).collect(Collectors.groupingBy(Review::getBusinessId))
               ));
       Map<Integer, List<MyPair<IBusiness, Integer>>> c = new HashMap<>();
       for(final var yy: b.entrySet()) {

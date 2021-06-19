@@ -7,6 +7,7 @@ import li3.grupo54.Models.Interfaces.ICatalog;
 
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.sql.BatchUpdateException;
 import java.util.*;
 
 public class CatalogoBusinesses implements ICatalog<IBusiness> {
@@ -64,7 +65,12 @@ public class CatalogoBusinesses implements ICatalog<IBusiness> {
 
   @Override
   public IBusiness getById(String id) throws BusinessNotFoundException {
-    return null;
+      var biz = this.businessesById.get(id);
+      if (biz != null) {
+        return biz;
+      } else {
+        throw new BusinessNotFoundException(id);
+      }
   }
 
   @Override

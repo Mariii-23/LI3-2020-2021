@@ -16,6 +16,7 @@ import li3.grupo54.Utils.Crono;
 import li3.grupo54.Models.Queries.Query6Results;
 import li3.grupo54.Utils.MyTriple;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +103,9 @@ public class Query6View implements IQueryViewFX {
         distinctUsers.setCellValueFactory(new PropertyValueFactory<>("right"));
         tableView.getColumns().add(distinctUsers);
 
-        tableView.getItems().addAll(res.getBusinesses());
+        final var buz = res.getBusinesses();
+        buz.sort(Comparator.comparingInt(MyTriple::getLeft));
+        tableView.getItems().addAll(buz);
 
         VBox.setVgrow(tableView, Priority.ALWAYS);
         panel.getChildren().add(tableView);
