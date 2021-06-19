@@ -1,12 +1,16 @@
 package li3.grupo54.Models.Exceptions;
 
-public class UserNotFoundException extends Exception {
-  public UserNotFoundException() {
-    super();
-  }
+/**
+ * Thrown when the user associated with a given id could not be found
+ */
 
-  public UserNotFoundException(String s) {
-    super("Utilizador com id '" + s + "' nao existe");
-  }
+public class UserNotFoundException extends Exception {
+    public UserNotFoundException() {
+        super();
+    }
+
+    public UserNotFoundException(String s) {
+        super("Utilizador com id '" + s + "' nao existe");
+    }
 }
 

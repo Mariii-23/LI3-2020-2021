@@ -23,110 +23,148 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A view da query 3
+ */
 public class Query3View implements IQueryViewFX {
-  private TextField userId;
+    private TextField userId;
 
-  private ValidationCallback callback;
-  private NodeCallback resultsCallback;
+    private ValidationCallback callback;
+    private NodeCallback resultsCallback;
 
 
-  private String userIdString;
+    private String userIdString;
 
-  public Query3View() {
-    userId = new TextField();
+    /**
+     * Constrói a view
+     */
+    public Query3View() {
+        userId = new TextField();
 
-    userId.textProperty().addListener((o, oldVal, newVal) -> {
-      userIdString = userId.getText();
-      setValid(true);
-    });
-  }
-
-  @Override
-  public String getName() {
-    return "Query 3";
-  }
-
-  @Override
-  public String getDescription() {
-    return "Dado um código de utilizador, determinar, para cada mês, quantas reviews fez, quantos " +
-        "negócios distintos avaliou e que nota média atribuiu";
-  }
-
-  @Override
-  public Map<String, Node> getConfigOptionsNode() {
-    Map<String, Node> map = new HashMap<>();
-    map.put("User Id", userId);
-    //map.put("Mês", monthInput);
-    return map;
-  }
-
-  @Override
-  public ValidationCallback getValidationCallback() {
-    return callback;
-  }
-
-  @Override
-  public void setValidationCallback(ValidationCallback callback) {
-    this.callback = callback;
-  }
-
-  @Override
-  public void showResults(IQueryResults results) {
-    Crono.start();
-    Query3Results res = (Query3Results) results;
-    double time = Crono.stop();
-
-    List<MyTriple<Integer, Integer, Double>> res1 = ((Query3Results) results).getResults();
-
-    List<MyFour<Month, Integer, Integer, Double>> apresentar = new ArrayList<>(12);
-    int i = 1;
-    for (MyTriple<Integer, Integer, Double> triple : res1) {
-      apresentar.add(i - 1, new MyFour<>(Month.of(i), triple));
-      i++;
+        userId.textProperty().addListener((o, oldVal, newVal) -> {
+            userIdString = userId.getText();
+            setValid(true);
+        });
     }
 
-    VBox panel = new VBox();
-    panel.setPadding(new Insets(5));
+    /**
+     * @return o nome da query
+     */
+    @Override
+    public String getName() {
+        return "Query 3";
+    }
 
-    panel.setSpacing(5);
-    panel.getChildren().add(new Label("Query 3"));
-    panel.getChildren().add(new Label("Query Time: " + time));
+    /**
+     * @return A descrição da query
+     */
+    @Override
+    public String getDescription() {
+        return "Dado um código de utilizador, determinar, para cada mês, quantas reviews fez, quantos " +
+                "negócios distintos avaliou e que nota média atribuiu";
+    }
 
-    TableView<MyFour<Month, Integer, Integer, Double>> tableView = new TableView<>();
-    TableColumn<MyFour<Month, Integer, Integer, Double>, String> mesesColumn = new TableColumn<>("Mes");
-    mesesColumn.setCellValueFactory(new PropertyValueFactory<>("first"));
-    tableView.getColumns().add(mesesColumn);
+    /**
+     * A configuracao dos parametros da query
+     *
+     * @return Neste caso um unico campo chamado user id
+     */
+    @Override
+    public Map<String, Node> getConfigOptionsNode() {
+        Map<String, Node> map = new HashMap<>();
+        map.put("User Id", userId);
+        //map.put("Mês", monthInput);
+        return map;
+    }
 
-    TableColumn<MyFour<Month, Integer, Integer, Double>, String> column2 = new TableColumn<>("Number reviews total");
-    column2.setCellValueFactory(new PropertyValueFactory<>("left"));
+    /**
+     * @return O callback de validacao
+     */
+    @Override
+    public ValidationCallback getValidationCallback() {
+        return callback;
+    }
 
-    tableView.getColumns().add(column2);
+    /**
+     * Configura o callback de validacao
+     *
+     * @param callback o callback
+     */
+    @Override
+    public void setValidationCallback(ValidationCallback callback) {
+        this.callback = callback;
+    }
 
-    TableColumn<MyFour<Month, Integer, Integer, Double>, String> column3 = new TableColumn<>("Number business distinct");
-    column3.setCellValueFactory(new PropertyValueFactory<>("middle"));
+    /**
+     * Apresenta os dados da query
+     *
+     * @param results os dados a apresentar
+     */
+    @Override
+    public void showResults(IQueryResults results) {
+        Crono.start();
+        Query3Results res = (Query3Results) results;
+        double time = Crono.stop();
 
-    tableView.getColumns().add(column3);
+        List<MyTriple<Integer, Integer, Double>> res1 = ((Query3Results) results).getResults();
 
-    TableColumn<MyFour<Month, Integer, Integer, Double>, String> meanIdColumn = new TableColumn<>("Average");
-    meanIdColumn.setCellValueFactory(new PropertyValueFactory<>("right"));
-    tableView.getColumns().add(meanIdColumn);
+        List<MyFour<Month, Integer, Integer, Double>> apresentar = new ArrayList<>(12);
+        int i = 1;
+        for (MyTriple<Integer, Integer, Double> triple : res1) {
+            apresentar.add(i - 1, new MyFour<>(Month.of(i), triple));
+            i++;
+        }
 
-    tableView.getItems().addAll(apresentar);
+        VBox panel = new VBox();
+        panel.setPadding(new Insets(5));
 
-    VBox.setVgrow(tableView, Priority.ALWAYS);
-    panel.getChildren().add(tableView);
+        panel.setSpacing(5);
+        panel.getChildren().add(new Label("Query 3"));
+        panel.getChildren().add(new Label("Query Time: " + time));
 
-    if (this.resultsCallback != null)
-      resultsCallback.run(panel);
+        TableView<MyFour<Month, Integer, Integer, Double>> tableView = new TableView<>();
+        TableColumn<MyFour<Month, Integer, Integer, Double>, String> mesesColumn = new TableColumn<>("Mes");
+        mesesColumn.setCellValueFactory(new PropertyValueFactory<>("first"));
+        tableView.getColumns().add(mesesColumn);
 
-  }
+        TableColumn<MyFour<Month, Integer, Integer, Double>, String> column2 = new TableColumn<>("Number reviews total");
+        column2.setCellValueFactory(new PropertyValueFactory<>("left"));
 
-  @Override
-  public void addShowResultsCallback(NodeCallback callback) {
-    this.resultsCallback = callback;
-  }
+        tableView.getColumns().add(column2);
 
-  public String getUserID() {
-    return this.userIdString;
-  }
+        TableColumn<MyFour<Month, Integer, Integer, Double>, String> column3 = new TableColumn<>("Number business distinct");
+        column3.setCellValueFactory(new PropertyValueFactory<>("middle"));
+
+        tableView.getColumns().add(column3);
+
+        TableColumn<MyFour<Month, Integer, Integer, Double>, String> meanIdColumn = new TableColumn<>("Average");
+        meanIdColumn.setCellValueFactory(new PropertyValueFactory<>("right"));
+        tableView.getColumns().add(meanIdColumn);
+
+        tableView.getItems().addAll(apresentar);
+
+        VBox.setVgrow(tableView, Priority.ALWAYS);
+        panel.getChildren().add(tableView);
+
+        if (this.resultsCallback != null)
+            resultsCallback.run(panel);
+
+    }
+
+    /**
+     * Configura o callback de apresentação
+     *
+     * @param callback o callback
+     */
+    @Override
+    public void addShowResultsCallback(NodeCallback callback) {
+        this.resultsCallback = callback;
+    }
+
+    /**
+     * @return O UserId que esta no parametro
+     */
+    public String getUserID() {
+        return this.userIdString;
+    }
 }

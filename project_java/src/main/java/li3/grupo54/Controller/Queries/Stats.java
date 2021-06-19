@@ -10,40 +10,43 @@ import li3.grupo54.View.Queries.StatsView;
  * Classe das Estatísticas.
  */
 public class Stats implements IQueryController {
-  /**
-   * Modelo
-   */
-  GestReviews model;
-  /**
-   * View relacionada com esta classe.
-   */
+    /**
+     * Modelo
+     */
+    GestReviews model;
+    /**
+     * View relacionada com esta classe.
+     */
     StatsView view;
 
-  /**
-   * Construtor
-   * @param model Modelo
-   * @param view View
-   */
+    /**
+     * Construtor
+     *
+     * @param model Modelo
+     * @param view  View
+     */
     public Stats(GestReviews model, StatsView view) {
-      this.model = model;
-      this.view = view;
+        this.model = model;
+        this.view = view;
     }
 
-  /**
-   * Devolve a View das estatísticas.
-    * @return
-   */
-  @Override
+    /**
+     * Devolve a View das estatísticas.
+     *
+     * @return
+     */
+    @Override
     public IQueryView getView() {
-      return view;
+        return view;
     }
 
-  /**
-   * Método que executa as Estatísticas.
-   * @return
-   */
-  @Override
+    /**
+     * Método que executa as Estatísticas.
+     *
+     * @return
+     */
+    @Override
     public IQueryResults execute() {
-      return new StatsResults(model);
+        return new StatsResults(model);
     }
-  }
+}

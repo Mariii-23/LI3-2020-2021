@@ -2,8 +2,8 @@ package li3.grupo54.Models;
 
 import com.carrotsearch.junitbenchmarks.AbstractBenchmark;
 import li3.grupo54.Models.Interfaces.ICatalog;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 import java.time.LocalDateTime;
 

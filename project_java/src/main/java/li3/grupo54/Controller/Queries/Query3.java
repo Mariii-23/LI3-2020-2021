@@ -7,45 +7,47 @@ import li3.grupo54.View.Queries.IQueryView;
 import li3.grupo54.View.Queries.Query3View;
 
 /**
- *
- *  Class responsible for executing Query3 and returning an IQueryResults
+ * Class responsible for executing Query3 and returning an IQueryResults
  */
 public class Query3 implements IQueryController {
-  /**
-   * Modelo
-   */
-  GestReviews model;
+    /**
+     * Modelo
+     */
+    GestReviews model;
 
-  /**
-   * View desta classe.
-   */
-  Query3View view;
+    /**
+     * View desta classe.
+     */
+    Query3View view;
 
-  /**
-   * Construstor Query 3.
-   * @param model Modelo
-   * @param view View
-   */
-  public Query3(GestReviews model, Query3View view) {
-    this.model = model;
-    this.view = view;
-  }
+    /**
+     * Construstor Query 3.
+     *
+     * @param model Modelo
+     * @param view  View
+     */
+    public Query3(GestReviews model, Query3View view) {
+        this.model = model;
+        this.view = view;
+    }
 
-  /**
-   * Devolve a View.
-   * @return View relacionada com a query 3.
-   */
-  @Override
-  public IQueryView getView() {
-    return view;
-  }
+    /**
+     * Devolve a View.
+     *
+     * @return View relacionada com a query 3.
+     */
+    @Override
+    public IQueryView getView() {
+        return view;
+    }
 
-  /**
-   * Método que executa a query 3.
-   * @return Query 3
-   */
-  @Override
-  public IQueryResults execute() throws Exception {
-    return new Query3Results(model.query3(view.getUserID()));
-  }
+    /**
+     * Método que executa a query 3.
+     *
+     * @return Query 3
+     */
+    @Override
+    public IQueryResults execute() throws Exception {
+        return new Query3Results(model.query3(view.getUserID()));
+    }
 }

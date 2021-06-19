@@ -134,14 +134,18 @@ public class DesktopView implements IView {
         stage.show();
     }
 
-    /** Pede ao utilizador que escolha os ficheiros para popular o model */
+    /**
+     * Pede ao utilizador que escolha os ficheiros para popular o model
+     */
     @Override
     public FileTriple getFileTriple() {
         OpenFileDialog dialog = new OpenFileDialog(this.stage);
         return dialog.showAndWait();
     }
 
-    /** Pede ao utilizador que escolha onde quer guardar um ficheiro */
+    /**
+     * Pede ao utilizador que escolha onde quer guardar um ficheiro
+     */
     @Override
     public File getSaveLocation() {
         FileChooser fc = new FileChooser();
@@ -150,7 +154,9 @@ public class DesktopView implements IView {
         return fc.showSaveDialog(this.stage);
     }
 
-    /** Apresenta uma mensagem de erro ao utilizador */
+    /**
+     * Apresenta uma mensagem de erro ao utilizador
+     */
     @Override
     public void showError(String title, String description) {
         Alert error = new Alert(Alert.AlertType.ERROR);
@@ -161,6 +167,7 @@ public class DesktopView implements IView {
 
     /**
      * Configura o callback para quando os 3 ficheiros de populacao do modelo sao escolhidos
+     *
      * @param callback o callback
      */
     @Override
@@ -169,9 +176,10 @@ public class DesktopView implements IView {
     }
 
     /**
-     *  Adiciona uma view de uma query
-     *  @param query The query to add
-     *  @param callback The callback to call when executing the query
+     * Adiciona uma view de uma query
+     *
+     * @param query    The query to add
+     * @param callback The callback to call when executing the query
      */
     @Override
     public void addQuery(IQueryView query, ExecuteCallback callback) {
@@ -189,6 +197,7 @@ public class DesktopView implements IView {
 
     /**
      * Configura o callback para quando o utilizador decide persistir o estado da aplicacao
+     *
      * @param onGravar o callback
      */
     @Override

@@ -10,61 +10,111 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 /**
- *  Interface which all three catalogs need to implement. It is essentially a small database which provides methods for storing and acessing values.
+ * Interface which all three catalogs need to implement. It is essentially a small database which provides methods for storing and acessing values.
  */
 
 public interface ICatalog<T> extends Serializable {
-  String getInputFileName();
-  void setInputFileName(String inputFileName);
-  T callConstructor(String[] line) throws BusinessNotFoundException, InvalidUserLineException,
-      InvalidBusinessLineException, InvalidReviewLineException,
-      InvalidUserLineException, InvalidBusinessLineException,
-      InvalidReviewLineException;
+    /**
+     * Returns the filename of the file which was used to populate the catalog
+     *
+     * @return File Name
+     */
+    String getInputFileName();
 
-  int size();
+    /**
+     * Sets the filename of the file which was used to populate the catalog
+     *
+     * @param inputFileName
+     */
+    void setInputFileName(String inputFileName);
 
-  int getInvalidCount();
+    /**
+     * Calls the appropriate constructor , depending on the class of the catalog's members, which takes a parsed line read froma file.
+     *
+     * @param line
+     * @return
+     * @throws InvalidUserLineException
+     * @throws InvalidBusinessLineException
+     * @throws InvalidReviewLineException
+     */
+    T callConstructor(String[] line) throws InvalidUserLineException,
+            InvalidBusinessLineException, InvalidReviewLineException;
 
-  void add(T t);
+    /**
+     * @return Number of elements in catalog
+     */
+    int size();
 
-  T getById(String id) throws UserNotFoundException, BusinessNotFoundException, ReviewNotFoundException;
+    /**
+     * Returns number of invalid elements
+     *
+     * @return
+     */
+    int getInvalidCount();
 
-  void delete(String id) throws UserNotFoundException, BusinessNotFoundException, ReviewNotFoundException;
+    /**
+     * Adds entity to catalog
+     *
+     * @param t
+     */
+    void add(T t);
 
-  void addInvalid();
+    /*+
+    Return element of the catalog given its id
+     */
+    T getById(String id) throws UserNotFoundException, BusinessNotFoundException, ReviewNotFoundException;
 
-  public default void populateFromFile(Stats stats, String filename, CatalogoUsers catalogoUsers, CatalogoBusinesses catalogoBusinesses) throws IOException {
-    setInputFileName(filename);
-    File file = new File(filename);
-    InputStream is = new FileInputStream(file);
-    BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-    char delim = Leitura.determineDelimiter(reader.readLine());
+    /*+
+    Delete element of the catalog given its id
+     */
+    void delete(String id) throws UserNotFoundException, BusinessNotFoundException, ReviewNotFoundException;
 
-    String nextLine;
-    String[] parsedLine;
-    while ((nextLine = reader.readLine()) != null) {
-      try {
-        parsedLine = nextLine.split(String.valueOf(delim));
-        // constructor vai validar e lancar excecao se der erro
-        T newEntity = callConstructor(parsedLine);
+    /**
+     * Incremente number of invalid members
+     */
+    void addInvalid();
 
-        if (newEntity instanceof IReview) {
-          if (catalogoBusinesses.containsBusinessById(((IReview) newEntity).getBusinessId()) &&
-              catalogoUsers.containsUserById(((IReview) newEntity).getUserId())) {
-            this.add(newEntity);
-            stats.atualiza(newEntity, catalogoUsers, catalogoBusinesses);
-          }
-        } else {
-          this.add(newEntity);
-          stats.atualiza(newEntity, catalogoUsers, catalogoBusinesses);
+    /**
+     * Default method to populate the catalog by reading a file and instantiating new members
+     *
+     * @param stats
+     * @param filename
+     * @param catalogoUsers
+     * @param catalogoBusinesses
+     * @throws IOException
+     */
+    public default void populateFromFile(Stats stats, String filename, CatalogoUsers catalogoUsers, CatalogoBusinesses catalogoBusinesses) throws IOException {
+        setInputFileName(filename);
+        File file = new File(filename);
+        InputStream is = new FileInputStream(file);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+        char delim = Leitura.determineDelimiter(reader.readLine());
+
+        String nextLine;
+        String[] parsedLine;
+        while ((nextLine = reader.readLine()) != null) {
+            try {
+                parsedLine = nextLine.split(String.valueOf(delim));
+                // constructor vai validar e lancar excecao se der erro
+                T newEntity = callConstructor(parsedLine);
+
+                if (newEntity instanceof IReview) {
+                    if (catalogoBusinesses.containsBusinessById(((IReview) newEntity).getBusinessId()) &&
+                            catalogoUsers.containsUserById(((IReview) newEntity).getUserId())) {
+                        this.add(newEntity);
+                        stats.atualiza(newEntity, catalogoUsers, catalogoBusinesses);
+                    }
+                } else {
+                    this.add(newEntity);
+                    stats.atualiza(newEntity, catalogoUsers, catalogoBusinesses);
+                }
+
+            } catch (InvalidUserLineException | InvalidBusinessLineException | InvalidReviewLineException e) {
+                // alterarar estatisticas de linhsa invalidaas
+                this.addInvalid();
+            }
         }
-
-      } catch (InvalidUserLineException | BusinessNotFoundException | InvalidBusinessLineException | InvalidReviewLineException e) {
-        // alterarar estatisticas de linhsa invalidaas
-        this.addInvalid();
-      }
+        reader.close();
+        is.close();
     }
-    reader.close();
-    is.close();
-  }
 }

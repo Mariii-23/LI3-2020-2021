@@ -1,6 +1,9 @@
 package li3.grupo54.Models.Queries;
 
-import li3.grupo54.Models.*;
+import li3.grupo54.Models.CatalogoBusinesses;
+import li3.grupo54.Models.CatalogoReviews;
+import li3.grupo54.Models.CatalogoUsers;
+import li3.grupo54.Models.GestReviews;
 import li3.grupo54.Models.Interfaces.ICatalog;
 import li3.grupo54.Utils.MyFive;
 

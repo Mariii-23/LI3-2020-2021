@@ -5,27 +5,72 @@ import java.time.LocalDateTime;
 
 
 /**
- *  Interface whose methods need be implemented by any class which wants to have the behaviour of a review.
+ * Interface whose methods need be implemented by any class which wants to have the behaviour of a review.
  */
 
 public interface IReview extends Serializable {
-  public String getReviewId();
+    /**
+     * Get ReviewId
+     *
+     * @return Review Id
+     */
+    public String getReviewId();
 
-  public String getUserId();
+    /**
+     * Returns the userId of the user which made this review
+     *
+     * @return User ID
+     */
+    public String getUserId();
 
-  public String getBusinessId();
+    /**
+     * Returns the businesses id of the business which was rated in this review
+     *
+     * @return Business ID
+     */
+    public String getBusinessId();
 
-  public float getStars();
+    /**
+     * Get Number of stars of the review
+     *
+     * @return Starts
+     */
+    public float getStars();
 
-  public int getUseful();
+    /**
+     * Get useful field of review
+     *
+     * @return Useful
+     */
+    public int getUseful();
 
-  public int getFunny();
+    /**
+     * Get funny field of review
+     *
+     * @return Funny
+     */
+    public int getFunny();
 
-  public int getCool();
+    /**
+     * Get cool field of review
+     *
+     * @return Cool
+     */
+    public int getCool();
 
-  public LocalDateTime getDate();
+    /**
+     * Get date of the review
+     *
+     * @return Date
+     */
+    public LocalDateTime getDate();
 
-  public String getText();
+    /**
+     * Returns field text of review
+     *
+     * @return Text
+     */
+    public String getText();
 
-  public IReview clone();
+    public IReview clone();
 }

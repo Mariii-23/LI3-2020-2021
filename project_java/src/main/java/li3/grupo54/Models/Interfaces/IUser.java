@@ -4,15 +4,15 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- *  Interface whose methods need be implemented by any class which wants to have the behaviour of a user.
+ * Interface whose methods need be implemented by any class which wants to have the behaviour of a user.
  */
 
 public interface IUser extends Serializable {
-  public String getId();
+    public String getId();
 
-  public String getName();
+    public String getName();
 
-  public List<String> getFriends();
+    public List<String> getFriends();
 
-  public IUser clone();
+    public IUser clone();
 }

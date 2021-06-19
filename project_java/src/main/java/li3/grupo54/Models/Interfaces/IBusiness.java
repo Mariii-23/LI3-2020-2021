@@ -4,18 +4,48 @@ import java.io.Serializable;
 import java.util.Set;
 
 /**
- *  Interface whose methods need be implemented by any class which wants to have the behaviour of a business.
+ * Interface whose methods need be implemented by any class which wants to have the behaviour of a business.
  */
 public interface IBusiness extends Serializable {
-  public String getId();
+    /**
+     * Devolve o seu ID.
+     *
+     * @return String
+     */
+    public String getId();
 
-  public String getName();
+    /**
+     * Devolve o seu Nome.
+     *
+     * @return String
+     */
+    public String getName();
 
-  public String getCity();
+    /**
+     * Devolve a cidade aonde este pertence.
+     *
+     * @return String
+     */
+    public String getCity();
 
-  public String getState();
+    /**
+     * Devolve o estado aonde este pertence.
+     *
+     * @return String
+     */
+    public String getState();
 
-  public Set<String> getCategories();
+    /**
+     * Categorias a que esse business pode ser enquadrado.
+     *
+     * @return Set&lt;String&gt;
+     */
+    public Set<String> getCategories();
 
-  public IBusiness clone();
+    /**
+     * Método que devolve um seu clone.
+     *
+     * @return Business clone.
+     */
+    public IBusiness clone();
 }

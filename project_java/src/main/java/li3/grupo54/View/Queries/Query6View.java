@@ -20,106 +20,144 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A view da query 6
+ */
 public class Query6View implements IQueryViewFX {
-  private TextField numeroNegocios;
+    private TextField numeroNegocios;
 
-  private ValidationCallback callback;
-  private NodeCallback resultsCallback;
+    private ValidationCallback callback;
+    private NodeCallback resultsCallback;
 
-  private int x;
+    private int x;
 
 
-  public Query6View() {
-    numeroNegocios = new TextField();
-    numeroNegocios.textProperty().addListener((o, oldVal, newVal) -> {
-      if (!newVal.matches("\\d*"))
-        numeroNegocios.setText(newVal.replaceAll("[^\\d]", ""));
-      try {
-        x = Integer.parseInt(numeroNegocios.getText());
-        setValid(true);
-      } catch (NumberFormatException e) {
-        setValid(false);
-      }
-    });
-  }
+    /**
+     * Constroi a view
+     */
+    public Query6View() {
+        numeroNegocios = new TextField();
+        numeroNegocios.textProperty().addListener((o, oldVal, newVal) -> {
+            if (!newVal.matches("\\d*"))
+                numeroNegocios.setText(newVal.replaceAll("[^\\d]", ""));
+            try {
+                x = Integer.parseInt(numeroNegocios.getText());
+                setValid(true);
+            } catch (NumberFormatException e) {
+                setValid(false);
+            }
+        });
+    }
 
-  @Override
-  public String getName() {
-    return "Query 6";
-  }
+    /**
+     * @return o nome da query
+     */
+    @Override
+    public String getName() {
+        return "Query 6";
+    }
 
-  @Override
-  public String getDescription() {
-    return "Determinar o conjunto dos X negócios mais avaliados (com mais reviews) em " +
-        "cada ano, indicando o número total de distintos utilizadores que o avaliaram " +
-        "( X é um inteiro dado pelo utilizador)";
-  }
+    /**
+     * @return a descricao da query
+     */
+    @Override
+    public String getDescription() {
+        return "Determinar o conjunto dos X negócios mais avaliados (com mais reviews) em " +
+                "cada ano, indicando o número total de distintos utilizadores que o avaliaram " +
+                "( X é um inteiro dado pelo utilizador)";
+    }
 
-  @Override
-  public Map<String, Node> getConfigOptionsNode() {
-    Map<String, Node> map = new HashMap<>();
-    map.put("N", numeroNegocios);
-    //map.put("Mês", monthInput);
-    return map;
-  }
+    /**
+     * A configuracao dos parametros da query
+     *
+     * @return Neste caso apenas um numero "N"
+     */
+    @Override
+    public Map<String, Node> getConfigOptionsNode() {
+        Map<String, Node> map = new HashMap<>();
+        map.put("N", numeroNegocios);
+        //map.put("Mês", monthInput);
+        return map;
+    }
 
-  @Override
-  public ValidationCallback getValidationCallback() {
-    return callback;
-  }
+    /**
+     * @return Obtem o callback de validacao
+     */
+    @Override
+    public ValidationCallback getValidationCallback() {
+        return callback;
+    }
 
-  @Override
-  public void setValidationCallback(ValidationCallback callback) {
-    this.callback = callback;
-  }
+    /**
+     * Configura o callback de validacao
+     *
+     * @param callback o callback
+     */
+    @Override
+    public void setValidationCallback(ValidationCallback callback) {
+        this.callback = callback;
+    }
 
-  @Override
-  public void showResults(IQueryResults results) {
-    // TODO
-    Crono.start();
-    double time = Crono.stop();
-    Query6Results res = (Query6Results) results;
+    /**
+     * Apresenta os dados da query
+     *
+     * @param results os dados a apresentar
+     */
+    @Override
+    public void showResults(IQueryResults results) {
+        // TODO
+        Crono.start();
+        double time = Crono.stop();
+        Query6Results res = (Query6Results) results;
 
-    VBox panel = new VBox();
-    panel.setPadding(new Insets(5));
+        VBox panel = new VBox();
+        panel.setPadding(new Insets(5));
 
-    panel.setSpacing(5);
-    panel.getChildren().add(new Label("Query 6"));
+        panel.setSpacing(5);
+        panel.getChildren().add(new Label("Query 6"));
 
-    panel.getChildren().add(new Label("Query Time: " + time));
+        panel.getChildren().add(new Label("Query Time: " + time));
 
-    TableView<MyTriple<Integer, String, Integer>> tableView = new TableView<>();
+        TableView<MyTriple<Integer, String, Integer>> tableView = new TableView<>();
 
-    TableColumn<MyTriple<Integer, String, Integer>, String> yearColumn = new TableColumn<>("Ano");
-    yearColumn.setCellValueFactory(new PropertyValueFactory<>("left"));
-    tableView.getColumns().add(yearColumn);
+        TableColumn<MyTriple<Integer, String, Integer>, String> yearColumn = new TableColumn<>("Ano");
+        yearColumn.setCellValueFactory(new PropertyValueFactory<>("left"));
+        tableView.getColumns().add(yearColumn);
 
-    TableColumn<MyTriple<Integer, String, Integer>, String> businessIdColumn = new TableColumn<>("Business");
-    businessIdColumn.setCellValueFactory(new PropertyValueFactory<>("middle"));
-    tableView.getColumns().add(businessIdColumn);
+        TableColumn<MyTriple<Integer, String, Integer>, String> businessIdColumn = new TableColumn<>("Business");
+        businessIdColumn.setCellValueFactory(new PropertyValueFactory<>("middle"));
+        tableView.getColumns().add(businessIdColumn);
 
-    TableColumn<MyTriple<Integer, String, Integer>, String> distinctUsers = new TableColumn<>("Numero de utilizadores unicos");
-    distinctUsers.setCellValueFactory(new PropertyValueFactory<>("right"));
-    tableView.getColumns().add(distinctUsers);
+        TableColumn<MyTriple<Integer, String, Integer>, String> distinctUsers = new TableColumn<>("Numero de utilizadores unicos");
+        distinctUsers.setCellValueFactory(new PropertyValueFactory<>("right"));
+        tableView.getColumns().add(distinctUsers);
 
-    final var buz = res.getBusinesses();
-    buz.sort(Comparator.comparingInt(MyTriple::getLeft));
-    tableView.getItems().addAll(buz);
+        final var buz = res.getBusinesses();
+        buz.sort(Comparator.comparingInt(MyTriple::getLeft));
+        tableView.getItems().addAll(buz);
 
-    VBox.setVgrow(tableView, Priority.ALWAYS);
-    panel.getChildren().add(tableView);
+        VBox.setVgrow(tableView, Priority.ALWAYS);
+        panel.getChildren().add(tableView);
 
-    if (this.resultsCallback != null)
-      resultsCallback.run(panel);
+        if (this.resultsCallback != null)
+            resultsCallback.run(panel);
 
-  }
+    }
 
-  @Override
-  public void addShowResultsCallback(NodeCallback callback) {
-    this.resultsCallback = callback;
-  }
+    /**
+     * Configura o callback de mostragem dos dados
+     *
+     * @param callback o callback
+     */
+    @Override
+    public void addShowResultsCallback(NodeCallback callback) {
+        this.resultsCallback = callback;
+    }
 
-  public int getX() {
-    return this.x;
-  }
+    /**
+     * @return O atual parametro da query
+     */
+    public int getX() {
+        return this.x;
+    }
 }
