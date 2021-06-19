@@ -193,7 +193,8 @@ public class GestReviews implements Serializable {
     return c;
   }
 
-  public Stream<Review> getReviewsOfBusiness(String businessId) {
+  public Stream<Review> getReviewsOfBusiness(String businessId) throws BusinessNotFoundException {
+    this.catalogoBusinesses.getById(businessId);
     return this.catalogoReviews.getByReviewId()
         .values()
         .stream()

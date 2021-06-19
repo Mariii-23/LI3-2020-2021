@@ -288,12 +288,10 @@ public class Stats implements IStats, Serializable  {
    * @return Lista
    */
   public List<MyTriple<Integer, Integer, Double>> query4(String businessId) throws BusinessNotFoundException {
-    if (this.averageByUserId == null)
-        throw new BusinessNotFoundException(businessId);
     List<BusinessStarsTuple> list = this.averageByBusinessId.get(businessId);
 
     if (list == null)
-      return null;
+      throw new BusinessNotFoundException(businessId);
 
     List<MyTriple<Integer, Integer, Double>> result = new ArrayList<>(12);
     for (int i = 0; i < 12; i++) {
