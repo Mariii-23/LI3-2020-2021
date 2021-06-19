@@ -1,6 +1,8 @@
 package li3.grupo54.Models;
 
-import li3.grupo54.Models.Exceptions.*;
+import li3.grupo54.Models.Exceptions.DateNotFoundException;
+import li3.grupo54.Models.Exceptions.InvalidReviewLineException;
+import li3.grupo54.Models.Exceptions.ReviewNotFoundException;
 import li3.grupo54.Models.Interfaces.ICatalog;
 import li3.grupo54.Utils.MyPair;
 
@@ -8,30 +10,29 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CatalogoReviews implements ICatalog<Review> {
-  // ano =>  array de 12 elementos => cada array tem um set de reviews
-  private final Map<Integer, List<Set<Review>>> anoToReviewsPerMonth;
-  private final Map<String, Review> byReviewId;
-
-  private int invalidUsers;
-  private int zeroImpact;
-
-  public CatalogoReviews() {
-    this.anoToReviewsPerMonth = new HashMap<>();
-    this.byReviewId = new HashMap<>();
-     this.invalidUsers =0;
-     this.zeroImpact=0;
-  }
-
   public static PrintWriter p;
+
   static {
     try {
       p = new PrintWriter(new FileOutputStream("IBUSINESS"));
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  // ano =>  array de 12 elementos => cada array tem um set de reviews
+  private final Map<Integer, List<Set<Review>>> anoToReviewsPerMonth;
+  private final Map<String, Review> byReviewId;
+  private int invalidUsers;
+  private int zeroImpact;
+
+  public CatalogoReviews() {
+    this.anoToReviewsPerMonth = new HashMap<>();
+    this.byReviewId = new HashMap<>();
+    this.invalidUsers = 0;
+    this.zeroImpact = 0;
   }
 
   @Override
@@ -46,41 +47,39 @@ public class CatalogoReviews implements ICatalog<Review> {
 
   @Override
   public void add(Review review) {
-      LocalDateTime data = review.getDate();
-      int ano = data.getYear();
-      int mes = data.getMonthValue() - 1;
-      // ver se o ano existe
-      List<Set<Review>> listaAnos = this.anoToReviewsPerMonth.get(ano);
-      // a lista nunca e vazia por isso se e  null e porque a key nao existe
-    Set <Review> s =  null;
-      if( listaAnos== null ) {
-          listaAnos = new ArrayList<>(12);
-          for (int i = 0; i < 12; i++) {
-              if(i == mes ) {
-                s = new HashSet<>();
-                listaAnos.add(i,s);
-              }
-              else {
-                listaAnos.add(i,null);
-              }
-          }
-          this.anoToReviewsPerMonth.put(ano,listaAnos);
+    LocalDateTime data = review.getDate();
+    int ano = data.getYear();
+    int mes = data.getMonthValue() - 1;
+    // ver se o ano existe
+    List<Set<Review>> listaAnos = this.anoToReviewsPerMonth.get(ano);
+    // a lista nunca e vazia por isso se e  null e porque a key nao existe
+    Set<Review> s = null;
+    if (listaAnos == null) {
+      listaAnos = new ArrayList<>(12);
+      for (int i = 0; i < 12; i++) {
+        if (i == mes) {
+          s = new HashSet<>();
+          listaAnos.add(i, s);
+        } else {
+          listaAnos.add(i, null);
+        }
       }
-      else {
-          s = listaAnos.get(mes);
-      }
+      this.anoToReviewsPerMonth.put(ano, listaAnos);
+    } else {
+      s = listaAnos.get(mes);
+    }
 
-      Review reviewClone = review.clone();
-      if(s != null) s.add(reviewClone);
-      else{
-        s = new HashSet<>();
-        s.add((reviewClone));
-        listaAnos.set(mes,s);
-      }
-      if(review.impact())
-        this.zeroImpact++;
+    Review reviewClone = review.clone();
+    if (s != null) s.add(reviewClone);
+    else {
+      s = new HashSet<>();
+      s.add((reviewClone));
+      listaAnos.set(mes, s);
+    }
+    if (review.impact())
+      this.zeroImpact++;
 
-      this.byReviewId.put(review.getReviewId(), reviewClone);
+    this.byReviewId.put(review.getReviewId(), reviewClone);
 
   }
 
@@ -88,7 +87,7 @@ public class CatalogoReviews implements ICatalog<Review> {
     return invalidUsers;
   }
 
-  public void addInvalid(){
+  public void addInvalid() {
     this.invalidUsers++;
   }
 
@@ -103,21 +102,21 @@ public class CatalogoReviews implements ICatalog<Review> {
 
   }
 
- // public Set<Review> getReviews(Integer year, Integer month) throws DateNotFoundException {
- //   List<Set<Review>> listOfReviews = null;
- //   if ((listOfReviews = this.anoToReviewsPerMonth.get(year)) == null)
- //     throw new DateNotFoundException("Date not found. Year: " + year + " month: " + month);
- //   Set<Review> reviews = null;
- //   if ((reviews = listOfReviews.get(month - 1)) == null)
- //     throw new DateNotFoundException("Date not found. Year: " + year + " month: " + month);
- //   Set<Review> result = new HashSet<>();
- //   for (Review review : reviews)
- //     result.add(review.clone());
- //   return result;
- // }
+  // public Set<Review> getReviews(Integer year, Integer month) throws DateNotFoundException {
+  //   List<Set<Review>> listOfReviews = null;
+  //   if ((listOfReviews = this.anoToReviewsPerMonth.get(year)) == null)
+  //     throw new DateNotFoundException("Date not found. Year: " + year + " month: " + month);
+  //   Set<Review> reviews = null;
+  //   if ((reviews = listOfReviews.get(month - 1)) == null)
+  //     throw new DateNotFoundException("Date not found. Year: " + year + " month: " + month);
+  //   Set<Review> result = new HashSet<>();
+  //   for (Review review : reviews)
+  //     result.add(review.clone());
+  //   return result;
+  // }
 
   public Integer getNumberReviewsDate(Integer year, Integer month) throws DateNotFoundException {
-    if(this.anoToReviewsPerMonth.size()==0)
+    if (this.anoToReviewsPerMonth.size() == 0)
       return 0;
     List<Set<Review>> listOfReviews = null;
     if ((listOfReviews = this.anoToReviewsPerMonth.get(year)) != null) {
@@ -130,7 +129,7 @@ public class CatalogoReviews implements ICatalog<Review> {
     }
   }
 
-  public Integer getNumberDistinctUsers(Integer year,Integer month) throws DateNotFoundException {
+  public Integer getNumberDistinctUsers(Integer year, Integer month) throws DateNotFoundException {
     List<Set<Review>> listOfReviews = null;
     if ((listOfReviews = this.anoToReviewsPerMonth.get(year)) == null)
       throw new DateNotFoundException("Date not found. Year: " + year + " month: " + month);
@@ -139,7 +138,7 @@ public class CatalogoReviews implements ICatalog<Review> {
       throw new DateNotFoundException("Date not found. Year: " + year + " month: " + month);
 
     HashSet<String> users = new HashSet<>();
-    for(Review review:reviews)
+    for (Review review : reviews)
       users.add(review.getUserId());
 
     return users.size();
@@ -149,7 +148,7 @@ public class CatalogoReviews implements ICatalog<Review> {
     Set<String> distintUsers = new HashSet<>();
     for (Map.Entry<Integer, List<Set<Review>>> elem : anoToReviewsPerMonth.entrySet()) {
       for (Set<Review> reviews : elem.getValue())
-        if(reviews != null) {
+        if (reviews != null) {
           for (Review review : reviews)
             distintUsers.add(review.getUserId());
         }
@@ -174,21 +173,21 @@ public class CatalogoReviews implements ICatalog<Review> {
     int users = 0;
     try {
       reviews = getNumberReviewsDate(year, month);
-      users =  getNumberDistinctUsers(year,month);
+      users = getNumberDistinctUsers(year, month);
+    } catch (DateNotFoundException ignored) {
+      System.out.println("Data not found year: " + year + " month: " + month);
     }
-    catch (DateNotFoundException ignored) {
-      System.out.println("Data not found year: "+year+" month: "+month);
-    }
-    return new MyPair<>(reviews,users);
-    }
+    return new MyPair<>(reviews, users);
+  }
 
   public Map<Integer, List<Set<Review>>> getAnoToReviewsPerMonth() {
     return anoToReviewsPerMonth;
   }
 
-  public Review getReviewById (String id) {
+  public Review getReviewById(String id) {
     return this.byReviewId.get(id).clone();
   }
+
   public Map<String, Review> getByReviewId() {
     return byReviewId;
   }

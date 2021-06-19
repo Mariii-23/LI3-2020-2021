@@ -1,23 +1,27 @@
 package li3.grupo54.Models.Interfaces;
 
-import li3.grupo54.Models.*;
+import li3.grupo54.Models.CatalogoBusinesses;
+import li3.grupo54.Models.CatalogoUsers;
 import li3.grupo54.Models.Exceptions.*;
+import li3.grupo54.Models.Leitura;
+import li3.grupo54.Models.Stats;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 public interface ICatalog<T> extends Serializable {
-  T callConstructor(String[] line) throws  BusinessNotFoundException, InvalidUserLineException,
-          InvalidBusinessLineException, InvalidReviewLineException,
-          InvalidUserLineException, InvalidBusinessLineException,
-          InvalidReviewLineException;
+  T callConstructor(String[] line) throws BusinessNotFoundException, InvalidUserLineException,
+      InvalidBusinessLineException, InvalidReviewLineException,
+      InvalidUserLineException, InvalidBusinessLineException,
+      InvalidReviewLineException;
 
   int size();
+
   void add(T t);
 
   T getById(String id) throws UserNotFoundException, BusinessNotFoundException, ReviewNotFoundException;
 
-  void delete(String id) throws UserNotFoundException, BusinessNotFoundException,ReviewNotFoundException ;
+  void delete(String id) throws UserNotFoundException, BusinessNotFoundException, ReviewNotFoundException;
 
   void addInvalid();
 
@@ -28,24 +32,25 @@ public interface ICatalog<T> extends Serializable {
     char delim = Leitura.determineDelimiter(reader.readLine());
 
     String nextLine;
-    String [] parsedLine ;
-    while ((nextLine = reader.readLine()) != null)  {
+    String[] parsedLine;
+    while ((nextLine = reader.readLine()) != null) {
       try {
-        parsedLine  = nextLine.split(String.valueOf(delim));
+        parsedLine = nextLine.split(String.valueOf(delim));
         // constructor vai validar e lancar excecao se der erro
         T newEntity = callConstructor(parsedLine);
 
-        if( newEntity instanceof IReview ){
-         if(catalogoBusinesses.containsBusinessById(((IReview) newEntity).getBusinessId())  &&
-            catalogoUsers.containsUserById(((IReview) newEntity).getUserId())){
+        if (newEntity instanceof IReview) {
+          if (catalogoBusinesses.containsBusinessById(((IReview) newEntity).getBusinessId()) &&
+              catalogoUsers.containsUserById(((IReview) newEntity).getUserId())) {
+            this.add(newEntity);
+            stats.atualiza(newEntity, catalogoUsers, catalogoBusinesses);
+          }
+        } else {
           this.add(newEntity);
-          stats.atualiza(newEntity,catalogoUsers,catalogoBusinesses);}
-        }else {
-          this.add(newEntity);
-          stats.atualiza(newEntity,catalogoUsers,catalogoBusinesses);
+          stats.atualiza(newEntity, catalogoUsers, catalogoBusinesses);
         }
 
-      } catch (InvalidUserLineException | BusinessNotFoundException | InvalidBusinessLineException | InvalidReviewLineException  e) {
+      } catch (InvalidUserLineException | BusinessNotFoundException | InvalidBusinessLineException | InvalidReviewLineException e) {
         // alterarar estatisticas de linhsa invalidaas
         this.addInvalid();
       }

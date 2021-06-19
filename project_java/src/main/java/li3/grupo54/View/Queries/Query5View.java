@@ -6,12 +6,10 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.Node;
-import javafx.scene.control.TextField;
 import li3.grupo54.Controller.NodeCallback;
 import li3.grupo54.Controller.ValidationCallback;
 import li3.grupo54.Models.Queries.IQueryResults;
@@ -20,7 +18,6 @@ import li3.grupo54.Utils.Crono;
 import li3.grupo54.Utils.MyPair;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Query5View implements IQueryViewFX {
@@ -32,10 +29,10 @@ public class Query5View implements IQueryViewFX {
   private String userIdString;
 
   public Query5View() {
-   userId = new TextField();
+    userId = new TextField();
     userId.textProperty().addListener((o, oldVal, newVal) -> {
-        userIdString = userId.getText();
-        setValid(true);
+      userIdString = userId.getText();
+      setValid(true);
     });
   }
 
@@ -47,7 +44,7 @@ public class Query5View implements IQueryViewFX {
   @Override
   public String getDescription() {
     return "Dado o código de um utilizador determinar a lista de nomes de negócios que mais avaliou (e quantos)," +
-            "ordenada por ordem decrescente de quantidade e,para quantidades iguais, por ordem alfabética dos negócios";
+        "ordenada por ordem decrescente de quantidade e,para quantidades iguais, por ordem alfabética dos negócios";
   }
 
   @Override
@@ -58,13 +55,13 @@ public class Query5View implements IQueryViewFX {
   }
 
   @Override
-  public void setValidationCallback(ValidationCallback callback) {
-    this.callback = callback;
+  public ValidationCallback getValidationCallback() {
+    return callback;
   }
 
   @Override
-  public ValidationCallback getValidationCallback() {
-    return callback;
+  public void setValidationCallback(ValidationCallback callback) {
+    this.callback = callback;
   }
 
   @Override
@@ -78,15 +75,15 @@ public class Query5View implements IQueryViewFX {
 
     panel.setSpacing(5);
 
-    panel.getChildren().add(new Label("Query Time: " +time ));
+    panel.getChildren().add(new Label("Query Time: " + time));
 
-    TableView<MyPair<String,Integer>> tableView = new TableView<>();
-    TableColumn<MyPair<String,Integer>, String> column1 = new TableColumn<>("Name reviews");
+    TableView<MyPair<String, Integer>> tableView = new TableView<>();
+    TableColumn<MyPair<String, Integer>, String> column1 = new TableColumn<>("Name reviews");
     column1.setCellValueFactory(new PropertyValueFactory<>("x"));
 
     tableView.getColumns().add(column1);
 
-    TableColumn<MyPair<String,Integer>, String> meanColumn = new TableColumn<>("Mean");
+    TableColumn<MyPair<String, Integer>, String> meanColumn = new TableColumn<>("Mean");
     meanColumn.setCellValueFactory(new PropertyValueFactory<>("y"));
     tableView.getColumns().add(meanColumn);
 
@@ -98,6 +95,7 @@ public class Query5View implements IQueryViewFX {
       resultsCallback.run(panel);
 
   }
+
   @Override
   public void addShowResultsCallback(NodeCallback callback) {
     this.resultsCallback = callback;

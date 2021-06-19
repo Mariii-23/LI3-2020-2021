@@ -16,17 +16,17 @@ public class Query5Results implements IQueryResults {
     return result;
   }
 
-public List<String> allNameReviews(){
-  List<String> list = new ArrayList<>();
-  for(MyPair<String,Integer> pair: result){
-    list.add(pair.getX());
-  }
-  return list;
-}
-
-  public List<String> getAllNumber(){
+  public List<String> allNameReviews() {
     List<String> list = new ArrayList<>();
-       for(MyPair<String,Integer> pair: result){
+    for (MyPair<String, Integer> pair : result) {
+      list.add(pair.getX());
+    }
+    return list;
+  }
+
+  public List<String> getAllNumber() {
+    List<String> list = new ArrayList<>();
+    for (MyPair<String, Integer> pair : result) {
       list.add(Integer.toString(pair.getY()));
     }
     return list;

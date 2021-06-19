@@ -38,6 +38,7 @@ public class UserStarsTuple extends StarsTuple {
   public int getBusinessNumberDistint() {
     return this.business.size();
   }
+
   public Set<String> getReviews() {
     return new HashSet<>(reviews);
   }

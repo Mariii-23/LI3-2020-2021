@@ -2,7 +2,7 @@ package li3.grupo54.Utils;
 
 import java.util.Objects;
 
-public class MyPair<T,R> {
+public class MyPair<T, R> {
   private T x;
   private R y;
 
@@ -11,7 +11,7 @@ public class MyPair<T,R> {
     this.y = y;
   }
 
-  public MyPair(MyPair<T,R> that){
+  public MyPair(MyPair<T, R> that) {
     this.x = that.getX();
     this.y = that.getY();
   }

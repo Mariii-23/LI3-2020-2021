@@ -2,12 +2,12 @@ package li3.grupo54.Controller.Queries;
 
 
 import li3.grupo54.Models.GestReviews;
-import li3.grupo54.Models.Queries.*;
-import li3.grupo54.View.Queries.IQueryView;
 import li3.grupo54.Models.Queries.IQueryResults;
+import li3.grupo54.Models.Queries.Query7Results;
+import li3.grupo54.View.Queries.IQueryView;
 import li3.grupo54.View.Queries.Query7View;
 
-public class Query7 implements IQueryController{
+public class Query7 implements IQueryController {
   GestReviews model;
   Query7View view;
 
@@ -23,6 +23,6 @@ public class Query7 implements IQueryController{
 
   @Override
   public IQueryResults execute() {
-    return  new Query7Results(model.query7());
+    return new Query7Results(model.query7());
   }
 }

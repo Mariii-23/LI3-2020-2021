@@ -3,11 +3,8 @@ package li3.grupo54.Models;
 import li3.grupo54.Models.Exceptions.InvalidReviewLineException;
 import li3.grupo54.Models.Interfaces.IReview;
 
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class Review implements IReview {
@@ -71,8 +68,8 @@ public class Review implements IReview {
     }
   }
 
-  public boolean impact(){
-    return this.cool +this.useful+this.funny==0;
+  public boolean impact() {
+    return this.cool + this.useful + this.funny == 0;
   }
 
   @Override
@@ -128,16 +125,16 @@ public class Review implements IReview {
   @Override
   public String toString() {
     return "Review{" +
-            "reviewId='" + reviewId + '\'' +
-            ", userId='" + userId + '\'' +
-            ", businessId='" + businessId + '\'' +
-            ", stars=" + stars +
-            ", useful=" + useful +
-            ", funny=" + funny +
-            ", cool=" + cool +
-            ", date=" + date +
-            ", text='" + text + '\'' +
-            '}';
+        "reviewId='" + reviewId + '\'' +
+        ", userId='" + userId + '\'' +
+        ", businessId='" + businessId + '\'' +
+        ", stars=" + stars +
+        ", useful=" + useful +
+        ", funny=" + funny +
+        ", cool=" + cool +
+        ", date=" + date +
+        ", text='" + text + '\'' +
+        '}';
   }
 
   @Override

@@ -4,5 +4,5 @@ import java.io.File;
 import java.io.IOException;
 
 public interface EmptyCallback {
-    public void run(File f) throws IOException;
+  public void run(File f) throws IOException;
 }

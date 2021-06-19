@@ -5,15 +5,15 @@ import li3.grupo54.Utils.MyTriple;
 
 import java.util.List;
 
-public class Query3Results implements IQueryResults{
-    List<MyTriple<Integer,Integer,Float>> result;
-    // mes to triplo(numero review, negocios distintos, media atribuida)
+public class Query3Results implements IQueryResults {
+  List<MyTriple<Integer, Integer, Float>> result;
+  // mes to triplo(numero review, negocios distintos, media atribuida)
 
-    public Query3Results(List<MyTriple<Integer,Integer,Float>> result){
-        this.result = result;
-    }
+  public Query3Results(List<MyTriple<Integer, Integer, Float>> result) {
+    this.result = result;
+  }
 
-    public List<MyTriple<Integer,Integer,Float>> getResults() {
-      return result;
-    }
+  public List<MyTriple<Integer, Integer, Float>> getResults() {
+    return result;
+  }
 }

@@ -12,9 +12,14 @@ public interface IView {
   public void show();
 
   public FileTriple getFileTriple();
+
   public void showError(String title, String description);
+
   public void setOpenCallback(CallbackFileTriple callback);
+
   public void addQuery(IQueryView query, ExecuteCallback callback);
+
   public void setOnSave(EmptyCallback callback);
+
   public File getSaveLocation();
 }

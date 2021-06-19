@@ -3,12 +3,8 @@ package li3.grupo54.Models;
 import li3.grupo54.Models.Exceptions.InvalidUserLineException;
 import li3.grupo54.Models.Interfaces.IUser;
 
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Arrays;
 
 public class User implements IUser {
   private String userId;
@@ -56,13 +52,13 @@ public class User implements IUser {
     return name;
   }
 
+  public void setName(String name) {
+    this.name = name;
+  }
+
   @Override
   public List<String> getFriends() {
     return null;
-  }
-
-  public void setName(String name) {
-    this.name = name;
   }
 
   public User clone() {

@@ -16,20 +16,20 @@ public class GestReviewsAppMVC extends Application {
   }
 
   public void start(Stage s) {
-      DesktopView view = new DesktopView(s);
-      GestReviews model = new GestReviews();
-      IController controller = new Controller(model, view);
+    DesktopView view = new DesktopView(s);
+    GestReviews model = new GestReviews();
+    IController controller = new Controller(model, view);
 
-      controller.addQuery(new Query1(model, new Query1View()));
-      controller.addQuery(new Query2(model, new Query2View()));
-      controller.addQuery(new Query3(model, new Query3View()));
-      controller.addQuery(new Query4(model, new Query4View()));
-      controller.addQuery(new Query5(model, new Query5View()));
-      controller.addQuery(new Query6(model, new Query6View()));
-      controller.addQuery(new Query7(model, new Query7View()));
-      controller.addQuery(new Query8(model, new Query8View()));
-      controller.addQuery(new Query9(model, new Query9View()));
-      controller.addQuery(new Query10(model, new Query10View()));
-      controller.executa();
+    controller.addQuery(new Query1(model, new Query1View()));
+    controller.addQuery(new Query2(model, new Query2View()));
+    controller.addQuery(new Query3(model, new Query3View()));
+    controller.addQuery(new Query4(model, new Query4View()));
+    controller.addQuery(new Query5(model, new Query5View()));
+    controller.addQuery(new Query6(model, new Query6View()));
+    controller.addQuery(new Query7(model, new Query7View()));
+    controller.addQuery(new Query8(model, new Query8View()));
+    controller.addQuery(new Query9(model, new Query9View()));
+    controller.addQuery(new Query10(model, new Query10View()));
+    controller.executa();
   }
 }

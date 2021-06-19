@@ -55,9 +55,8 @@ public class DesktopView implements IView {
     stage.setTitle("Sistema de Gestão de Reviews");
     try {
       stage.setScene(new Scene(loader.load(), 1280, 768));
-    }
-    catch (IOException e) {
-    // Fazemos isto porque, desde que o programa tenha sido bem compilado, é impossível de acontecer
+    } catch (IOException e) {
+      // Fazemos isto porque, desde que o programa tenha sido bem compilado, é impossível de acontecer
       throw new UncheckedIOException(e);
     }
 
@@ -123,10 +122,10 @@ public class DesktopView implements IView {
 
   @Override
   public File getSaveLocation() {
-    FileChooser fc = new FileChooser() ;
-     fc.setTitle("Save object file");
-      File file = fc.showSaveDialog(this.stage);
-      return file;
+    FileChooser fc = new FileChooser();
+    fc.setTitle("Save object file");
+    File file = fc.showSaveDialog(this.stage);
+    return file;
   }
 
   @Override
@@ -157,7 +156,7 @@ public class DesktopView implements IView {
   }
 
   public void setOnSave(EmptyCallback onGravar) {
-        this.saveCallback = onGravar;
+    this.saveCallback = onGravar;
   }
 
   @FXML
@@ -167,21 +166,23 @@ public class DesktopView implements IView {
       callback.run(t);
     }
   }
-   @FXML
-    private void onSave() throws IOException {
-      if(saveCallback != null) {
-        var f = getSaveLocation();
-        saveCallback.run(f);
-      }
-   }
-   @FXML
-   private void  onRestore(){
-      //if(restoreCallback != null) {
-      //
-      //  restoreCallback.run();
-      //
-      //}
 
-   }
+  @FXML
+  private void onSave() throws IOException {
+    if (saveCallback != null) {
+      var f = getSaveLocation();
+      saveCallback.run(f);
+    }
+  }
+
+  @FXML
+  private void onRestore() {
+    //if(restoreCallback != null) {
+    //
+    //  restoreCallback.run();
+    //
+    //}
+
+  }
 
 }

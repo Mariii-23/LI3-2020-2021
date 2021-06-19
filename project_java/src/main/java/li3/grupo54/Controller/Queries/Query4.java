@@ -7,7 +7,7 @@ import li3.grupo54.Models.Queries.Query3Results;
 import li3.grupo54.View.Queries.IQueryView;
 import li3.grupo54.View.Queries.Query4View;
 
-public class Query4 implements IQueryController{
+public class Query4 implements IQueryController {
   GestReviews model;
   Query4View view;
 

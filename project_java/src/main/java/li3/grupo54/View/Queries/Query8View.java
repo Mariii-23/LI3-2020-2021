@@ -6,20 +6,18 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.TextField;
 import li3.grupo54.Controller.NodeCallback;
 import li3.grupo54.Controller.ValidationCallback;
 import li3.grupo54.Models.Queries.IQueryResults;
 import li3.grupo54.Models.Queries.Query8Results;
 import li3.grupo54.Utils.Crono;
 import li3.grupo54.Utils.MyPair;
-import li3.grupo54.Utils.MyTriple;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Query8View implements IQueryViewFX {
@@ -41,7 +39,7 @@ public class Query8View implements IQueryViewFX {
         numberInput.setText(newVal.replaceAll("[^\\d]", ""));
       try {
         number = Integer.parseInt(numberInput.getText());
-        validNumber=true;
+        validNumber = true;
         setValid(true);
       } catch (NumberFormatException e) {
         validNumber = false;
@@ -71,13 +69,13 @@ public class Query8View implements IQueryViewFX {
   }
 
   @Override
-  public void setValidationCallback(ValidationCallback callback) {
-    this.callback = callback;
+  public ValidationCallback getValidationCallback() {
+    return callback;
   }
 
   @Override
-  public ValidationCallback getValidationCallback() {
-    return callback;
+  public void setValidationCallback(ValidationCallback callback) {
+    this.callback = callback;
   }
 
   @Override
@@ -90,15 +88,15 @@ public class Query8View implements IQueryViewFX {
     panel.setPadding(new Insets(5));
     panel.setSpacing(5);
 
-    panel.getChildren().add(new Label("Query Time: " +time ));
+    panel.getChildren().add(new Label("Query Time: " + time));
 
-    TableView<MyPair<String,Integer>> tableView = new TableView<>();
-    TableColumn<MyPair<String,Integer>,String> column1 = new TableColumn<>("User id");
+    TableView<MyPair<String, Integer>> tableView = new TableView<>();
+    TableColumn<MyPair<String, Integer>, String> column1 = new TableColumn<>("User id");
     column1.setCellValueFactory(new PropertyValueFactory<>("x"));
 
     tableView.getColumns().add(column1);
 
-    TableColumn<MyPair<String,Integer>,String> column2 = new TableColumn<>("Business Number");
+    TableColumn<MyPair<String, Integer>, String> column2 = new TableColumn<>("Business Number");
     column2.setCellValueFactory(new PropertyValueFactory<>("y"));
 
     tableView.getColumns().add(column2);
@@ -112,12 +110,13 @@ public class Query8View implements IQueryViewFX {
       resultsCallback.run(panel);
 
   }
+
   @Override
   public void addShowResultsCallback(NodeCallback callback) {
     this.resultsCallback = callback;
   }
 
-  public Integer getNumber(){
-    return  number;
+  public Integer getNumber() {
+    return number;
   }
 }

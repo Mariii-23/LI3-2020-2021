@@ -6,5 +6,5 @@ import li3.grupo54.Models.CatalogoUsers;
 import java.io.Serializable;
 
 public interface IStats extends Serializable {
-      public <T> void atualiza(T newEntity, CatalogoUsers catalogoUsers, CatalogoBusinesses catalogoBusinesses) ;
+  public <T> void atualiza(T newEntity, CatalogoUsers catalogoUsers, CatalogoBusinesses catalogoBusinesses);
 }

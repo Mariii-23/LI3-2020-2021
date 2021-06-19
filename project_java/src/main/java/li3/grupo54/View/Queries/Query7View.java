@@ -6,7 +6,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import li3.grupo54.Controller.NodeCallback;
@@ -39,14 +38,14 @@ public class Query7View implements IQueryViewFX {
   }
 
   @Override
-  public void setValidationCallback(ValidationCallback callback) {
-    this.callback = callback;
-    setValid(true);
+  public ValidationCallback getValidationCallback() {
+    return callback;
   }
 
   @Override
-  public ValidationCallback getValidationCallback() {
-    return callback;
+  public void setValidationCallback(ValidationCallback callback) {
+    this.callback = callback;
+    setValid(true);
   }
 
   @Override
@@ -60,20 +59,20 @@ public class Query7View implements IQueryViewFX {
 
     panel.setSpacing(5);
 
-    panel.getChildren().add(new Label("Query Time: " +time ));
+    panel.getChildren().add(new Label("Query Time: " + time));
 
-    TableView<MyTriple<String,String,Integer>> tableView = new TableView<>();
-    TableColumn<MyTriple<String,String,Integer>,String> column1 = new TableColumn<>("City");
+    TableView<MyTriple<String, String, Integer>> tableView = new TableView<>();
+    TableColumn<MyTriple<String, String, Integer>, String> column1 = new TableColumn<>("City");
     column1.setCellValueFactory(new PropertyValueFactory<>("left"));
 
     tableView.getColumns().add(column1);
 
-    TableColumn<MyTriple<String,String,Integer>,String> column2 = new TableColumn<>("Business Id");
+    TableColumn<MyTriple<String, String, Integer>, String> column2 = new TableColumn<>("Business Id");
     column2.setCellValueFactory(new PropertyValueFactory<>("middle"));
 
     tableView.getColumns().add(column2);
 
-    TableColumn<MyTriple<String,String,Integer>, String> column3 = new TableColumn<>("Business Number total");
+    TableColumn<MyTriple<String, String, Integer>, String> column3 = new TableColumn<>("Business Number total");
     column3.setCellValueFactory(new PropertyValueFactory<>("right"));
     tableView.getColumns().add(column3);
 
@@ -85,6 +84,7 @@ public class Query7View implements IQueryViewFX {
     if (this.resultsCallback != null)
       resultsCallback.run(panel);
   }
+
   @Override
   public void addShowResultsCallback(NodeCallback callback) {
     this.resultsCallback = callback;

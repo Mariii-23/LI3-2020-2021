@@ -5,16 +5,28 @@ import li3.grupo54.Models.Exceptions.InvalidBusinessLineException;
 import li3.grupo54.Models.Interfaces.IBusiness;
 import li3.grupo54.Models.Interfaces.ICatalog;
 
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
-import java.sql.BatchUpdateException;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 
 public class CatalogoBusinesses implements ICatalog<IBusiness> {
   // todos os negocios  vao ser colocados aqui numa fase inicial e depois passados para o outro map  caso se encontre uma review
   private final TreeMap<String, IBusiness> businessesById; // ordenados por ordem alfabetica
   private int invalidBusinesses;
 
+
+  public CatalogoBusinesses() {
+    this.businessesById = new TreeMap<>();
+    this.invalidBusinesses = 0;
+  }
+
+  public CatalogoBusinesses(TreeMap<String, IBusiness> businesses, int invalidBusinesses) {
+    this.businessesById = new TreeMap<>();
+    for (Map.Entry<String, IBusiness> entry : businesses.entrySet()) {
+      this.businessesById.put(entry.getKey(), entry.getValue().clone());
+    }
+    this.invalidBusinesses = invalidBusinesses;
+  }
 
   //public static PrintWriter p;
   //static {
@@ -24,28 +36,20 @@ public class CatalogoBusinesses implements ICatalog<IBusiness> {
   //    e.printStackTrace();
   //  }
   //}
-  public IBusiness getBusiness(String businessId){
+  public IBusiness getBusiness(String businessId) {
     return businessesById.get(businessId);
   }
 
-  public CatalogoBusinesses() {
-    this.businessesById = new TreeMap<>();
-    this.invalidBusinesses = 0;
-  }
-
-  public CatalogoBusinesses(TreeMap<String, IBusiness> businesses, int invalidBusinesses) {
-    this.businessesById = new TreeMap<>();
-    for( Map.Entry<String,IBusiness> entry: businesses.entrySet()) {
-        this.businessesById.put(entry.getKey(),entry.getValue().clone());
-    }
-    this.invalidBusinesses = invalidBusinesses;
-  }
-  public void addInvalid(){
+  public void addInvalid() {
     this.invalidBusinesses++;
   }
 
   public int getInvalidBusinesses() {
     return invalidBusinesses;
+  }
+
+  public void setInvalidBusinesses(int invalidBusinesses) {
+    this.invalidBusinesses = invalidBusinesses;
   }
 
   @Override
@@ -60,33 +64,33 @@ public class CatalogoBusinesses implements ICatalog<IBusiness> {
 
   @Override
   public void add(IBusiness iBusiness) {
-   this.businessesById.put(iBusiness.getId(),iBusiness.clone());
+    this.businessesById.put(iBusiness.getId(), iBusiness.clone());
   }
 
   @Override
   public IBusiness getById(String id) throws BusinessNotFoundException {
-      var biz = this.businessesById.get(id);
-      if (biz != null) {
-        return biz;
-      } else {
-        throw new BusinessNotFoundException(id);
-      }
+    var biz = this.businessesById.get(id);
+    if (biz != null) {
+      return biz;
+    } else {
+      throw new BusinessNotFoundException(id);
+    }
   }
 
   @Override
   public void delete(String id) throws BusinessNotFoundException {
-      if(this.businessesById.get(id) == null) throw new BusinessNotFoundException();
-      else {
-        this.businessesById.remove(id);
-      }
+    if (this.businessesById.get(id) == null) throw new BusinessNotFoundException();
+    else {
+      this.businessesById.remove(id);
+    }
   }
 
   @Override
   public String toString() {
     return "CatalogoBusinesses{" +
-            "businesses=" + businessesById +
-            ", invalidBusinesses=" + invalidBusinesses +
-            '}';
+        "businesses=" + businessesById +
+        ", invalidBusinesses=" + invalidBusinesses +
+        '}';
   }
 
   @Override
@@ -106,18 +110,14 @@ public class CatalogoBusinesses implements ICatalog<IBusiness> {
     return businessesById;
   }
 
-  public void setInvalidBusinesses(int invalidBusinesses) {
-    this.invalidBusinesses = invalidBusinesses;
-  }
-
-  public String getName(String businessId) throws  BusinessNotFoundException{
-    IBusiness business=null;
-    if(( business = businessesById.get(businessId))==null)
-      throw new BusinessNotFoundException("Business Not Found Id: "+businessId);
+  public String getName(String businessId) throws BusinessNotFoundException {
+    IBusiness business = null;
+    if ((business = businessesById.get(businessId)) == null)
+      throw new BusinessNotFoundException("Business Not Found Id: " + businessId);
     return business.getName();
   }
 
-  public boolean containsBusinessById(String businessId){
-    return this.businessesById!=null && this.businessesById.containsKey(businessId);
+  public boolean containsBusinessById(String businessId) {
+    return this.businessesById != null && this.businessesById.containsKey(businessId);
   }
 }

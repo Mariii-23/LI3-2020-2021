@@ -42,7 +42,7 @@ public class Controller implements IController {
 
   public void saveObject(File file) throws IOException {
     System.out.println("get path: " + file);
-      this.model.onSave(file.getAbsolutePath());
+    this.model.onSave(file.getAbsolutePath());
   }
 
   private void loadTriple(FileTriple triple) {

@@ -3,7 +3,7 @@ package li3.grupo54.Models;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ReviewStarsTuple extends  StarsTuple{
+public class ReviewStarsTuple extends StarsTuple {
   private final Set<String> reviews;
 
 
@@ -12,15 +12,15 @@ public class ReviewStarsTuple extends  StarsTuple{
     reviews = new HashSet<>();
   }
 
- public  ReviewStarsTuple(Review review){
+  public ReviewStarsTuple(Review review) {
     super(review.getStars(), 1);
     reviews = new HashSet<>();
- }
+  }
 
- public  void updateAverage(Review review){
-   super.update(review.getStars());
-   reviews.add(review.getReviewId());
- }
+  public void updateAverage(Review review) {
+    super.update(review.getStars());
+    reviews.add(review.getReviewId());
+  }
 
   public double getCurrentAverage() {
     return super.getCurrentAverage();

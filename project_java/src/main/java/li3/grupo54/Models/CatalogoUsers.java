@@ -4,8 +4,6 @@ import li3.grupo54.Models.Exceptions.InvalidUserLineException;
 import li3.grupo54.Models.Exceptions.UserNotFoundException;
 import li3.grupo54.Models.Interfaces.ICatalog;
 
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +13,7 @@ public class CatalogoUsers implements ICatalog<User> {
 
   public CatalogoUsers() {
     this.byUserId = new HashMap<>();
-    this.invalidUsers =0;
+    this.invalidUsers = 0;
   }
 
   @Override
@@ -36,13 +34,13 @@ public class CatalogoUsers implements ICatalog<User> {
   }
 
   public void delete(String id) throws UserNotFoundException {
-    if (this.byUserId.get(id) == null ) throw new UserNotFoundException();
+    if (this.byUserId.get(id) == null) throw new UserNotFoundException();
     else {
       byUserId.remove(id);
     }
   }
 
-  public void addInvalid(){
+  public void addInvalid() {
     this.invalidUsers++;
   }
 
@@ -50,7 +48,7 @@ public class CatalogoUsers implements ICatalog<User> {
     return invalidUsers;
   }
 
-  public boolean containsUserById(String userId){
-    return this.byUserId!=null && this.byUserId.containsKey(userId);
+  public boolean containsUserById(String userId) {
+    return this.byUserId != null && this.byUserId.containsKey(userId);
   }
 }
