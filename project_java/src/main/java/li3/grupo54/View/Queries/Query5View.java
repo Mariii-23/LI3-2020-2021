@@ -16,6 +16,7 @@ import li3.grupo54.Controller.NodeCallback;
 import li3.grupo54.Controller.ValidationCallback;
 import li3.grupo54.Models.Queries.IQueryResults;
 import li3.grupo54.Models.Queries.Query5Results;
+import li3.grupo54.Utils.Crono;
 import li3.grupo54.Utils.MyPair;
 
 import java.util.HashMap;
@@ -68,12 +69,16 @@ public class Query5View implements IQueryViewFX {
 
   @Override
   public void showResults(IQueryResults results) {
+    Crono.start();
     Query5Results res = (Query5Results) results;
+    double time = Crono.stop();
 
     VBox panel = new VBox();
     panel.setPadding(new Insets(5));
 
     panel.setSpacing(5);
+
+    panel.getChildren().add(new Label("Query Time: " +time ));
 
     TableView<MyPair<String,Integer>> reviewsTableView = new TableView<>();
     TableColumn<MyPair<String,Integer>, String> reviewsIdColumn = new TableColumn<>("Name reviews");

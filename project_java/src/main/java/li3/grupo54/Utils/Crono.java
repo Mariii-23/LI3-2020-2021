@@ -14,7 +14,6 @@ public class Crono {
 
   public static double stop() {
     end = nanoTime();
-    double elapsed_time = (end - begin) / 1e9;
-    return elapsed_time;
+    return (end - begin) / 1e9;
   }
 }

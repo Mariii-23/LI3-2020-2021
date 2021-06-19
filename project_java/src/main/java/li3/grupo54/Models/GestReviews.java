@@ -3,6 +3,7 @@ package li3.grupo54.Models;
 
 import li3.grupo54.Models.Exceptions.BusinessNotFoundException;
 import li3.grupo54.Models.Interfaces.IBusiness;
+import li3.grupo54.Utils.Crono;
 import li3.grupo54.Utils.MyPair;
 import li3.grupo54.Utils.MyTriple;
 
@@ -35,13 +36,29 @@ public class GestReviews {
       this.catalogoUsers = new CatalogoUsers();
       this.catalogoBusinesses = new CatalogoBusinesses();
       this.catalogoReviews = new CatalogoReviews();
+      Crono.start();
       catalogoUsers.populateFromFile(stats, users, null,null);
-      System.out.println("Finished reading users\n");
+      double timeTotal=0;
+      double time =Crono.stop();
+      timeTotal+=time;
+      System.out.println("\nFinished reading users");
+      System.out.println("Time: "+time+"\n");
+
+      Crono.start();
       catalogoBusinesses.populateFromFile(stats, businesses ,null,null);
-      System.out.println("Finished reading businesses\n");
+      time =Crono.stop();
+      timeTotal+=time;
+      System.out.println("Finished reading businesses");
+      System.out.println("Time: "+time+"\n");
+
       // atualiza negocios nao avaliados e tal
+      Crono.start();
       catalogoReviews.populateFromFile(stats,reviews,catalogoUsers,catalogoBusinesses);
-      System.out.println("Finished reading reviews\n");
+      time =Crono.stop();
+      timeTotal+=time;
+      System.out.println("Finished reading businesses");
+      System.out.println("Time: "+time+"\n");
+      System.out.println("\nTotal Time: "+timeTotal+"\n");
     }
    catch (Exception e){
 

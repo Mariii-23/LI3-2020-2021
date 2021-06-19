@@ -18,6 +18,7 @@ import li3.grupo54.Models.Queries.Query3Results;
 
 import java.util.List;
 
+import li3.grupo54.Utils.Crono;
 import li3.grupo54.Utils.MyTriple;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,9 +72,9 @@ public class Query4View implements IQueryViewFX {
 
   @Override
   public void showResults(IQueryResults results) {
+    Crono.start();
     Query3Results res = (Query3Results) results;
-
-    List<MyTriple<Integer,Integer,Float>> list = res.getResults();
+    double time = Crono.stop();
 
     VBox panel = new VBox();
     panel.setPadding(new Insets(5));
@@ -81,6 +82,7 @@ public class Query4View implements IQueryViewFX {
     panel.setSpacing(5);
     panel.getChildren().add(new Label("Query 4"));
 
+    panel.getChildren().add(new Label("Query Time: " +time ));
 
     TableView<MyTriple<Integer,Integer,Float>> reviewsTableView = new TableView<>();
     TableColumn<MyTriple<Integer,Integer,Float>,String> reviewsIdColumn = new TableColumn<>("Number business total");

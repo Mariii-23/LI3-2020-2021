@@ -13,6 +13,7 @@ import li3.grupo54.Controller.NodeCallback;
 import li3.grupo54.Controller.ValidationCallback;
 import li3.grupo54.Models.Queries.IQueryResults;
 import li3.grupo54.Models.Queries.Query7Results;
+import li3.grupo54.Utils.Crono;
 import li3.grupo54.Utils.MyTriple;
 
 import java.util.HashMap;
@@ -50,12 +51,16 @@ public class Query7View implements IQueryViewFX {
 
   @Override
   public void showResults(IQueryResults results) {
+    Crono.start();
     Query7Results res = (Query7Results) results;
+    double time = Crono.stop();
 
     VBox panel = new VBox();
     panel.setPadding(new Insets(5));
 
     panel.setSpacing(5);
+
+    panel.getChildren().add(new Label("Query Time: " +time ));
 
     TableView<MyTriple<String,String,Integer>> tableView = new TableView<>();
     TableColumn<MyTriple<String,String,Integer>,String> column1 = new TableColumn<>("City");

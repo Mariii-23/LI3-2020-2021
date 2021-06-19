@@ -2,6 +2,7 @@ package li3.grupo54.View.Queries;
 
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -12,6 +13,7 @@ import li3.grupo54.Controller.NodeCallback;
 import li3.grupo54.Controller.ValidationCallback;
 import li3.grupo54.Models.Queries.IQueryResults;
 import li3.grupo54.Models.Queries.Query9Results;
+import li3.grupo54.Utils.Crono;
 import li3.grupo54.Utils.MyPair;
 
 import java.util.HashMap;
@@ -97,13 +99,16 @@ public class Query9View implements IQueryViewFX {
 
     @Override
     public void showResults(IQueryResults results) {
-        // TODO
+        Crono.start();
         Query9Results res = (Query9Results) results;
+        double time= Crono.stop();
 
         VBox panel = new VBox();
         panel.setPadding(new Insets(5));
 
         panel.setSpacing(5);
+
+        panel.getChildren().add(new Label("Query Time: " +time ));
         TableView<MyPair<String, Double>> tableView = new TableView<>();
         TableColumn<MyPair<String, Double>, String> usersColumn = new TableColumn<>("Utilizador");
         usersColumn.setCellValueFactory(new PropertyValueFactory<>("x"));

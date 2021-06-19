@@ -13,6 +13,7 @@ import li3.grupo54.Controller.NodeCallback;
 import li3.grupo54.Controller.ValidationCallback;
 import li3.grupo54.Models.Queries.IQueryResults;
 import li3.grupo54.Models.Queries.Query3Results;
+import li3.grupo54.Utils.Crono;
 import li3.grupo54.Utils.MyTriple;
 
 import java.util.HashMap;
@@ -69,10 +70,9 @@ public class Query6View implements IQueryViewFX {
     @Override
     public void showResults(IQueryResults results) {
             // TODO
+      Crono.start();
         Query3Results res = (Query3Results) results;
-
-        List<MyTriple<Integer,Integer,Float>> list = res.getResults();
-        System.out.println(list);
+        double time= Crono.stop();
 
         VBox panel = new VBox();
         panel.setPadding(new Insets(5));
@@ -80,6 +80,7 @@ public class Query6View implements IQueryViewFX {
         panel.setSpacing(5);
         panel.getChildren().add(new Label("Query 6"));
 
+      panel.getChildren().add(new Label("Query Time: " +time ));
 
         TableView<MyTriple<Integer,Integer,Float>> reviewsTableView = new TableView<>();
         TableColumn<MyTriple<Integer,Integer,Float>,String> reviewsIdColumn = new TableColumn<>("Number reviews");

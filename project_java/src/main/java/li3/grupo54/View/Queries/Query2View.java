@@ -9,6 +9,7 @@ import li3.grupo54.Controller.NodeCallback;
 import li3.grupo54.Controller.ValidationCallback;
 import li3.grupo54.Models.Queries.IQueryResults;
 import li3.grupo54.Models.Queries.Query2Results;
+import li3.grupo54.Utils.Crono;
 import li3.grupo54.Utils.MyPair;
 
 import java.util.HashMap;
@@ -114,8 +115,9 @@ public Integer getAno(){
 
     @Override
     public void showResults(IQueryResults results) {
-            // TODO
+        Crono.start();
         Query2Results res = (Query2Results) results;
+        double time = Crono.stop();
 
          MyPair<Integer,Integer> pair = res.getResults();
 
@@ -124,6 +126,7 @@ public Integer getAno(){
 
         panel.setSpacing(5);
         panel.getChildren().add(new Label("Total reviews: " +pair.getX()+" Total users distintos: "+pair.getY()));
+        panel.getChildren().add(new Label("Query Time: " +time ));
                 if (this.resultsCallback != null)
             resultsCallback.run(panel);
 

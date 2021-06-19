@@ -14,6 +14,7 @@ import li3.grupo54.Controller.ValidationCallback;
 import li3.grupo54.Models.Interfaces.IBusiness;
 import li3.grupo54.Models.Queries.IQueryResults;
 import li3.grupo54.Models.Queries.Query1Results;
+import li3.grupo54.Utils.Crono;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,8 +52,9 @@ public class Query1View implements IQueryViewFX {
 
     @Override
     public void showResults(IQueryResults results) {
-
+        Crono.start();
         Query1Results res = (Query1Results) results;
+        double time = Crono.stop();
 
         VBox panel = new VBox();
         panel.setPadding(new Insets(5));
@@ -60,6 +62,7 @@ public class Query1View implements IQueryViewFX {
         panel.setSpacing(5);
 
         panel.getChildren().add(new Label("Total: " + res.getBusinesses().size()));
+        panel.getChildren().add(new Label("Query Time: " +time ));
 
         TableView<IBusiness> businessTableView = new TableView<>();
         TableColumn<IBusiness, String> businessIdColumn = new TableColumn<>("ID");
