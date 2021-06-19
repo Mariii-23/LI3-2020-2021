@@ -4,6 +4,7 @@ import li3.grupo54.Models.Exceptions.NullReviewException;
 import li3.grupo54.Models.Interfaces.IBusiness;
 import li3.grupo54.Utils.MyPair;
 
+import li3.grupo54.Utils.MyTriple;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,7 @@ public class Stats {
   private Map<String, IBusiness> negociosAvaliados;
 
 
+
   public Stats() {
     averageByUserId = new HashMap<>();
     averageByBusinessId = new HashMap<>();
@@ -30,47 +32,51 @@ public class Stats {
     if(review == null)
       throw new NullReviewException("Null Review Exception");
     updateAverageBusiness(review);
-    updateAverageUSer(review);
-    updateAveragebySate(review, business);
+    updateAverageUser(review);
+    updateAveragebyState(review, business);
   }
 
   // TODO rever
-  public void updateAveragebySate(Review review, Business business) {
+  public void updateAveragebyState(Review review, IBusiness business) {
     if (!review.getBusinessId().equals(business.getId()))
-      return;
-    String state = business.getState();
-    String city = business.getCity();
-    Map<String, Map<String, StarsTuple>> map;
+        return;
+      String state = business.getState();
+      String city = business.getCity();
+      Map<String, Map<String, StarsTuple>> map;
+
     if ((map = this.averageByStateBusiness.get(state)) == null) {
-      map = new HashMap<>();
-      Map<String, StarsTuple> mapCity = new HashMap<>();
-      mapCity.put(business.getId(), new BusinessStarsTuple(review));
-      map.put(city, mapCity);
-      this.averageByStateBusiness.put(state, map);
-    } else {
-      Map<String, StarsTuple> mapCity = map.get(city);
-      if (mapCity == null) {
-        mapCity = new HashMap<>();
+        map = new HashMap<>();
+        Map<String, StarsTuple> mapCity = new HashMap<>();
         mapCity.put(business.getId(), new BusinessStarsTuple(review));
         map.put(city, mapCity);
+        this.averageByStateBusiness.put(state, map);
       } else {
-        StarsTuple starTuple = mapCity.get(business.getId());
-        if (starTuple == null)
+        Map<String, StarsTuple> mapCity = map.get(city);
+        if (mapCity == null) {
+          mapCity = new HashMap<>();
           mapCity.put(business.getId(), new BusinessStarsTuple(review));
-        else
-          starTuple.update(review.getStars());
+          map.put(city, mapCity);
+        } else {
+          StarsTuple starTuple = mapCity.get(business.getId());
+          if (starTuple == null)
+            mapCity.put(business.getId(), new BusinessStarsTuple(review));
+          else
+            starTuple.update(review.getStars());
+        }
       }
-    }
   }
 
-  public void updateAverageUSer(Review review) {
+  public void updateAverageUser(Review review) {
     String userId = review.getUserId();
     int month = review.getDate().getMonthValue() - 1;
     List<UserStarsTuple> list = null;
 
     if ((list = this.averageByUserId.get(userId)) == null) {
       list = new ArrayList<>(12);
-      list.add(month, new UserStarsTuple(review));
+      for(int i  = 0; i < 12; i++) {
+        list.add(i,null);
+      }
+      list.set(month, new UserStarsTuple(review));
       this.averageByUserId.put(userId, list);
 
     } else {
@@ -88,7 +94,10 @@ public class Stats {
 
     if ((list = this.averageByBusinessId.get(businessId)) == null) {
       list = new ArrayList<>(12);
-      list.add(month, new BusinessStarsTuple(review));
+      for (int i = 0; i < 12 ; i++ ) {
+        list.add(null);
+      }
+      list.set(month, new BusinessStarsTuple(review));
       this.averageByBusinessId.put(businessId, list);
 
     } else {
@@ -101,8 +110,8 @@ public class Stats {
 
   // query 5
   // Lista de pares business Id e os seus pares de reviews correspondentes
-  List<MyPair<String, Set<String>>> pairBusinessIdAndTheirReviews(String userId) {
-    List<MyPair<String, Set<String>>> list = new ArrayList<>();
+  List<MyPair<String, Integer>> pairBusinessIdAndTheirReviews(String userId) {
+    List<MyPair<String, Integer>> list = new ArrayList<>();
     Set<UserStarsTuple> userStarsTuples = new HashSet<>();
     // guardar todos os id's dos business correspondestes a esse user
     Set<String> businessID = new HashSet<>();
@@ -114,12 +123,13 @@ public class Stats {
     businessID.forEach(e -> {
       Set<String> reviews = new HashSet<>();
       this.averageByBusinessId.get(e).forEach(l-> reviews.addAll(l.getReviews()));
-      list.add(new MyPair<>(e, reviews));
+      list.add(new MyPair<>(e, reviews.size()));
+      // devolve uma listade de (business_id, numero reviews=
     });
     return list;
   }
 
-  public <T> void atualiza(T newEntity) {
+  public <T> void atualiza(T newEntity, CatalogoUsers catalogoUsers, CatalogoBusinesses catalogoBusinesses) {
     if(newEntity instanceof Business) {
       // inicializar a lista de businesses nunca avaliados
       this.negociosNuncaAvaliados.put(((Business) newEntity).getId(), ((Business) newEntity).clone());
@@ -131,10 +141,16 @@ public class Stats {
             this.negociosAvaliados.put(businessId,b);
         }
 
+      try {
+        this.updateStats((Review) newEntity, (Business) catalogoBusinesses.getBusiness(((Review) newEntity).getBusinessId()));
+      } catch (Exception e) {
+        e.getMessage();
       }
-        // TODO
-        // atualizar medias
     }
+
+    }
+
+
   // para a query 1
   public List<IBusiness> getNegociosNuncaAvaliadosOrdered() {
     return this.negociosNuncaAvaliados.values().stream().map(IBusiness::clone).collect(Collectors.toList());
@@ -174,5 +190,33 @@ public class Stats {
   //}
 
 
+  public List<MyTriple<Integer,Integer,Float>> query3(String userId){
+    if(this.averageByUserId == null)
+      return null;
+    List<UserStarsTuple> list = this.averageByUserId.get(userId);
+
+    if(list==null)
+      return null;
+
+    List<MyTriple<Integer,Integer,Float>> result = new ArrayList<>(12);
+    for(int i = 0; i < 12; i++) {
+      result.add(i,null);
+    }
+    int i=0;
+    for(UserStarsTuple tuple : list){
+      int numReviews=0;
+      int businessDist =0;
+      float mean =0;
+      if(tuple!=null) {
+        numReviews = tuple.getReviewsNumber();
+        businessDist = tuple.getBusinessNumberDistint();
+        mean = (float) tuple.getCurrentAverage();
+      }
+      result.set(i,new MyTriple<>(numReviews,businessDist,mean));
+      i++;
+    }
+
+    return result;
+  }
 }
 

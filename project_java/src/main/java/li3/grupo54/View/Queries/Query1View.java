@@ -75,7 +75,6 @@ public class Query1View implements IQueryViewFX {
         if (this.resultsCallback != null)
             resultsCallback.run(panel);
     }
-
     @Override
     public void addShowResultsCallback(NodeCallback callback) {
         this.resultsCallback = callback;

@@ -17,7 +17,7 @@ public class BusinessStarsTuple extends StarsTuple {
     super(review.getStars(), 1);
     reviews = new HashSet<>();
     reviews.add(review.getReviewId());
-
+    this.users  = new HashSet<>();
     users.add(review.getUserId());
   }
 

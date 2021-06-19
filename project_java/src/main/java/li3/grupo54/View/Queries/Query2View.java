@@ -7,9 +7,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.TextField;
 import li3.grupo54.Controller.NodeCallback;
 import li3.grupo54.Controller.ValidationCallback;
-import li3.grupo54.Models.MyPair;
 import li3.grupo54.Models.Queries.IQueryResults;
 import li3.grupo54.Models.Queries.Query2Results;
+import li3.grupo54.Utils.MyPair;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -90,7 +90,8 @@ public Integer getAno(){
 
     @Override
     public String getDescription() {
-        return "Dado um mês e um ano (válidos), determinar o número total global de reviews realizadas e o número total de users distintos que as realizaram.";
+        return "Dado um mês e um ano (válidos), determinar o número total global de reviews realizadas e o número " +
+                "total de users distintos que as realizaram.";
     }
 
     @Override

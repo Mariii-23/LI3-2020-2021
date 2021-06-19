@@ -18,6 +18,7 @@ public class UserStarsTuple extends StarsTuple {
     super(review.getStars(), 1);
     reviews = new HashSet<>();
     reviews.add(review.getReviewId());
+    business = new HashSet<>();
     business.add(review.getBusinessId());
   }
 
@@ -35,6 +36,9 @@ public class UserStarsTuple extends StarsTuple {
     return super.getNumberTotal();
   }
 
+  public int getBusinessNumberDistint() {
+    return this.business.size();
+  }
   public Set<String> getReviews() {
     return new HashSet<>(reviews);
   }

@@ -21,7 +21,6 @@ public class Query5 implements IQueryController{
   }
 
   @Override
-  //TODO MUDAR
   public IQueryResults execute() {
     return  new Query5Results(model.query5(view.getUserId()));
   }

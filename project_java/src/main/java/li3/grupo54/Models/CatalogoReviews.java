@@ -6,10 +6,11 @@ import li3.grupo54.Utils.MyPair;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CatalogoReviews implements ICatalog<Review> {
-  private final Map<Integer, List<Set<Review>>> anoToReviewsPerMonth;
   // ano =>  array de 12 elementos => cada array tem um set de reviews
+  private final Map<Integer, List<Set<Review>>> anoToReviewsPerMonth;
 
   private final Map<String, Review> byReviewId;
 
@@ -24,13 +25,12 @@ public class CatalogoReviews implements ICatalog<Review> {
   }
 
   @Override
-  public Review callConstructor(String[] line) throws InvalidUserLineException, InvalidBusinessLineException, InvalidReviewLineException {
+  public Review callConstructor(String[] line) throws InvalidReviewLineException {
     return new Review(line);
   }
 
   @Override
   public int size() {
-    // TODO Verificar
     return this.byReviewId.size();
   }
 
@@ -39,8 +39,6 @@ public class CatalogoReviews implements ICatalog<Review> {
       LocalDateTime data = review.getDate();
       int ano = data.getYear();
       int mes = data.getMonthValue() - 1;
-
-
       // ver se o ano existe
       List<Set<Review>> listaAnos = this.anoToReviewsPerMonth.get(ano);
       // a lista nunca e vazia por isso se e  null e porque a key nao existe
@@ -67,12 +65,13 @@ public class CatalogoReviews implements ICatalog<Review> {
       else{
         s = new HashSet<>();
         s.add((reviewClone));
-        listaAnos.add(mes,s);
+        listaAnos.set(mes,s);
       }
       if(review.impact())
         this.zeroImpact++;
 
       this.byReviewId.put(review.getReviewId(), reviewClone);
+
   }
 
   public Integer getInvalidUsers() {
@@ -173,4 +172,8 @@ public class CatalogoReviews implements ICatalog<Review> {
     }
     return new MyPair<>(reviews,users);
     }
+
+
+
 }
+

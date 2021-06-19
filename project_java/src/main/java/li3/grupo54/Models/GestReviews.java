@@ -1,12 +1,14 @@
 package li3.grupo54.Models;
 
 
-import li3.grupo54.Models.Exceptions.DateNotFoundException;
+import li3.grupo54.Models.Exceptions.BusinessNotFoundException;
 import li3.grupo54.Utils.MyPair;
+import li3.grupo54.Utils.MyTriple;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class GestReviews {
   private CatalogoUsers catalogoUsers;
@@ -29,14 +31,14 @@ public class GestReviews {
     this.stats = new Stats();
     try {
       this.catalogoUsers = new CatalogoUsers();
-      catalogoUsers.populateFromFile(stats,users);
-      System.out.println("Finished reading users\n");
       this.catalogoBusinesses = new CatalogoBusinesses();
-      catalogoBusinesses.populateFromFile(stats,businesses);
-      System.out.println("Finished reading businesses\n");
       this.catalogoReviews = new CatalogoReviews();
+      catalogoUsers.populateFromFile(stats, users, null,null);
+      System.out.println("Finished reading users\n");
+      catalogoBusinesses.populateFromFile(stats, businesses ,null,null);
+      System.out.println("Finished reading businesses\n");
       // atualiza negocios nao avaliados e tal
-      catalogoReviews.populateFromFile(stats,reviews);
+      catalogoReviews.populateFromFile(stats,reviews,catalogoUsers,catalogoBusinesses);
       System.out.println("Finished reading reviews\n");
     }
    catch (Exception e){
@@ -77,9 +79,29 @@ public class GestReviews {
     this.stats = stats;
   }
 
+  // nomes de negocios por ordem decrescente de numero de avaliacoes que o user fez e quantos no total
+  // para quantidades iguais, ordem alfabetica de negocios
   public List<MyPair<String,Integer>> query5(String userId){
-    List<MyPair<String,Integer>> resul = null;
-    return resul;
+    Comparator<MyPair<String,Integer>> c = (par1,par2) ->  {
+      if(par1.getY().equals(par2.getY())) {
+        return par1.getX().compareTo(par2.getX());
+      }
+      else {
+        return par1.getY().compareTo(par2.getY());
+      }
+    };
+    return stats.pairBusinessIdAndTheirReviews(userId).stream().map(par -> {
+      try {
+        par.setX(this.catalogoBusinesses.getName(par.getX()));
+      } catch (BusinessNotFoundException e) {
+        e.printStackTrace();
+      }
+      return new MyPair<String, Integer>(par);
+    }).sorted(c).collect(Collectors.toList());
+  }
+
+  public List<MyTriple<Integer,Integer,Float>> query3(String userId){
+    return  this.stats.query3(userId);
   }
 }
 

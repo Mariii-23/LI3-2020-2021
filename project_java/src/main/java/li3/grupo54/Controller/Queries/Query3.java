@@ -2,10 +2,9 @@ package li3.grupo54.Controller.Queries;
 
 import li3.grupo54.Models.GestReviews;
 import li3.grupo54.Models.Queries.IQueryResults;
-import li3.grupo54.Models.Queries.Query2Results;
+import li3.grupo54.Models.Queries.Query3Results;
 import li3.grupo54.View.Queries.IQueryView;
 import li3.grupo54.View.Queries.Query3View;
-import org.apache.commons.lang3.tuple.Triple;
 
 public class Query3 implements IQueryController{
     GestReviews model;
@@ -23,7 +22,7 @@ public class Query3 implements IQueryController{
 
     @Override
     public IQueryResults execute() {
-        // mudar para triple
-            return new Query2Results(model.getCatalogoReviews().getNumberReviewsAndDistinctUsers(view.getAno(),view.getMes()));
+        return new Query3Results(model.query3(view.getUserID()));
     }
+
 }

@@ -22,7 +22,7 @@ public interface ICatalog<T> {
 
   void addInvalid();
 
-  public default void populateFromFile(Stats stats, String filename) throws IOException {
+  public default void populateFromFile(Stats stats, String filename, CatalogoUsers catalogoUsers, CatalogoBusinesses catalogoBusinesses) throws IOException {
     File file = new File(filename);
     InputStream is = new FileInputStream(file);
     BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
@@ -36,7 +36,7 @@ public interface ICatalog<T> {
         // constructor vai validar e lancar excecao se der erro
         T newEntity = callConstructor(parsedLine);
         this.add(newEntity);
-        stats.atualiza(newEntity);
+        stats.atualiza(newEntity,catalogoUsers,catalogoBusinesses);
 
 
       } catch (InvalidUserLineException | BusinessNotFoundException | InvalidBusinessLineException | InvalidReviewLineException  e) {

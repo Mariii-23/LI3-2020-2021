@@ -12,6 +12,16 @@ public class CatalogoBusinesses implements ICatalog<IBusiness> {
   private final TreeMap<String, IBusiness> businessesById; // ordenados por ordem alfabetica
   private int invalidBusinesses;
 
+  public String getName(String businessId) throws  BusinessNotFoundException{
+    IBusiness business=null;
+    if(( business = businessesById.get(businessId))==null)
+      throw new BusinessNotFoundException("Business Not Found Id: "+businessId);
+    return business.getName();
+  }
+
+  public IBusiness getBusiness(String businessId){
+    return businessesById.get(businessId);
+  }
 
   public CatalogoBusinesses() {
     this.businessesById = new TreeMap<>();
@@ -40,12 +50,12 @@ public class CatalogoBusinesses implements ICatalog<IBusiness> {
 
   @Override
   public int size() {
-    return 0;
+    return businessesById.size();
   }
 
   @Override
   public void add(IBusiness iBusiness) {
-
+   this.businessesById.put(iBusiness.getId(),iBusiness.clone());
   }
 
   @Override

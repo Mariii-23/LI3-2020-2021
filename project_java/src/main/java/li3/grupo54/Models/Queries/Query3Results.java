@@ -1,20 +1,51 @@
 package li3.grupo54.Models.Queries;
 
-import org.apache.commons.lang3.tuple.Triple;
 
-import java.util.HashMap;
+import li3.grupo54.Utils.MyTriple;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-public class Query3Results {
-    Map<Integer, Triple<Integer,Integer,Float>> result;
+public class Query3Results implements IQueryResults{
+    List<MyTriple<Integer,Integer,Float>> result;
     // mes to triplo(numero review, negocios distintos, media atribuida)
 
-    public Query3Results(Map<Integer,Triple<Integer,Integer,Float>> result){
+    public Query3Results(List<MyTriple<Integer,Integer,Float>> result){
         this.result = result;
     }
 
-    public Map<Integer, Triple<Integer,Integer,Float>> getResults() {
-        return new HashMap<>(result);
+    public List<MyTriple<Integer,Integer,Float>> getResults() {
+        return new ArrayList(result);
     }
 
+    public List<String> getNumberReviews(){
+        List<String> list = new ArrayList<>();
+        for(MyTriple<Integer,Integer,Float> triplo: result){
+            if(triplo != null) {
+                list.add(Integer.toString(triplo.getLeft()));
+            }
+        }
+        return list;
+    }
+
+    public List<String> getNumberBusiness(){
+        List<String> list = new ArrayList<>();
+        for(MyTriple<Integer,Integer,Float> triplo: result){
+            if(triplo != null) {
+                list.add(Integer.toString(triplo.getMiddle()));
+            }
+        }
+        return list;
+    }
+
+    public List<String> getMean(){
+        List<String> list = new ArrayList<>();
+        for(MyTriple<Integer,Integer,Float> triplo: result){
+            if(triplo != null) {
+                list.add(Float.toString(triplo.getRight()));
+            }
+        }
+        return list;
+    }
 }
