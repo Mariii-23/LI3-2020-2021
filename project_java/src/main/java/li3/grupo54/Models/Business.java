@@ -3,6 +3,7 @@ package li3.grupo54.Models;
 import li3.grupo54.Models.Exceptions.InvalidBusinessLineException;
 import li3.grupo54.Models.Interfaces.IBusiness;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * BUSINESS
  */
-public class Business implements IBusiness {
+public class Business implements IBusiness , Serializable {
   /**
    * Business id
    */

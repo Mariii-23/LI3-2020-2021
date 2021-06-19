@@ -33,6 +33,8 @@ public class OpenFileDialog {
   private Button btnReviews;
   @FXML
   private Button btnOpen;
+  @FXML
+  private Button btnDefault;
 
   public OpenFileDialog(Stage parent) {
     stage = new Stage();
@@ -54,9 +56,17 @@ public class OpenFileDialog {
 
     stage.showAndWait();
 
+    String fUser = "users.csv";
+    String fReview = "reviews.csv";
+    String fBusiness = "businesses.csv";
+    if(users != null && reviews != null && businesses != null) {
+      fUser = users.getAbsolutePath();
+      fReview = reviews.getAbsolutePath();
+      fBusiness = businesses.getAbsolutePath();
+    }
     if (!ok)
       return null;
-    return new FileTriple(users.getAbsolutePath(), businesses.getAbsolutePath(), reviews.getAbsolutePath());
+    return new FileTriple(fUser,fBusiness, fReview);
   }
 
   private File showDialog(String title) {
@@ -118,5 +128,10 @@ public class OpenFileDialog {
   private void open() {
     if (users != null && businesses != null && reviews != null)
       stage.close();
+  }
+  @FXML
+  private void defaultBt() {
+    stage.close();
+    ok = true;
   }
 }

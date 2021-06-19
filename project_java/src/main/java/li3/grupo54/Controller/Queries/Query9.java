@@ -28,7 +28,7 @@ public class Query9 implements IQueryController {
   }
 
   @Override
-  public IQueryResults execute() {
+  public IQueryResults execute() throws Exception {
     final var bid = this.view.getBusinessId();
     final var top = this.view.getTop();
     final var result = new HashMap<String, StarsTuple>();

@@ -1,6 +1,8 @@
 package li3.grupo54.Utils;
 
-public class MyFour<T, R, S, H> extends MyTriple<R, S, H> {
+import java.io.Serializable;
+
+public class MyFour<T, R, S, H> extends MyTriple<R, S, H> implements Serializable {
   private T first;
 
   public MyFour(T first, R left, S middle, H right) {

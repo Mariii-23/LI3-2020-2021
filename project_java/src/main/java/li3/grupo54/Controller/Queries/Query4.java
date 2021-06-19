@@ -3,7 +3,7 @@ package li3.grupo54.Controller.Queries;
 
 import li3.grupo54.Models.GestReviews;
 import li3.grupo54.Models.Queries.IQueryResults;
-import li3.grupo54.Models.Queries.Query3Results;
+import li3.grupo54.Models.Queries.Query4Results;
 import li3.grupo54.View.Queries.IQueryView;
 import li3.grupo54.View.Queries.Query4View;
 
@@ -22,7 +22,7 @@ public class Query4 implements IQueryController {
   }
 
   @Override
-  public IQueryResults execute() {
-    return new Query3Results(model.query4(view.getUserID()));
+  public IQueryResults execute() throws Exception {
+    return new Query4Results(model.query4(view.getUserID()));
   }
 }

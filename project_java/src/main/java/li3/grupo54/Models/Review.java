@@ -3,11 +3,12 @@ package li3.grupo54.Models;
 import li3.grupo54.Models.Exceptions.InvalidReviewLineException;
 import li3.grupo54.Models.Interfaces.IReview;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-public class Review implements IReview {
+public class Review implements IReview, Serializable {
   private final String reviewId;
   private final String userId;
   private final String businessId;

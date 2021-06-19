@@ -6,8 +6,7 @@ public class BusinessNotFoundException extends Exception {
   }
 
   public BusinessNotFoundException(String s) {
-    super(s);
-
+    super("Negocio com id: " + s + " nao existe");
   }
 }
 

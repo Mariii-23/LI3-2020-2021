@@ -1,6 +1,9 @@
 package li3.grupo54.Utils;
 
-public class MyTriple<T, T1, T2> {
+import java.io.Serializable;
+
+public class MyTriple<T, T1, T2> implements Serializable {
+
   private T left;
   private T1 middle;
   private T2 right;

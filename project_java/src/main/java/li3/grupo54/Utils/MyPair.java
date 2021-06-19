@@ -1,8 +1,9 @@
 package li3.grupo54.Utils;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class MyPair<T, R> {
+public class MyPair<T, R> implements Serializable  {
   private T x;
   private R y;
 

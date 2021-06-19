@@ -5,14 +5,14 @@ import li3.grupo54.Models.Exceptions.InvalidBusinessLineException;
 import li3.grupo54.Models.Interfaces.IBusiness;
 import li3.grupo54.Models.Interfaces.ICatalog;
 
-import java.util.Map;
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.TreeMap;
 
 /**
  * Esta classe contém todas as informações de um conjuto de business.
  */
-public class CatalogoBusinesses implements ICatalog<IBusiness> {
+public class CatalogoBusinesses implements ICatalog<IBusiness>, Serializable {
   /**
    * Todos os negócios são colocados aqui numa fase inicial e depois, passados para um outro map no caso que se encontre
    * uma review com o seu id.

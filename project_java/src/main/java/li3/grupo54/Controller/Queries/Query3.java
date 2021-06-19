@@ -21,7 +21,7 @@ public class Query3 implements IQueryController {
   }
 
   @Override
-  public IQueryResults execute() {
+  public IQueryResults execute() throws Exception {
     return new Query3Results(model.query3(view.getUserID()));
   }
 }

@@ -1,6 +1,8 @@
 package li3.grupo54.Models;
 
+import li3.grupo54.Models.Exceptions.BusinessNotFoundException;
 import li3.grupo54.Models.Exceptions.NullReviewException;
+import li3.grupo54.Models.Exceptions.UserNotFoundException;
 import li3.grupo54.Models.Interfaces.IBusiness;
 import li3.grupo54.Models.Interfaces.IStats;
 import li3.grupo54.Utils.MyFive;
@@ -8,10 +10,11 @@ import li3.grupo54.Utils.MyPair;
 import li3.grupo54.Utils.MyTriple;
 
 import java.time.Month;
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Stats implements IStats {
+public class Stats implements IStats, Serializable  {
   // User id ->  mes a mes -> UserStarsTuple
 
   private List<ReviewStarsTuple> averageReviewByMonth;
@@ -21,39 +24,39 @@ public class Stats implements IStats {
    * Um Hash Map que irá de user id para uma lista de 12 elementos em que a cada índice irá corresponder um dado mês e
    * o seu elemento corresponderá um UsersStarsTuple
    */
-  private Map<String, List<UserStarsTuple>> averageByUserId;
+  private final Map<String, List<UserStarsTuple>> averageByUserId;
 
   // Business id ->  mes a mes -> BusinessStarsTuple
   /**
    * Um Hash Map que irá de business id para uma lista de 12 elementos em que a cada índice irá corresponder um dado mês e
    * o seu elemento corresponderá a um BusinessStasrTuple
    */
-  private Map<String, List<BusinessStarsTuple>> averageByBusinessId;
+  private final Map<String, List<BusinessStarsTuple>> averageByBusinessId;
 
   // Review Id -> mes a mes -> ReviewStarsTuple
   /**
    * Um Hash Map que irá de review id para uma lista de 12 elementos em que a cada índice irá corresponder um dado mês e
    * o seu elemento corresponderá a um ReviewStarsTuple.
    */
-  private Map<String, List<ReviewStarsTuple>> averageByReviewID;
+  private final Map<String, List<ReviewStarsTuple>> averageByReviewID;
 
   // State -> City -> BusinessId -> Average
   /**
    * Um Hash Map que irá de um Estado para um outro Hash Map. Aqui este irá de cidade para um outro Hash Map, business
    * id para StarsTuple.
    */
-  private Map<String, Map<String, Map<String, StarsTuple>>> averageByStateBusiness;
+  private final Map<String, Map<String, Map<String, StarsTuple>>> averageByStateBusiness;
 
   /**
    * Aqui serão guardados todos os negócios que nunca foram avalidados, ordenados por ordem alfabética.
    * Business Id para Business
    */
-  private TreeMap<String, IBusiness> negociosNuncaAvaliados;
+  private final TreeMap<String, IBusiness> negociosNuncaAvaliados;
   /**
    * Um Hash Map que armazenará apenas os negócios que foram avalidados.
    * Businees Id para Business.
    */
-  private Map<String, IBusiness> negociosAvaliados;
+  private final Map<String, IBusiness> negociosAvaliados;
 
 
   public Stats() {
@@ -193,26 +196,27 @@ public class Stats implements IStats {
    * @param userId User Id
    * @return List
    */
-  List<MyPair<String, Integer>> pairBusinessIdAndTheirReviews(String userId) {
+  List<MyPair<String, Integer>> pairBusinessIdAndTheirReviews(String userId) throws UserNotFoundException {
     List<MyPair<String, Integer>> list = new ArrayList<>();
-    Set<UserStarsTuple> userStarsTuples = new HashSet<>();
     // guardar todos os id's dos business correspondestes a esse user
-    Set<String> businessID = new HashSet<>();
-    this.averageByUserId.get(userId).forEach(e -> {
+    Set<String> businessIDs = new HashSet<>();
+    var userAverage = this.averageByUserId.get(userId);
+    if (userAverage == null) throw new UserNotFoundException(userId);
+    userAverage.forEach(e -> {
       if (e != null)
-        businessID.addAll(e.getBusiness());
+        businessIDs.addAll(e.getBusiness());
     });
 
     // ir a cada business id e ir buscar o set de reviews
     // colocar isso num par (id,set)
     // assim depois pra query 5, bast trocar o id pelo nome e ordenar
-    businessID.forEach(e -> {
+    businessIDs.forEach(e -> {
       Set<String> reviews = new HashSet<>();
       this.averageByBusinessId.get(e).forEach(l -> {
         if (l != null) reviews.addAll(l.getReviews());
       });
       list.add(new MyPair<>(e, reviews.size()));
-      // devolve uma listade de (business_id, numero reviews=
+      // devolve uma lista de de (business_id, numero reviews=
     });
     return list;
   }
@@ -271,15 +275,13 @@ public class Stats implements IStats {
    * @param userId User id
    * @return Lista
    */
-  public List<MyTriple<Integer, Integer, Float>> query3(String userId) {
-    if (this.averageByUserId == null)
-      return null;
+  public List<MyTriple<Integer, Integer, Double>> query3(String userId) throws UserNotFoundException {
     List<UserStarsTuple> list = this.averageByUserId.get(userId);
 
     if (list == null)
-      return null;
+      throw new UserNotFoundException(userId);
 
-    List<MyTriple<Integer, Integer, Float>> result = new ArrayList<>(12);
+    List<MyTriple<Integer, Integer, Double>> result = new ArrayList<>(12);
     for (int i = 0; i < 12; i++) {
       result.add(i, null);
     }
@@ -287,11 +289,11 @@ public class Stats implements IStats {
     for (UserStarsTuple tuple : list) {
       int numReviews = 0;
       int businessDist = 0;
-      float mean = 0;
+      double mean = 0;
       if (tuple != null) {
         numReviews = tuple.getReviewsNumber();
         businessDist = tuple.getBusinessNumberDistint();
-        mean = (float) tuple.getCurrentAverage();
+        mean = tuple.getCurrentAverage();
       }
       //if(numReviews!=-1 && businessDist!= -1 && mean!=-1)
       result.set(i, new MyTriple<>(numReviews, businessDist, mean));
@@ -308,15 +310,13 @@ public class Stats implements IStats {
    * @param businessId business id
    * @return Lista
    */
-  public List<MyTriple<Integer, Integer, Float>> query4(String businessId) {
-    if (this.averageByUserId == null)
-      return null;
+  public List<MyTriple<Integer, Integer, Double>> query4(String businessId) throws BusinessNotFoundException {
     List<BusinessStarsTuple> list = this.averageByBusinessId.get(businessId);
 
     if (list == null)
-      return null;
+      throw new BusinessNotFoundException(businessId);
 
-    List<MyTriple<Integer, Integer, Float>> result = new ArrayList<>(12);
+    List<MyTriple<Integer, Integer, Double>> result = new ArrayList<>(12);
     for (int i = 0; i < 12; i++) {
       result.add(i, null);
     }
@@ -324,11 +324,11 @@ public class Stats implements IStats {
     for (BusinessStarsTuple tuple : list) {
       int numReviews = 0;
       int userDist = 0;
-      float mean = 0;
+      double mean = 0;
       if (tuple != null) {
         numReviews = tuple.getReviewsNumber();
         userDist = tuple.getUsersNumber();
-        mean = (float) tuple.getCurrentAverage();
+        mean = tuple.getCurrentAverage();
       }
       //if(numReviews!=-1 && businessDist!= -1 && mean!=-1)
       result.set(i, new MyTriple<>(numReviews, userDist, mean));

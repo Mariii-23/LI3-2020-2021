@@ -13,7 +13,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import li3.grupo54.Controller.CallbackFileTriple;
-import li3.grupo54.Controller.EmptyCallback;
+import li3.grupo54.Controller.SaveCallback;
 import li3.grupo54.Controller.ExecuteCallback;
 import li3.grupo54.Models.FileTriple;
 import li3.grupo54.Models.GestReviews;
@@ -36,16 +36,18 @@ public class DesktopView implements IView {
   @FXML
   private Accordion queryAccordion;
   @FXML
+  private Tab statsTab;
+  @FXML
   private TabPane resultsTabs;
 
-  @FXML
-  private Tab statsTab;
+//  @FXML
+//  private Tab statsTab;
 
   private int nQueries;
 
   private CallbackFileTriple callback;
-  private EmptyCallback saveCallback;
-  private EmptyCallback restoreCallback;
+  private SaveCallback saveCallback;
+  private SaveCallback restoreCallback;
 
   public DesktopView(Stage s) {
     this.stage = s;
@@ -64,6 +66,7 @@ public class DesktopView implements IView {
       throw new UncheckedIOException(e);
     }
 
+    queryAccordion.setDisable(true);
     queryAccordion.getPanes().clear();
 
     for (Map.Entry<IQueryViewFX, ExecuteCallback> query : queries) {
@@ -74,7 +77,13 @@ public class DesktopView implements IView {
       TextFlow flow = new TextFlow();
       Text text = new Text(query.getKey().getDescription());
       Button execute = new Button("Executar");
-      execute.setOnAction(e -> query.getValue().run());
+      execute.setOnAction(e -> {
+        try {
+          query.getValue().run();
+        } catch (Exception ex) {
+          showError("Failed to run query '" + query.getKey().getName(), ex.getMessage());
+        }
+      });
       execute.setMaxWidth(Double.MAX_VALUE);
       execute.setMaxHeight(Double.MAX_VALUE);
       execute.setDisable(true);
@@ -127,9 +136,9 @@ public class DesktopView implements IView {
   @Override
   public File getSaveLocation() {
     FileChooser fc = new FileChooser();
+    fc.setInitialFileName("gestReviews.dat");
     fc.setTitle("Save object file");
-    File file = fc.showSaveDialog(this.stage);
-    return file;
+    return fc.showSaveDialog(this.stage);
   }
 
   @Override
@@ -159,7 +168,7 @@ public class DesktopView implements IView {
     }
   }
 
-  public void setOnSave(EmptyCallback onGravar) {
+  public void setOnSave(SaveCallback onGravar) {
     this.saveCallback = onGravar;
   }
 
@@ -167,30 +176,38 @@ public class DesktopView implements IView {
   private void openFile() {
     if (callback != null) {
       FileTriple t = getFileTriple();
-      callback.run(t);
+      if (t != null) {
+        callback.run(t);
+      }
     }
   }
 
   @FXML
   private void onSave() throws IOException {
     if (saveCallback != null) {
-      var f = getSaveLocation();
-      saveCallback.run(f);
+      File f = getSaveLocation();
+      if (f != null)
+          saveCallback.run(f);
     }
   }
 
   @FXML
-  private void onRestore() {
-    //if(restoreCallback != null) {
-    //
-    //  restoreCallback.run();
-    //
-    //}
-
+  private void onRestore() throws IOException {
+    if(restoreCallback != null) {
+        FileChooser s = new FileChooser();
+        final var f = s.showOpenDialog(stage);
+        if (f != null)
+           restoreCallback.run(new File(f.getAbsolutePath()));
+    }
   }
 
   @Override
-  public void setStatus(GestReviews self) {
-    //TODO
+  public void disableQueries(boolean disable) {
+    queryAccordion.setDisable(disable);
+  }
+
+  public void setOnRestore(SaveCallback callback) {
+      this.restoreCallback = callback;
+
   }
 }

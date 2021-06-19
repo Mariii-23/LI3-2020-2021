@@ -6,13 +6,14 @@ import li3.grupo54.Models.Exceptions.ReviewNotFoundException;
 import li3.grupo54.Models.Interfaces.ICatalog;
 import li3.grupo54.Utils.MyPair;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
 
 /**
  * Catálogo responsável por armazenar um conjunto de reviews.
  */
-public class CatalogoReviews implements ICatalog<Review> {
+public class CatalogoReviews implements ICatalog<Review>, Serializable {
   // ano =>  array de 12 elementos => cada array tem um set de reviews
   /**
    * Um hashMap que vai de um determinado ano para uma lista de 12 elementos (cada indice dessa mesma lista
@@ -157,15 +158,9 @@ public class CatalogoReviews implements ICatalog<Review> {
    * @param month Mês
    * @return Par obtido
    */
-  public MyPair<Integer, Integer> getNumberReviewsAndDistinctUsers(Integer year, Integer month) {
-    int reviews = 0;
-    int users = 0;
-    try {
-      reviews = getNumberReviewsDate(year, month);
-      users = getNumberDistinctUsers(year, month);
-    } catch (DateNotFoundException ignored) {
-      System.out.println("Data not found year: " + year + " month: " + month);
-    }
+  public MyPair<Integer, Integer> getNumberReviewsAndDistinctUsers(Integer year, Integer month) throws  DateNotFoundException {
+    int reviews = getNumberReviewsDate(year, month);
+    int users = getNumberDistinctUsers(year, month);
     return new MyPair<>(reviews, users);
   }
 

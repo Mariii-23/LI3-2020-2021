@@ -6,9 +6,9 @@ import li3.grupo54.View.Queries.IQueryView;
 public interface IQueryController {
   public IQueryView getView();
 
-  public IQueryResults execute();
+  public IQueryResults execute() throws Exception;
 
-  public default void executeAndShow() {
+  public default void executeAndShow() throws Exception {
     getView().showResults(execute());
   }
 }

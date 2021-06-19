@@ -2,8 +2,9 @@ package li3.grupo54.Models;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.io.Serializable;
 
-public class UserStarsTuple extends StarsTuple {
+public class UserStarsTuple extends StarsTuple implements Serializable {
   private final Set<String> reviews;
   private Set<String> business;
 

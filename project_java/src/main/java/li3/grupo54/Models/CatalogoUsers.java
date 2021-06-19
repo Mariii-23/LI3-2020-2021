@@ -4,13 +4,14 @@ import li3.grupo54.Models.Exceptions.InvalidUserLineException;
 import li3.grupo54.Models.Exceptions.UserNotFoundException;
 import li3.grupo54.Models.Interfaces.ICatalog;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Classe responsável por armazenar um conjunto de Users
  */
-public class CatalogoUsers implements ICatalog<User> {
+public class CatalogoUsers implements ICatalog<User>, Serializable {
 
   /**
    * Hash Map de user id para o seu respetivo User.

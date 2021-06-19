@@ -1,5 +1,6 @@
 package li3.grupo54.Models;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,7 +8,7 @@ import java.util.Set;
  * Classe que guarda e atualiza uma média consoante uma dada Review.
  * Guardará também um set de ids de reviews (e dos seus users id) recebidas até ao momento.
  */
-public class BusinessStarsTuple extends StarsTuple {
+public class BusinessStarsTuple extends StarsTuple  implements Serializable {
   /**
    * Guarda todos os ids de reviews analisadas.
    */
