@@ -2,11 +2,14 @@ package li3.grupo54.Controller.Queries;
 
 import li3.grupo54.Models.GestReviews;
 import li3.grupo54.Models.Queries.IQueryResults;
-import li3.grupo54.Models.Queries.Query10Results;
 import li3.grupo54.Models.Queries.StatsResults;
 import li3.grupo54.View.Queries.IQueryView;
-import li3.grupo54.View.Queries.Query10View;
 import li3.grupo54.View.Queries.StatsView;
+
+/**
+ *
+ *  Class responsible for obtaining statistics related to Review Management System's database.
+ */
 
 
 public class Stats implements IQueryController {

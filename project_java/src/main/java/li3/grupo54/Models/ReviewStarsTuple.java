@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Tuple which contains a set of reviews, which meet a certain criteria, the set of users which made them as well as the businesses they correspond to.
+ */
+
 public class ReviewStarsTuple extends StarsTuple implements Serializable {
   private final Set<String> reviews;
   private final Set<String> users;

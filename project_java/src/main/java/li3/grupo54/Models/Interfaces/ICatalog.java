@@ -9,6 +9,10 @@ import li3.grupo54.Models.Stats;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+/**
+ *  Interface which all three catalogs need to implement. It is essentially a small database which provides methods for storing and acessing values.
+ */
+
 public interface ICatalog<T> extends Serializable {
   String getInputFileName();
   void setInputFileName(String inputFileName);

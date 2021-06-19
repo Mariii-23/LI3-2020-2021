@@ -2,6 +2,13 @@ package li3.grupo54.Utils;
 
 import java.io.Serializable;
 
+/**
+ *
+ * @param <T> First generic parameter
+ * @param <T1> Middle generic parameter
+ * @param <T2> Third generic parameter
+ * Auxiliary data structure for combining three different results, mostly for queries which require more than one information.
+ */
 public class MyTriple<T, T1, T2> implements Serializable {
 
   private T left;

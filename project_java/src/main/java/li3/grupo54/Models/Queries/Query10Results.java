@@ -14,7 +14,6 @@ public class Query10Results implements IQueryResults {
   }
 
   public Stream<Result> getResults() {
-    // this is kinda messy mas I think it works
     return averageByStateBusiness.entrySet().stream()
         .flatMap(stateRest ->
             stateRest.getValue().entrySet().stream().flatMap(cityRest ->

@@ -13,6 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ *
+ *  Class responsible for executing Query9 and returning an IQueryResults
+ */
+
 public class Query9 implements IQueryController {
   GestReviews model;
   Query9View view;

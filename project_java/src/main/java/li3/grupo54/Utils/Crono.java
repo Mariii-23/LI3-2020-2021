@@ -1,8 +1,10 @@
 package li3.grupo54.Utils;
 
 import static java.lang.System.nanoTime;
+/**
+ * Classe utilizada para a medição de performance
+ */
 
-// Classe utilizada para a medição de performance
 public class Crono {
   static long begin = 0L;
   static long end = 0L;

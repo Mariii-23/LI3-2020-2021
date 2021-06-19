@@ -3,6 +3,12 @@ package li3.grupo54.Utils;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ *
+ *  Auxiliary data structure for combining two different results, mostly for queries which require more than one information.
+ * @param <T> First generic value
+ * @param <R> Second generic value
+ */
 public class MyPair<T, R> implements Serializable  {
   private T x;
   private R y;

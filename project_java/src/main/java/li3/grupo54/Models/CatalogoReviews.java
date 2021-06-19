@@ -58,6 +58,10 @@ public class CatalogoReviews implements ICatalog<Review>, Serializable {
     return invalidReviews;
   }
 
+  /**
+   * Adiciona uma review ao catalogo, populando as varioas estruturas da forma correta.
+   * @param review
+   */
   @Override
   public void add(Review review) {
     LocalDateTime data = review.getDate();
@@ -111,11 +115,17 @@ public class CatalogoReviews implements ICatalog<Review>, Serializable {
 
   @Override
   public void delete(String id) throws ReviewNotFoundException {
-    // TODfizemos com O
 
   }
 
 
+  /**
+   * Devolve o numero de review numa certa data
+   * @param year
+   * @param month
+   * @return
+   * @throws DateNotFoundException
+   */
   public Integer getNumberReviewsDate(Integer year, Integer month) throws DateNotFoundException {
     if (this.anoToReviewsPerMonth.size() == 0)
       return 0;
@@ -130,6 +140,13 @@ public class CatalogoReviews implements ICatalog<Review>, Serializable {
     }
   }
 
+  /**
+   *  Dado um ano e um mes devolve o numero de utilizadores distintos que fizeram avaliações nesse periodo
+   * @param year
+   * @param month
+   * @return Numero Users Distintos
+   * @throws DateNotFoundException
+   */
   public Integer getNumberDistinctUsers(Integer year, Integer month) throws DateNotFoundException {
     List<Set<Review>> listOfReviews = null;
     if ((listOfReviews = this.anoToReviewsPerMonth.get(year)) == null)
@@ -195,11 +212,19 @@ public class CatalogoReviews implements ICatalog<Review>, Serializable {
     return zeroImpact;
   }
 
+  /**
+   * Devolve o nome do ficheiro de input que foi utilizado para popular este catalogo
+   * @return Nome Ficheiro
+   */
   @Override
   public String getInputFileName() {
     return inputFileName;
   }
 
+  /**
+   *  Altera o nome do ficheiro de input que foi utilizado para popular este catalogo
+   * @param inputFileName
+   */
   public void setInputFileName(String inputFileName) {
     this.inputFileName = inputFileName;
   }

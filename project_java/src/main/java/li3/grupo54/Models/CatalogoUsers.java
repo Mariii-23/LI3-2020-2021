@@ -32,28 +32,56 @@ public class CatalogoUsers implements ICatalog<User>, Serializable {
     this.invalidUsers = 0;
   }
 
+  /**
+   * Função que chama o construtor do User passando-lhe a linha parsed como parametro
+   * @param line
+   * @return Novo user
+   * @throws InvalidUserLineException
+   */
   @Override
   public User callConstructor(String[] line) throws InvalidUserLineException {
     return new User(line);
   }
 
+  /**
+   *
+   * @return Numero de Users no catálogo
+   */
   public int size() {
     return this.byUserId.size();
   }
 
+  /**
+   * Devolve o numero de users invalidos
+   * @return Numero Users Invalidos
+   */
   @Override
   public int getInvalidCount() {
     return invalidUsers;
   }
 
+  /**
+   * Devolve um utilizador dado um id
+   * @param id
+   * @return User
+   */
   public User getById(String id) {
     return byUserId.get(id).clone();
   }
 
+  /**
+   *  Adiciona um user ao catálogo
+   * @param user
+   */
   public void add(User user) {
     this.byUserId.put(user.getId(), user.clone());
   }
 
+  /**
+   * Apaga um user do catálogo
+   * @param id
+   * @throws UserNotFoundException
+   */
   public void delete(String id) throws UserNotFoundException {
     if (this.byUserId.get(id) == null) throw new UserNotFoundException();
     else {
@@ -61,10 +89,17 @@ public class CatalogoUsers implements ICatalog<User>, Serializable {
     }
   }
 
+  /**
+   * Incrementa o número de users invalidos
+   */
   public void addInvalid() {
     this.invalidUsers++;
   }
 
+  /**
+   * Devolve o numero de users invalidos
+   * @return Users Invalidos
+   */
   public int getInvalidUsers() {
     return invalidUsers;
   }
@@ -75,13 +110,20 @@ public class CatalogoUsers implements ICatalog<User>, Serializable {
    * @return Caso exista retorna true, caso contrário false.
    */
   public boolean containsUserById(String userId) {
-    return this.byUserId != null && this.byUserId.containsKey(userId);
+    return this.byUserId.containsKey(userId);
   }
-
+  /**
+   *  Devolve o nome do ficheiro de input utilizado para popular este catalogo
+   * @return Nome do Ficheiro
+   */
   public String getInputFileName() {
     return inputFileName;
   }
 
+  /**
+   * Altera o nome do ultimo ficeiro usado como input para construir o catalogo.
+   * @param inputFileName
+   */
   public void setInputFileName(String inputFileName) {
     this.inputFileName = inputFileName;
   }

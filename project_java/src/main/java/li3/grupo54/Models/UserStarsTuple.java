@@ -4,6 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.io.Serializable;
 
+/**
+ * Tuple which contains all the informations in StarsTuple as well as a set of reviews the user has reviewd and the businesses they corerspond to.
+ */
 public class UserStarsTuple extends StarsTuple implements Serializable {
   private final Set<String> reviews;
   private Set<String> business;

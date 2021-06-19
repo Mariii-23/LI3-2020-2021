@@ -9,12 +9,24 @@ import li3.grupo54.Models.GestReviews;
 import li3.grupo54.View.DesktopView;
 import li3.grupo54.View.Queries.*;
 
-
+/**
+ * Main class which starts the JavaFX Application and adds all the possible query menus to the interface.
+ *
+ * @author Mariana Rodrigues
+ * @author Matilde Bravo
+ * @author Pedro Alves
+ * @version 1.0
+ *
+ *
+ *  **/
 public class GestReviewsAppMVC extends Application {
   public static void main(String[] args) {
     launch();
   }
-
+  /**
+   * Createss Model, Controller and View. Loads all the menus for the queries
+   * @param s
+   */
   public void start(Stage s) {
     DesktopView view = new DesktopView(s);
     GestReviews model = new GestReviews();

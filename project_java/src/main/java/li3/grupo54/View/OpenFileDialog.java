@@ -13,6 +13,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
+/**
+ * Janela que permite ao utilizador selecionar os tres ficheiros que quer carregar ou optar por default
+ */
 public class OpenFileDialog {
   private FXMLLoader loader;
   private Stage stage;
@@ -36,6 +39,10 @@ public class OpenFileDialog {
   @FXML
   private Button btnDefault;
 
+  /**
+   * Cria uma nova janela a partir de um Stage pai
+   * @param parent o pai
+   */
   public OpenFileDialog(Stage parent) {
     stage = new Stage();
     stage.initModality(Modality.WINDOW_MODAL);
@@ -46,6 +53,10 @@ public class OpenFileDialog {
     ok = false;
   }
 
+  /**
+   * Apresenta a janela e espera que o utilizador faca uma decisão
+   * @return Os ficheiros escolhidos, ou null se foi cancelado
+   */
   public FileTriple showAndWait() {
     try {
       stage.setScene(new Scene(loader.load()));

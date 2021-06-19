@@ -25,6 +25,10 @@ public class FileTriple implements Serializable {
     this.reviewsFile = reviewsFile;
   }
 
+  /**
+   * Devolve o  ficheiro que o utilizador escolheu para popular os Users.
+   * @return Ficheiro de Users
+   */
   public String getUsersFile() {
     return usersFile;
   }
@@ -33,6 +37,10 @@ public class FileTriple implements Serializable {
     this.usersFile = usersFile;
   }
 
+  /**
+   * Devolve o  ficheiro que o utilizador escolheu para popular os Businesses.
+   * @return Ficheiro de Businesses
+   */
   public String getBusinessesFile() {
     return businessesFile;
   }
@@ -41,6 +49,10 @@ public class FileTriple implements Serializable {
     this.businessesFile = businessesFile;
   }
 
+    /**
+   * Devolve o  ficheiro que o utilizador escolheu para popular os Reviews.
+   * @return Ficheiro de Users
+   */
   public String getReviewsFile() {
     return reviewsFile;
   }

@@ -7,6 +7,11 @@ import li3.grupo54.Models.Queries.Query8Results;
 import li3.grupo54.View.Queries.IQueryView;
 import li3.grupo54.View.Queries.Query8View;
 
+/**
+ *
+ *  Class responsible for executing Query8 and returning an IQueryResults
+ */
+
 public class Query8 implements IQueryController {
   GestReviews model;
   Query8View view;

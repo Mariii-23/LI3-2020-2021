@@ -3,6 +3,10 @@ package li3.grupo54.Models;
 import java.io.Serializable;
 import java.util.Comparator;
 
+/**
+ * Tuple which contains the average rating for a given business calculated up to that point and the total number of reviews which were used in that mean.
+ */
+
 public class StarsTuple implements Comparator<StarsTuple>, Serializable {
   private double currentAverage;
   private int numberTotal;

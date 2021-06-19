@@ -47,15 +47,27 @@ public class CatalogoBusinesses implements ICatalog<IBusiness>, Serializable {
     return businessesById.get(businessId);
   }
 
+  /**
+   * Deolve o numero de negocios considerados invalidos durante a leitura
+   * @return
+   */
   @Override
   public int getInvalidCount() {
     return invalidBusinesses;
   }
 
+  /**
+   * Incrementa o número de negócios inválidos
+   * @return
+   */
   public void addInvalid() {
     this.invalidBusinesses++;
   }
 
+  /**
+   * Devolve os negocios invalidos
+   * @return int
+   */
   public int getInvalidBusinesses() {
     return invalidBusinesses;
   }
@@ -127,6 +139,11 @@ public class CatalogoBusinesses implements ICatalog<IBusiness>, Serializable {
     }
   }
 
+  /**
+   *  Apaga um business do catalogo dado o seu id
+   * @param id businessId
+   * @throws BusinessNotFoundException
+   */
   @Override
   public void delete(String id) throws BusinessNotFoundException {
     if (this.businessesById.get(id) == null) throw new BusinessNotFoundException();

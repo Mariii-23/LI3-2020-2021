@@ -5,12 +5,14 @@ import li3.grupo54.Models.Exceptions.NullReviewException;
 import li3.grupo54.Models.Exceptions.UserNotFoundException;
 import li3.grupo54.Models.Interfaces.IBusiness;
 import li3.grupo54.Models.Interfaces.IStats;
+import li3.grupo54.Models.Interfaces.IUser;
 import li3.grupo54.Utils.MyFive;
 import li3.grupo54.Utils.MyPair;
 import li3.grupo54.Utils.MyTriple;
 
-import java.time.Month;
+import javax.xml.catalog.Catalog;
 import java.io.Serializable;
+import java.time.Month;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -236,7 +238,7 @@ public class Stats implements IStats, Serializable  {
       }
 
       try {
-        this.updateStats((Review) newEntity, (Business) catalogoBusinesses.getBusiness(((Review) newEntity).getBusinessId()));
+        this.updateStats((Review) newEntity, (Business) catalogoBusinesses.getById(((Review) newEntity).getBusinessId()));
       } catch (Exception e) {
         e.getMessage();
       }
@@ -437,5 +439,6 @@ public class Stats implements IStats, Serializable  {
   public int getBusinessWithReviews(){
     return this.averageByBusinessId.values().size();
   }
+
 }
 

@@ -18,37 +18,46 @@ import li3.grupo54.Utils.Crono;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A view a query 1
+ */
 public class Query1View implements IQueryViewFX {
   private ValidationCallback callback;
   private NodeCallback resultsCallback;
 
+  /** O nome da query */
   @Override
   public String getName() {
     return "Query 1";
   }
 
+  /** A descrição da query */
   @Override
   public String getDescription() {
     return "Lista ordenada alfabeticamente com os identificadores dos negócios nunca " +
         "avaliados e o seu respetivo total.";
   }
 
+  /** Os parametros da query, neste caso nenhums */
   @Override
   public Map<String, Node> getConfigOptionsNode() {
     return new HashMap<>();
   }
 
+  /** Obtém o callback de validacao */
   @Override
   public ValidationCallback getValidationCallback() {
     return callback;
   }
 
+  /** {@inheritdoc} */
   @Override
   public void setValidationCallback(ValidationCallback callback) {
     this.callback = callback;
     setValid(true);
   }
 
+  /** {@inheritdoc} */
   @Override
   public void showResults(IQueryResults results) {
     Crono.start();
@@ -77,7 +86,7 @@ public class Query1View implements IQueryViewFX {
     if (this.resultsCallback != null)
       resultsCallback.run(panel);
   }
-
+  /** {@inheritdoc} */
   @Override
   public void addShowResultsCallback(NodeCallback callback) {
     this.resultsCallback = callback;

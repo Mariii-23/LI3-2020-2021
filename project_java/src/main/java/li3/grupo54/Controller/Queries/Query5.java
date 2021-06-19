@@ -6,6 +6,11 @@ import li3.grupo54.Models.Queries.Query5Results;
 import li3.grupo54.View.Queries.IQueryView;
 import li3.grupo54.View.Queries.Query5View;
 
+/**
+ *
+ *  Class responsible for executing Query5 and returning an IQueryResults
+ */
+
 public class Query5 implements IQueryController {
   GestReviews model;
   Query5View view;
