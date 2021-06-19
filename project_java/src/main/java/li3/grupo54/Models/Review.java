@@ -18,16 +18,6 @@ public class Review implements IReview {
   private final LocalDateTime date;
   private final String text;
 
-
-  //private static PrintWriter p;
-  //static {
-  //  try {
-  //    p = new PrintWriter(new FileOutputStream("IREVIEW"));
-  //  } catch (Exception e) {
-  //    e.printStackTrace();
-  //  }
-  //}
-
   public Review(String reviewId, String userId, String businessId, float stars, int useful, int funny, int cool, LocalDateTime date, String text) {
     this.reviewId = reviewId;
     this.userId = userId;

@@ -17,15 +17,6 @@ public class Business implements IBusiness {
   private final String state;
   private Set<String> categories;
 
-
-  //private static PrintWriter p;
-  //static {
-  //  try {
-  //    p = new PrintWriter(new FileOutputStream("IBusiness"));
-  //  } catch (Exception e) {
-  //    e.printStackTrace();
-  //  }
-  //}
   public Business(String businessId, String name, String city, String state, Set<String> categories) {
     this.businessId = businessId;
     this.name = name;

@@ -6,22 +6,10 @@ import li3.grupo54.Models.Exceptions.ReviewNotFoundException;
 import li3.grupo54.Models.Interfaces.ICatalog;
 import li3.grupo54.Utils.MyPair;
 
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.*;
 
 public class CatalogoReviews implements ICatalog<Review> {
-  public static PrintWriter p;
-
-  static {
-    try {
-      p = new PrintWriter(new FileOutputStream("IBUSINESS"));
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
   // ano =>  array de 12 elementos => cada array tem um set de reviews
   private final Map<Integer, List<Set<Review>>> anoToReviewsPerMonth;
   private final Map<String, Review> byReviewId;

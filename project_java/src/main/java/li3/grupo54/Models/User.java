@@ -10,15 +10,6 @@ public class User implements IUser {
   private String userId;
   private String name;
 
-  //private static PrintWriter p;
-  //static {
-  //  try {
-  //    p = new PrintWriter(new FileOutputStream("IUSER"));
-  //  } catch (Exception e) {
-  //    e.printStackTrace();
-  //  }
-  //}
-
   public User(String userId, String name) {
     this.userId = userId;
     this.name = name;
