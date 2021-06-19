@@ -38,8 +38,6 @@ public class Query5View implements IQueryViewFX {
     });
   }
 
-
-  //TODO
   @Override
   public String getName() {
     return "Query 5";

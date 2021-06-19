@@ -18,7 +18,33 @@ public class Stats {
   private TreeMap<String, IBusiness> negociosNuncaAvaliados; // ordenados por ordem alfabetica
   private Map<String, IBusiness> negociosAvaliados;
 
+// cidade | id negocio | numero de reviews
+  public List<MyTriple<String,String,Integer>> query7(){
+   List<MyTriple<String,String,Integer>> r = new ArrayList<>();
 
+   for (Map<String, Map<String, StarsTuple>> entry : averageByStateBusiness.values() ){
+     if(entry== null) continue;
+     for(Map.Entry<String,Map<String,StarsTuple>>entryCity : entry.entrySet()){
+       if(entryCity == null) continue;
+        String city = entryCity.getKey();
+        List<MyTriple<String,String,Integer>> aux = new ArrayList<>();
+        for(Map.Entry<String,StarsTuple> elem : entryCity.getValue().entrySet()){
+          if(elem==null) continue;
+           aux.add(new MyTriple<String,String,Integer>(city,elem.getKey(), elem.getValue().getNumberTotal()));
+        }
+       Comparator<MyTriple<String,String,Integer>> c = (e1,e2)->  e2.getRight()-e1.getRight();
+       aux.sort(c);
+
+       for(int i=0; i<aux.size() && i<3;i++){
+         MyTriple<String,String,Integer>  elem = aux.get(i);
+         if(elem!=null){
+           r.add(elem);
+         }
+       }
+     }
+   }
+   return r;
+  }
 
   public Stats() {
     averageByUserId = new HashMap<>();
@@ -158,45 +184,22 @@ public class Stats {
 
     }
 
+  public Set<String> getAllReviews(String businessId){
+    Set<String> allReviews = new HashSet<>();
+    List<BusinessStarsTuple> list = averageByBusinessId.get(businessId);
+    if(list!=null){
+      for(BusinessStarsTuple tuple: list) {
+        if(tuple!=null)
+          allReviews.addAll(tuple.getReviews());
+      }
+    }
+    return  allReviews;
+  }
 
   // para a query 1
   public List<IBusiness> getNegociosNuncaAvaliadosOrdered() {
     return this.negociosNuncaAvaliados.values().stream().map(IBusiness::clone).collect(Collectors.toList());
   }
-
-  //@Override
-  //public void add(IBusiness business) {
-  //  this.negociosNuncaAvaliados.put(business.getId(), business.clone());
-  //}
-
-  //public void changesBusinessAvalied(String id) throws BusinessNotFoundException {
-  //  IBusiness business = negociosNuncaAvaliados.remove(id);
-  //  if (business == null)
-  //    throw new BusinessNotFoundException("Business Not Found, id: " + id);
-  //  this.negociosAvaliados.put(id, business.clone());
-  //}
-
-  //@Override
-  //public IBusiness getById(String id) throws BusinessNotFoundException {
-  //  IBusiness b;
-  //  if ((b = negociosAvaliados.get(id)) != null || (b = negociosNuncaAvaliados.get(id)) != null) {
-  //    return b.clone();
-  //  } else {
-  //    throw new BusinessNotFoundException();
-  //  }
-  //}
-
-  //@Override
-  //public void delete(String id) throws BusinessNotFoundException {
-  //  if (negociosAvaliados.get(id) != null) {
-  //    negociosAvaliados.remove(id);
-  //  } else if (negociosNuncaAvaliados.get(id) != null) {
-  //    negociosNuncaAvaliados.remove(id);
-  //  } else {
-  //    throw new BusinessNotFoundException();
-  //  }
-  //}
-
 
   public List<MyTriple<Integer,Integer,Float>> query3(String userId){
     if(this.averageByUserId == null)

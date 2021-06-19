@@ -89,7 +89,7 @@ public class CatalogoReviews implements ICatalog<Review> {
 
   @Override
   public void delete(String id) throws ReviewNotFoundException {
-    // TODO
+    // TODfizemos com O
 
   }
 
