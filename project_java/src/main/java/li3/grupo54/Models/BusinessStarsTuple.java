@@ -24,7 +24,7 @@ public class BusinessStarsTuple extends StarsTuple {
   public void updateAverage(Review review) {
     super.update(review.getStars());
     reviews.add(review.getReviewId());
-    users.add(review.getBusinessId());
+    users.add(review.getUserId());
   }
 
   public double getCurrentAverage() {
