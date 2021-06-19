@@ -11,6 +11,12 @@ public class MyTriple<T, T1, T2> {
         this.right = right;
     }
 
+    public  MyTriple(MyTriple<T,T1,T2> that){
+        this.left = that.getLeft();
+        this.middle = that.getMiddle();
+        this.right = that.right;
+    }
+
     public T getLeft() {
         return left;
     }
