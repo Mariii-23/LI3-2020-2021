@@ -3,7 +3,6 @@ package li3.grupo54.Controller;
 import li3.grupo54.Controller.Queries.IQueryController;
 import li3.grupo54.Models.FileTriple;
 import li3.grupo54.Models.GestReviews;
-import li3.grupo54.Models.Stats;
 import li3.grupo54.View.IView;
 
 import java.io.File;
@@ -35,10 +34,10 @@ public class Controller implements IController {
   @Override
   public void executa() {
     view.show();
-    FileTriple triple = this.view.getFileTriple();
-    if (triple != null) {
-      loadTriple(triple);
-    }
+    //FileTriple triple = this.view.getFileTriple();
+    //if (triple != null) {
+    //  loadTriple(triple);
+    //}
   }
 
   public void saveObject(File file) throws IOException {

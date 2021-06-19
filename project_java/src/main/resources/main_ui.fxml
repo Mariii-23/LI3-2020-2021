@@ -23,7 +23,8 @@
    <children>
       <ToolBar prefHeight="40.0" prefWidth="200.0">
         <items>
-          <Button mnemonicParsing="false" onAction="#openFile" text="Abrir" />
+          <Button mnemonicParsing="false" onAction="#openFile" text="Criar" />
+            <Button mnemonicParsing="false" onAction="#onRestore" text="Restaurar" />
             <Button mnemonicParsing="false" onAction="#onSave" text="Gravar" />
         </items>
       </ToolBar>

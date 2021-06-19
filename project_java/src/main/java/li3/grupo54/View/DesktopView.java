@@ -13,13 +13,12 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import li3.grupo54.Controller.CallbackFileTriple;
-import li3.grupo54.Controller.CallbackSave;
+import li3.grupo54.Controller.EmptyCallback;
 import li3.grupo54.Controller.ExecuteCallback;
 import li3.grupo54.Models.FileTriple;
 import li3.grupo54.View.Queries.IQueryView;
 import li3.grupo54.View.Queries.IQueryViewFX;
 
-import javax.security.auth.callback.Callback;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -41,8 +40,8 @@ public class DesktopView implements IView {
   private int nQueries;
 
   private CallbackFileTriple callback;
-
-  private CallbackSave saveCallback;
+  private EmptyCallback saveCallback;
+  private EmptyCallback restoreCallback;
 
   public DesktopView(Stage s) {
     this.stage = s;
@@ -56,8 +55,9 @@ public class DesktopView implements IView {
     stage.setTitle("Sistema de Gestão de Reviews");
     try {
       stage.setScene(new Scene(loader.load(), 1280, 768));
-    } catch (IOException e) {
-      // Fazemos isto porque, desde que o programa tenha sido bem compilado, é impossível de acontecer
+    }
+    catch (IOException e) {
+    // Fazemos isto porque, desde que o programa tenha sido bem compilado, é impossível de acontecer
       throw new UncheckedIOException(e);
     }
 
@@ -148,7 +148,7 @@ public class DesktopView implements IView {
       queries.add(new AbstractMap.SimpleEntry<>((IQueryViewFX) query, callback));
       ((IQueryViewFX) query).addShowResultsCallback(node -> {
         nQueries++;
-        Tab tab = new Tab("Results query. " + nQueries);
+        Tab tab = new Tab("Resultado (" + nQueries + ")");
         tab.setContent(node);
         tab.setClosable(true);
         resultsTabs.getTabs().add(tab);
@@ -156,7 +156,7 @@ public class DesktopView implements IView {
     }
   }
 
-  public void setOnSave(CallbackSave onGravar) {
+  public void setOnSave(EmptyCallback onGravar) {
         this.saveCallback = onGravar;
   }
 
@@ -169,11 +169,19 @@ public class DesktopView implements IView {
   }
    @FXML
     private void onSave() throws IOException {
-      System.err.println("onSave called");
       if(saveCallback != null) {
         var f = getSaveLocation();
         saveCallback.run(f);
       }
+   }
+   @FXML
+   private void  onRestore(){
+      //if(restoreCallback != null) {
+      //
+      //  restoreCallback.run();
+      //
+      //}
+
    }
 
 }

@@ -1,15 +1,24 @@
 package li3.grupo54.Models;
 
-//import org.junit.Test;
-
-import li3.grupo54.Models.User;
+import com.carrotsearch.junitbenchmarks.AbstractBenchmark;
 import li3.grupo54.Models.Interfaces.ICatalog;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class CatalogoUsersTest {
-    private final ICatalog<User> catalog = new CatalogoUsers();
+public class CatalogoUsersTest extends AbstractBenchmark {
+    public final ICatalog<User> catalog = new CatalogoUsers();
 
- //   @Test
-    public void testOne() {
-        catalog.add(new User("userid", "nome"));
+    @Test
+    public void testOne() throws Exception {
+        final var u = new User("userid", "nome");
+        catalog.add(u);
+        Assert.assertEquals(u, catalog.getById("userid"));
+    }
+
+    @Test
+    public void insert_10_000_000_Users() {
+        for (int i = 0; i < 10000000; ++i) {
+            catalog.add(new User(i + "", "name"));
+        }
     }
 }
