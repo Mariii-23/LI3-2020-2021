@@ -391,11 +391,16 @@ public class Stats implements IStats, Serializable {
         List<MyPair<String, Integer>> r = new ArrayList<>();
 
         for (Map.Entry<String, List<UserStarsTuple>> entry : averageByUserId.entrySet()) {
-            if (entry == null) continue;
-            for (UserStarsTuple elem : entry.getValue()) {
-                if (elem != null)
-                    r.add(new MyPair<>(entry.getKey(), elem.getBusinessNumberDistint()));
-            }
+            Integer value = Math.toIntExact(entry
+                    .getValue()
+                    .stream() // Stream<UserStarsTuple>
+                    .filter(Objects::nonNull)
+                    .map(UserStarsTuple::getBusiness)  //Stream <Set<String>>
+                    .flatMap(Collection::stream) // Stream <String>
+                    .distinct()
+                    .count()
+            );
+            r.add(new MyPair<>(entry.getKey(), value));
         }
 
         Comparator<MyPair<String, Integer>> c = (e1, e2) -> e2.getY() - e1.getY();
@@ -403,8 +408,7 @@ public class Stats implements IStats, Serializable {
 
         if (x < r.size()) {
             int size = r.size();
-            for (int i = size - 1; i >= x; i--)
-                r.remove(i);
+            r.subList(x, size).clear();
         }
         return r;
     }
