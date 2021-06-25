@@ -118,6 +118,7 @@ public class Query8View implements IQueryViewFX {
         panel.setSpacing(5);
 
         panel.getChildren().add(new Label("Query Time: " + time));
+        panel.getChildren().add(new Label("Total number users: " + res.getResults().size()));
 
         TableView<MyPair<String, Integer>> tableView = new TableView<>();
         TableColumn<MyPair<String, Integer>, String> column1 = new TableColumn<>("User id");

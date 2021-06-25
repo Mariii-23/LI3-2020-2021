@@ -87,6 +87,7 @@ public class Query7View implements IQueryViewFX {
         panel.setSpacing(5);
 
         panel.getChildren().add(new Label("Query Time: " + time));
+        panel.getChildren().add(new Label("Total number business: " + res.getResults().size()));
 
         TableView<MyTriple<String, String, Integer>> tableView = new TableView<>();
         TableColumn<MyTriple<String, String, Integer>, String> column1 = new TableColumn<>("City");

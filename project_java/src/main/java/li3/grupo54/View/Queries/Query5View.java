@@ -113,7 +113,7 @@ public class Query5View implements IQueryViewFX {
 
         tableView.getColumns().add(column1);
 
-        TableColumn<MyPair<String, Integer>, String> meanColumn = new TableColumn<>("Mean");
+        TableColumn<MyPair<String, Integer>, String> meanColumn = new TableColumn<>("Number reviews");
         meanColumn.setCellValueFactory(new PropertyValueFactory<>("y"));
         tableView.getColumns().add(meanColumn);
 

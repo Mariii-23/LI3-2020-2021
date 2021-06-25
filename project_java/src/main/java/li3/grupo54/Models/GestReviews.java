@@ -67,6 +67,12 @@ public class GestReviews implements Serializable {
         System.out.println("\nFinished reading users");
         System.out.println("Time: " + time + "\n");
 
+        //try {
+        //    Thread.sleep(6000);
+        //} catch (Exception e){
+        //
+        //}
+
         Crono.start();
         catalogoBusinesses.populateFromFile(stats, businesses, null, null);
         time = Crono.stop();

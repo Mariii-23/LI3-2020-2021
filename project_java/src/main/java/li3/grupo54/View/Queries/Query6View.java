@@ -117,6 +117,7 @@ public class Query6View implements IQueryViewFX {
         panel.getChildren().add(new Label("Query 6"));
 
         panel.getChildren().add(new Label("Query Time: " + time));
+        panel.getChildren().add(new Label("Total number business: " + res.getBusinesses().size()));
 
         TableView<MyTriple<Integer, String, Integer>> tableView = new TableView<>();
 

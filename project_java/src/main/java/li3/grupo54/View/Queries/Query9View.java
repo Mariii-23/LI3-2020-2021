@@ -145,6 +145,8 @@ public class Query9View implements IQueryViewFX {
         panel.setSpacing(5);
 
         panel.getChildren().add(new Label("Query Time: " + time));
+        panel.getChildren().add(new Label("Total number users: " + res.getResults().size()));
+
         TableView<MyPair<String, Double>> tableView = new TableView<>();
         TableColumn<MyPair<String, Double>, String> usersColumn = new TableColumn<>("Utilizador");
         usersColumn.setCellValueFactory(new PropertyValueFactory<>("x"));

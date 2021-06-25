@@ -88,6 +88,7 @@ public class Query10View implements IQueryViewFX {
         panel.setSpacing(5);
 
         panel.getChildren().add(new Label("Query Time: " + time));
+        panel.getChildren().add(new Label("Total number users: " + res.getResults().collect(Collectors.toList()).size()));
 
         TableView<Query10Results.Result> businessTableView = new TableView<>();
         TableColumn<Query10Results.Result, String> stateColumn = new TableColumn<>("Estado");
